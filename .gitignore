@@ -1,0 +1,10 @@
+/dist/**
+/build/**
+/nbproject/**
+/bin/**
+.classpath
+.project
+sysProps.xml
+build.properties
+build.properties~
+nbbuild.xml
