@@ -57,6 +57,7 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void autonomousInit() {
         leds.activateAutonomous();
+        arm.calibrate(true);
     }
 
     /**
@@ -64,12 +65,13 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
-
+    	arm.tick();
     }
 
     @Override
     public void teleopInit() {
         leds.activateTeleop();
+        arm.calibrate(false);
     }
 
     /**
@@ -97,6 +99,7 @@ public class Vizzini extends IterativeRobot {
         
         arm.move(keyMap.getArmAxis());
         arm.tick();
+        
         if (keyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
         }
