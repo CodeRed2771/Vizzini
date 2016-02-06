@@ -24,14 +24,15 @@ public class Pickup {
     public Pickup(int frontWheelPort, int rearWheelPort) {
         frontWheels = new PWMController(frontWheelPort, false); // 1 --> suck in
         rearWheels = new PWMController(rearWheelPort, true);
-        frontBreaker = new CurrentBreaker(null, Wiring.PICKUP_FRONT_MOTOR, 
+        frontBreaker = new CurrentBreaker(null, Wiring.PICKUP_FRONT_PDP, 
                 Calibration.PICKUP_FRONT_CURRENT_THRESHOLD, Calibration.PICKUP_FRONT_CURRENT_TIMEOUT);
-        rearBreaker = new CurrentBreaker(null, Wiring.PICKUP_REAR_MOTOR,
+        rearBreaker = new CurrentBreaker(null, Wiring.PICKUP_REAR_PDP,
                 Calibration.PICKUP_REAR_CURRENT_THRESHOLD, Calibration.PICKUP_REAR_CURRENT_TIMEOUT);
     }
     
     public void feedIn() {
         frontWheels.set(Calibration.PICKUP_INTAKE_SPEED);
+        frontBreaker.reset();
         pickingUp = true;
     }
     
@@ -48,6 +49,7 @@ public class Pickup {
     
     public void dropBallInShooter() {
         rearWheels.set(Calibration.PICKUP_SHOOTER_DROP_SPEED);
+        rearBreaker.reset();
         droppingInShooter = true;
     }
     
