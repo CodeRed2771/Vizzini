@@ -8,7 +8,7 @@ import com.coderedrobotics.libs.HID.LogitechF310;
  * @author michael
  */
 public class KeyMap {
-    
+
     // GAMEPADS
     private final HID gp1 = new HID(0);
     private final HID gp2 = new HID(1);
@@ -18,15 +18,17 @@ public class KeyMap {
     // MANAGEMENT BOOLEANS
     private boolean reverseDrive = false;
     private boolean singleControllerMode = false;
+    private boolean reduceSpeed = false;
 
     // CONTROLLER 0
     private final HID.Button reverseDriveButton = LogitechF310.BUMPER_LEFT;
+    private final HID.Button reduceSpeedButton = LogitechF310.BUMPER_RIGHT;
     private final HID.Button singleControllerModeButton = LogitechF310.STICK_RIGHT;
     private final HID.Axis driveLeftAxis = LogitechF310.STICK_LEFT_Y;
     private final HID.Axis driveRightAxis = LogitechF310.STICK_RIGHT_Y;
     private final HID.Button fireButton = LogitechF310.TRIGGER_RIGHT;
     private final HID.Button fireOverrideButton = LogitechF310.TRIGGER_LEFT;
-    
+
     // CONTROLLER 1
     private final HID.Button feedInButton = LogitechF310.A;
     private final HID.Button feedOutButton = LogitechF310.B;
@@ -34,11 +36,12 @@ public class KeyMap {
     private final HID.Button gotoShooterPositionButton = LogitechF310.Y;
     private final HID.Button overrideArmPIDButton = LogitechF310.BUMPER_LEFT;
     private final HID.Axis armAxis = LogitechF310.DPAD_X;
-    
+
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
     private final HID.ButtonState singleControllerModeState = HID.newButtonState();
-    
+    private final HID.ButtonState reduceSpeedButtonState = HID.newButtonState();
+
     public KeyMap() {
 
     }
@@ -70,6 +73,18 @@ public class KeyMap {
         return reverseDrive;
     }
 
+    public boolean getReduceSpeedButton() {
+        return getHID(gamepad1).buttonPressed(reduceSpeedButton, reduceSpeedButtonState);
+    }
+
+    public void toggleReduceSpeed() {
+        reduceSpeed = !reduceSpeed;
+    }
+
+    public boolean getReduceSpeed() {
+        return reduceSpeed;
+    }
+
     public void setSingleControllerMode(boolean state) {
         singleControllerMode = state;
     }
@@ -85,43 +100,45 @@ public class KeyMap {
     public boolean getSingleControllerToggleButton() {
         return getHID(gamepad1).buttonPressed(singleControllerModeButton, singleControllerModeState);
     }
-    
+
     public boolean getFireButton() {
         return getHID(gamepad1).button(fireButton);
     }
-    
+
     public boolean getFireOverrideButton() {
         return getHID(gamepad1).button(fireOverrideButton);
     }
-    
+
     public double getYDriveAxis() {
-        return (reverseDrive ? -1 : 1) * (getHID(gamepad1).axis(driveLeftAxis) + getHID(gamepad1).axis(driveRightAxis)) / 2;
+        return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
+                * (getHID(gamepad1).axis(driveLeftAxis) + getHID(gamepad1).axis(driveRightAxis)) / 2;
     }
-    
+
     public double getRotDriveAxis() {
-        return (getHID(gamepad1).axis(driveLeftAxis) - getHID(gamepad1).axis(driveRightAxis)) / 2;
+        return (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
+                * (getHID(gamepad1).axis(driveLeftAxis) - getHID(gamepad1).axis(driveRightAxis)) / 2;
     }
-    
+
     public double getArmAxis() {
         return getHID(gamepad2).axis(armAxis);
     }
-    
+
     public boolean getFeedInButton() {
         return getHID(gamepad2).button(feedInButton);
     }
-    
+
     public boolean getFeedOutButton() {
         return getHID(gamepad2).button(feedOutButton);
     }
-    
+
     public boolean getFeedStopButton() {
         return getHID(gamepad2).button(feedStopButton);
     }
-    
+
     public boolean getGotoShootPositionButton() {
         return getHID(gamepad2).button(gotoShooterPositionButton);
     }
-    
+
     public boolean getOverrideArmPIDButton() {
         return getHID(gamepad2).button(overrideArmPIDButton);
     }

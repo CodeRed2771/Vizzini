@@ -37,8 +37,9 @@ public class Vizzini extends IterativeRobot {
     public void robotInit() {
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
-        tankDrive = new TankDrive(new PWMSplitter2X(0, 1, false), new PWMSplitter2X(2, 3, true));
-        leds = new RobotLEDs(0, 1);
+        tankDrive = new TankDrive(new PWMSplitter2X(Wiring.LEFT_DRIVE_MOTOR1, Wiring.LEFT_DRIVE_MOTOR2, false), 
+                new PWMSplitter2X(Wiring.RIGHT_DRIVE_MOTOR1, Wiring.RIGHT_DRIVE_MOTOR2, true));
+        leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter();
     }
 
@@ -80,6 +81,9 @@ public class Vizzini extends IterativeRobot {
         if (keyMap.getReverseDriveButton()) {
             keyMap.toggleReverseDrive();
         }
+        if (keyMap.getReduceSpeedButton()) {
+            keyMap.toggleReduceSpeed();
+        }
 
         if (keyMap.getFeedInButton()) {
             arm.feedIn();
@@ -92,6 +96,7 @@ public class Vizzini extends IterativeRobot {
         }
         
         arm.move(keyMap.getArmAxis());
+        arm.tick();
         if (keyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
         }

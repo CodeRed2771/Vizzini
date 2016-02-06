@@ -11,7 +11,7 @@ public class Shooter {
 
     // ADD ENCODER, PID Controller, and Voltage Monitoring
     
-//    Talon shooter;
+    Talon shooter;
 //    PIDControllerAIAO pid;
 //    Encoder enc;
 //    double spinRate = 0;
