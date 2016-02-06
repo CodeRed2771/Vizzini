@@ -35,7 +35,6 @@ public class KeyMap {
     private final HID.Button overrideArmPIDButton = LogitechF310.BUMPER_LEFT;
     private final HID.Axis armAxis = LogitechF310.DPAD_X;
     
-
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
     private final HID.ButtonState singleControllerModeState = HID.newButtonState();
@@ -96,7 +95,7 @@ public class KeyMap {
     }
     
     public double getYDriveAxis() {
-        return reverseDrive ? -1 : 1 * (getHID(gamepad1).axis(driveLeftAxis) + getHID(gamepad1).axis(driveRightAxis)) / 2;
+        return (reverseDrive ? -1 : 1) * (getHID(gamepad1).axis(driveLeftAxis) + getHID(gamepad1).axis(driveRightAxis)) / 2;
     }
     
     public double getRotDriveAxis() {

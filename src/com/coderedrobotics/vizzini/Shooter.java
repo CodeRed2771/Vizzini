@@ -27,7 +27,7 @@ public class Shooter {
     public boolean isSpunUp() {
         // This method will return true if the encoder reports that the proper
         // speed has been achieved
-        return false;
+        return true;
     }
 
     public void spinUp() {
@@ -45,6 +45,6 @@ public class Shooter {
     public boolean hasFired() {
         // Uses voltage regulation to monitor whether a ball has gone through
         // the shooter wheels.
-        return false;
+        return true;
     }
 }

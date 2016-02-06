@@ -15,16 +15,16 @@ public class Pickup {
     private final PWMController rearWheels;
     
     public Pickup(int frontWheelPort, int rearWheelPort) {
-        frontWheels = new PWMController(frontWheelPort, false);
-        rearWheels = new PWMController(rearWheelPort, true); // 1 --> suck in
+        frontWheels = new PWMController(frontWheelPort, false); // 1 --> suck in
+        rearWheels = new PWMController(rearWheelPort, true); 
     }
     
     public void feedIn() {
-        frontWheels.set(Calibration.PICKUP_WHEEL_SPEED);
+        frontWheels.set(Calibration.PICKUP_INTAKE_SPEED);
     }
     
     public void feedOut() {
-        frontWheels.set(-Calibration.PICKUP_WHEEL_SPEED);
+        frontWheels.set(-Calibration.PICKUP_OUTPUT_SPEED);
     }
     
     public void feedStop() {
