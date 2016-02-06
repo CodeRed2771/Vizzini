@@ -6,12 +6,12 @@ package com.coderedrobotics.vizzini.statics;
  */
 public class Wiring {
 
-    // MOTOR CONTROLLERS
+    // PWM MOTOR CONTROLLERS
     public static int LEFT_DRIVE_MOTOR1 = 0;
     public static int LEFT_DRIVE_MOTOR2 = 1;
     public static int RIGHT_DRIVE_MOTOR1 = 2;
     public static int RIGHT_DRIVE_MOTOR2 = 3;
-    public static int ARM_MOTOR = 4;
+    
     public static int PICKUP_FRONT_MOTOR = 5;
     public static int PICKUP_REAR_MOTOR = 6;
     public static int SHOOTER_MOTOR = 7;
@@ -20,6 +20,9 @@ public class Wiring {
     public static int PICKUP_FRONT_PDP = 14;
     public static int PICKUP_REAR_PDP = 13;
 
+    // CAN MOTOR CONTROLLERS
+    public static int ARM_MOTOR = 1;  
+    
     // DIGITAL INPUT
     public static int ARM_LIMIT_SWITCH = 0;
 
