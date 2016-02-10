@@ -36,7 +36,7 @@ public class Arm {
         pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort);
         arm = new CANTalon(armMotorPort);
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
-        pidController = new PIDControllerAIAO(3, 0, 30, 0, arm, new PIDOutput() {
+        pidController = new PIDControllerAIAO(8, 0, 10, 0, arm, new PIDOutput() {
             @Override
             public void pidWrite(double output) {                
                 arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
