@@ -35,7 +35,7 @@ public class KeyMap {
     private final HID.Button feedStopButton = LogitechF310.X;
     private final HID.Button gotoShooterPositionButton = LogitechF310.Y;
     private final HID.Button overrideArmPIDButton = LogitechF310.BUMPER_LEFT;
-    private final HID.Axis armAxis = LogitechF310.DPAD_X;
+    private final HID.Axis armAxis = LogitechF310.STICK_LEFT_Y;
 
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
