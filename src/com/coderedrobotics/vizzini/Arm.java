@@ -42,12 +42,9 @@ public class Arm {
                 arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
             }
         }, true, "arm");
-//        arm.setPID(.10, 0, .002);
-//        arm.setIZone(0);
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
         arm.configPeakOutputVoltage(12, -12);
-        arm.setVoltageRampRate(12);
         arm.setPosition(0);
 
         targetArmPosition = 0;
@@ -89,8 +86,8 @@ public class Arm {
 
     public void tick() {
 
-        SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
-        SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
+      //  SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
+      // SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
 
         pickup.tick();
 
