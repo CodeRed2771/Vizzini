@@ -2,6 +2,7 @@ package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PWMController;
+import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
 
 import edu.wpi.first.wpilibj.CANTalon;
@@ -23,10 +24,6 @@ public class Arm {
     private PIDControllerAIAO pidController;
     private final Pickup pickup;
     private final DigitalInput limitSwitch;
-    private double targetArmPosition = 0;
-    private static final double armIncrement = 0.0007;
-    public static final int RED_AND_GREEN_LEDS = 0;
-    public static final int BLUE_LEDS = 1;
     public long lastArmChange = 0;
 
     private boolean isCalibrating = false;
@@ -36,28 +33,24 @@ public class Arm {
         pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort);
         arm = new CANTalon(armMotorPort);
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
-        pidController = new PIDControllerAIAO(8, 0, 10, 0, arm, new PIDOutput() {
-            @Override
-            public void pidWrite(double output) {                
-                arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
-            }
-        }, true, "arm");
+        pidController = new PIDControllerAIAO(Calibration.ARM_P, Calibration.ARM_I,
+                Calibration.ARM_D, Calibration.ARM_F, arm, (double output) -> {
+                    arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
+                }, true, "arm");
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
         arm.configPeakOutputVoltage(12, -12);
         arm.setPosition(0);
-
-        targetArmPosition = 0;
     }
 
     public void move(double speed) {
         long now = System.currentTimeMillis();
         long timePassed = now - lastArmChange;
         lastArmChange = now;
-        
+
         timePassed = Math.min(60, timePassed);
-        
-        pidController.setSetpoint(pidController.getSetpoint()+(timePassed*armIncrement*speed));
+
+        pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
     }
 
     public void gotoShootPosition() {
@@ -86,9 +79,8 @@ public class Arm {
 
     public void tick() {
 
-      //  SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
-      // SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
-
+        //  SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
+        // SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
         pickup.tick();
 
         if (isCalibrating) {
@@ -97,11 +89,10 @@ public class Arm {
                 arm.set(0); // stop the arm
                 arm.setPosition(0); // set encoders to 0
                 pidController.setSetpoint(-1);
-                pidController.enable();                
+                pidController.enable();
 //                arm.changeControlMode(TalonControlMode.Position);
                 isCalibrating = false;
                 isCalibrated = true;
-                targetArmPosition = 0;
             }
         }
     }
@@ -110,7 +101,7 @@ public class Arm {
         if (!isCalibrated || recalibrate) {
             arm.changeControlMode(TalonControlMode.PercentVbus);
             isCalibrating = true;
-            arm.set(.3); // start the arm in downward motion
+            arm.set(Calibration.ARM_CALIBRATION_MOTOR_SPEED); // start the arm in downward motion
         }
     }
 }

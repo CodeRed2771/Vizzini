@@ -23,11 +23,6 @@ public class Shooter {
         shooter2 = new PWMController(victor, false);
         pid = new PIDControllerAIAO(0, 0, 0, 0, shooter1, shooter1, true, "Shooter");
         breaker = new CurrentBreaker(null, Wiring.SHOOTER_PDP, 7, 0);
-//        shooter = new Talon(0);
-//        enc = new Encoder(0, 1);
-//        pid = new PIDControllerAIAO(.5, 0, 0, enc, shooter, true, "Shooter");
-//        pid.setOutputRange(-.2, .2);
-//        enc.setPIDSourceType(PIDSourceType.kRate);
     }
 
     public boolean isSpunUp() {
