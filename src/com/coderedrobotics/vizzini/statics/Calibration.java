@@ -16,4 +16,8 @@ public class Calibration {
     public static int PICKUP_REAR_CURRENT_TIMEOUT = 200;
     
     public static double DRIVE_TRAIN_REDUCTION_FACTOR = 0.5;
+    
+    public static double SHOOTER_ERROR_TOLERANCE = 10;
+    public static double SHOOTER_SPIN_SPEED = 0;
+    public static long SHOOTER_STOP_TIMEOUT = 1000;
 }

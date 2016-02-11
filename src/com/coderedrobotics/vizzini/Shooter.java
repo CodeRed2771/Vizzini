@@ -1,22 +1,28 @@
 package com.coderedrobotics.vizzini;
 
-import edu.wpi.first.wpilibj.PIDSourceType;
-import edu.wpi.first.wpilibj.Talon;
+import com.coderedrobotics.libs.CurrentBreaker;
 
 import com.coderedrobotics.libs.PIDControllerAIAO;
+import com.coderedrobotics.libs.PWMController;
+import com.coderedrobotics.vizzini.statics.Calibration;
+import com.coderedrobotics.vizzini.statics.Wiring;
+import edu.wpi.first.wpilibj.CANTalon;
 
-import edu.wpi.first.wpilibj.Encoder;
 
 public class Shooter {
 
-    // ADD ENCODER, PID Controller, and Voltage Monitoring
+    private CANTalon shooter1;
+    private PWMController shooter2;
+    private PIDControllerAIAO pid;
+    private CurrentBreaker breaker;
+    private boolean stopping;
+    private long timeout;
     
-    Talon shooter;
-//    PIDControllerAIAO pid;
-//    Encoder enc;
-//    double spinRate = 0;
-//    final double changeRate = .25;
-    public Shooter() {
+    public Shooter(int talon, int victor) {
+        shooter1 = new CANTalon(talon);
+        shooter2 = new PWMController(victor, false);
+        pid = new PIDControllerAIAO(0, 0, 0, 0, shooter1, shooter1, true, "Shooter");
+        breaker = new CurrentBreaker(null, Wiring.SHOOTER_PDP, 7, 0);
 //        shooter = new Talon(0);
 //        enc = new Encoder(0, 1);
 //        pid = new PIDControllerAIAO(.5, 0, 0, enc, shooter, true, "Shooter");
@@ -25,26 +31,30 @@ public class Shooter {
     }
 
     public boolean isSpunUp() {
-        // This method will return true if the encoder reports that the proper
-        // speed has been achieved
-        return true;
+        return pid.getError() < Calibration.SHOOTER_ERROR_TOLERANCE;
     }
 
     public void spinUp() {
-
+        pid.setSetpoint(Calibration.SHOOTER_SPIN_SPEED);
     }
 
     public void stop() {
-        // Stops the wheels
+        pid.setSetpoint(0);
     }
 
     public void stopWithDelay() {
-        // Stops the wheels after a certain time interval, settable in Calibration
+        stopping = true;
+        timeout = System.currentTimeMillis() + Calibration.SHOOTER_STOP_TIMEOUT;
     }
 
     public boolean hasFired() {
-        // Uses voltage regulation to monitor whether a ball has gone through
-        // the shooter wheels.
-        return true;
+        return breaker.step();
+    }
+    
+    public void tick() {
+        if (stopping && System.currentTimeMillis() > timeout) {
+            pid.setSetpoint(0);
+            stopping = false;
+        }
     }
 }

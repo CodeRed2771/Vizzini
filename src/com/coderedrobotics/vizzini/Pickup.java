@@ -33,6 +33,7 @@ public class Pickup {
     public void feedIn() {
         frontWheels.set(Calibration.PICKUP_INTAKE_SPEED);
         frontBreaker.reset();
+        frontBreaker.ignoreFor(200);
         pickingUp = true;
     }
     

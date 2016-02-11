@@ -40,7 +40,7 @@ public class Vizzini extends IterativeRobot {
         tankDrive = new TankDrive(new PWMSplitter2X(Wiring.LEFT_DRIVE_MOTOR1, Wiring.LEFT_DRIVE_MOTOR2, false), 
                 new PWMSplitter2X(Wiring.RIGHT_DRIVE_MOTOR1, Wiring.RIGHT_DRIVE_MOTOR2, true));
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
-        shooter = new Shooter();
+        shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
     }
 
     /**
