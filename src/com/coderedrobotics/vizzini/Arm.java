@@ -36,18 +36,15 @@ public class Arm {
         pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort);
         arm = new CANTalon(armMotorPort);
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
-        pidController = new PIDControllerAIAO(3, 0, 30, 0, arm, new PIDOutput() {
+        pidController = new PIDControllerAIAO(8, 0, 10, 0, arm, new PIDOutput() {
             @Override
             public void pidWrite(double output) {                
                 arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
             }
         }, true, "arm");
-//        arm.setPID(.10, 0, .002);
-//        arm.setIZone(0);
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
         arm.configPeakOutputVoltage(12, -12);
-        arm.setVoltageRampRate(12);
         arm.setPosition(0);
 
         targetArmPosition = 0;
@@ -89,8 +86,8 @@ public class Arm {
 
     public void tick() {
 
-        SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
-        SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
+      //  SmartDashboard.putNumber("Arm Position Target", targetArmPosition);
+      // SmartDashboard.putNumber("Arm Encoder Position", arm.getPosition());
 
         pickup.tick();
 
