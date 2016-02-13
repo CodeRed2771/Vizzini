@@ -26,7 +26,14 @@ public class Calibration {
     
     public static double DRIVE_TRAIN_REDUCTION_FACTOR = 0.5;
     
-    public static double SHOOTER_ERROR_TOLERANCE = 10;
-    public static double SHOOTER_SPIN_SPEED = 0;
+    public static double SHOOTER_ERROR_TOLERANCE = 1000; // is sped up
+    public static double SHOOTER_SPIN_SPEED = -32000;
     public static long SHOOTER_STOP_TIMEOUT = 1000;
+    public static double SHOOTER_CURRENT_THRESHOLD = 10;
+    public static double SHOOTER_BALL_ERROR_THRESHOLD = 6000; // error required to autostop
+    public static double SHOOTER_AUTOSTOP_DELAY = 500;
+    public static double SHOOTER_P = -0.0001;
+    public static double SHOOTER_I = -.75;
+    public static double SHOOTER_D = -0.001;
+    public static double SHOOTER_F = -1d / 50000d;
 }

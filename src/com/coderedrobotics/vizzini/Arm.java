@@ -76,6 +76,10 @@ public class Arm {
     public void dropBallInShooter() {
         pickup.dropBallInShooter();
     }
+    
+    public void stopRearPickupWheels() {
+        pickup.stopShooterTriggerWheels();
+    }
 
     public void tick() {
 

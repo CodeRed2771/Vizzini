@@ -107,6 +107,7 @@ public class Vizzini extends IterativeRobot {
             arm.disablePIDController();
         }
         
+        shooter.tick();
         if (keyMap.getFireButton()) {
             shooter.spinUp();
             firing = true;
@@ -117,10 +118,11 @@ public class Vizzini extends IterativeRobot {
             }
         }
         
-        if (firing && shooter.isSpunUp()) {
+        if (firing && shooter.hasBeenSpunUp()) {
             arm.dropBallInShooter();
             if (shooter.hasFired()) {
                 shooter.stop();
+                arm.stopRearPickupWheels();
                 firing = false;
             }
         }

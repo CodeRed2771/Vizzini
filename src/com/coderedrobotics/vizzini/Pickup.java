@@ -14,12 +14,11 @@ public class Pickup {
     // NEED TO ADD VOLTAGE MONITORING CODE TO AUTO STOP WHEELS
     
     private final CurrentBreaker frontBreaker;
-    private final CurrentBreaker rearBreaker;
     private final PWMController frontWheels;
     private final PWMController rearWheels;
     
     private boolean pickingUp = false;
-    private boolean droppingInShooter = false;
+//    private boolean droppingInShooter = false;
     
     public Pickup(int frontWheelPort, int rearWheelPort) {
         frontWheels = new PWMController(frontWheelPort, false); // 1 --> suck in
@@ -28,10 +27,10 @@ public class Pickup {
                 Calibration.PICKUP_FRONT_CURRENT_THRESHOLD, 
                 Calibration.PICKUP_FRONT_CURRENT_TIMEOUT, 
                 Calibration.PICKUP_FRONT_CURRENT_IGNORE_DURATION);
-        rearBreaker = new CurrentBreaker(null, Wiring.PICKUP_REAR_PDP,
-                Calibration.PICKUP_REAR_CURRENT_THRESHOLD, 
-                Calibration.PICKUP_REAR_CURRENT_TIMEOUT, 
-                Calibration.PICKUP_REAR_CURRENT_IGNORE_DURATION);
+//        rearBreaker = new CurrentBreaker(null, Wiring.PICKUP_REAR_PDP,
+//                Calibration.PICKUP_REAR_CURRENT_THRESHOLD, 
+//                Calibration.PICKUP_REAR_CURRENT_TIMEOUT, 
+//                Calibration.PICKUP_REAR_CURRENT_IGNORE_DURATION);
     }
     
     public void feedIn() {
@@ -48,13 +47,16 @@ public class Pickup {
         frontWheels.set(0);
         rearWheels.set(0);
         pickingUp = false;
-        droppingInShooter = false;
+//        droppingInShooter = false;
     }
     
     public void dropBallInShooter() {
-        rearBreaker.reset();
         rearWheels.set(Calibration.PICKUP_SHOOTER_DROP_SPEED);
-        droppingInShooter = true;
+//        droppingInShooter = true;
+    }
+    
+    public void stopShooterTriggerWheels() {
+        rearWheels.set(0);
     }
     
     public void tick() {
@@ -63,9 +65,9 @@ public class Pickup {
             pickingUp = false;
         }
         
-        if (droppingInShooter && rearBreaker.step()) {
-            rearWheels.set(0);
-            droppingInShooter = false;
-        }
+//        if (droppingInShooter && rearBreaker.step()) {
+//            rearWheels.set(0);
+//            droppingInShooter = false;
+//        }
     }
 }
