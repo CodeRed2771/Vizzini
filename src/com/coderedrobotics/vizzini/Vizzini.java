@@ -1,6 +1,5 @@
 package com.coderedrobotics.vizzini;
 
-import com.coderedrobotics.libs.Drive;
 import com.coderedrobotics.libs.RobotLEDs;
 import com.coderedrobotics.libs.PWMSplitter2X;
 import com.coderedrobotics.libs.TankDrive;
@@ -24,7 +23,7 @@ public class Vizzini extends IterativeRobot {
     KeyMap keyMap;
     Arm arm;
     Shooter shooter;
-    Drive tankDrive;
+    Drive drive;
     RobotLEDs leds;
     
     boolean firing = false;
@@ -37,8 +36,7 @@ public class Vizzini extends IterativeRobot {
     public void robotInit() {
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
-        tankDrive = new TankDrive(new PWMSplitter2X(Wiring.LEFT_DRIVE_MOTOR1, Wiring.LEFT_DRIVE_MOTOR2, false), 
-                new PWMSplitter2X(Wiring.RIGHT_DRIVE_MOTOR1, Wiring.RIGHT_DRIVE_MOTOR2, true));
+        drive = new Drive();
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
     }
@@ -79,7 +77,10 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void teleopPeriodic() {
-        tankDrive.setYRot(keyMap.getYDriveAxis(), keyMap.getRotDriveAxis());
+    	drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
+    	
+        //tankDrive.setYRot(keyMap.getYDriveAxis(), keyMap.getRotDriveAxis());
+    	
         if (keyMap.getReverseDriveButton()) {
             keyMap.toggleReverseDrive();
         }

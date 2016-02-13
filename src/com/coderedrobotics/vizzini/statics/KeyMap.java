@@ -108,17 +108,17 @@ public class KeyMap {
     public boolean getFireOverrideButton() {
         return getHID(gamepad1).button(fireOverrideButton);
     }
-
-    public double getYDriveAxis() {
-        return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
-                * (getHID(gamepad1).axis(driveLeftAxis) + getHID(gamepad1).axis(driveRightAxis)) / 2;
+    
+    public double getLeftAxis() {
+    	return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
+                * (getHID(gamepad1).axis(driveLeftAxis));
     }
-
-    public double getRotDriveAxis() {
-        return (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
-                * (getHID(gamepad1).axis(driveLeftAxis) - getHID(gamepad1).axis(driveRightAxis)) / 2;
+    
+    public double getRightAxis() {
+    	return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
+                * (getHID(gamepad1).axis(driveRightAxis));
     }
-
+    
     public double getArmAxis() {
         return getHID(gamepad2).axis(armAxis);
     }
