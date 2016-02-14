@@ -24,13 +24,13 @@ public class Calibration {
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
 
-    public static final double DRIVE_TOP_SPEED = 0;
-    public static final double DRIVE_P = 0;
+    public static final double DRIVE_TOP_SPEED = 13;
+    public static final double DRIVE_P = 1;
     public static final double DRIVE_I = 0;
-    public static final double DRIVE_D = 0;
+    public static final double DRIVE_D = 0.6;
 
-    public static final double ROT_TOP_SPEED = 0;
-    public static final double ROT_P = 0;
+    public static final double ROT_TOP_SPEED = 10;
+    public static final double ROT_P = 1;
     public static final double ROT_I = 0;
     public static final double ROT_D = 0;
     

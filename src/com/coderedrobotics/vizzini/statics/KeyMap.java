@@ -110,13 +110,13 @@ public class KeyMap {
     }
     
     public double getLeftAxis() {
-    	return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
-                * (getHID(gamepad1).axis(driveLeftAxis));
+    	return (reverseDrive ? -(getHID(gamepad1).axis(driveRightAxis)) : (getHID(gamepad1).axis(driveLeftAxis))) *
+    			(reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
     }
     
     public double getRightAxis() {
-    	return (reverseDrive ? -1 : 1) * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1)
-                * (getHID(gamepad1).axis(driveRightAxis));
+    	return (reverseDrive ? -(getHID(gamepad1).axis(driveLeftAxis)) : (getHID(gamepad1).axis(driveRightAxis))) *
+    			(reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
     }
     
     public double getArmAxis() {

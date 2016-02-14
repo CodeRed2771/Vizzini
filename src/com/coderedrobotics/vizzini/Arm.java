@@ -36,7 +36,7 @@ public class Arm {
         pidController = new PIDControllerAIAO(Calibration.ARM_P, Calibration.ARM_I,
                 Calibration.ARM_D, Calibration.ARM_F, arm, (double output) -> {
                     arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
-                }, true, "arm");
+                }, false, "arm");
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
         arm.configPeakOutputVoltage(12, -12);

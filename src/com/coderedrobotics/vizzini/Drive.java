@@ -44,7 +44,7 @@ public class Drive {
 		drivePid = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter(
 			new PIDDerivativeCalculator(
 				new PIDSourceFilter((double value) -> leftEncoder.getRaw() + rightEncoder.getRaw()), 10),
-			(double value) -> value / Calibration.DRIVE_TOP_SPEED), tankDrive.getYPIDOutput(), true, "drive");
+			(double value) -> value / Calibration.DRIVE_TOP_SPEED), tankDrive.getYPIDOutput(), false, "drive");
 		
 		rotPid = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter(
 			new PIDDerivativeCalculator(
@@ -59,6 +59,10 @@ public class Drive {
 		return encoderError;
 	}
 	
+	public void setSquared(double left, double right) {
+		set(Math.abs(left) * left, Math.abs(right) * right);
+	}
+	
 	public void set(double left, double right) {
 		if (encoderError = (rightPwmSplitter2X.getPWMControllerA().encoderHasError()
 				|| leftPwmSplitter2X.getPWMControllerA().encoderHasError())){
@@ -69,7 +73,9 @@ public class Drive {
 			rotPid.setPID(Calibration.ROT_P, Calibration.ROT_I, Calibration.ROT_D, 1);
 		}		
 
+		double rot = (left - right) / 2;
+		
 		drivePid.setSetpoint((left + right) / 2);
-		rotPid.setSetpoint((left - right) / 2);
+		rotPid.setSetpoint(Math.abs(Math.pow(Math.abs(rot), (1 - Math.abs((left + right) / 2)) * 0.9)) * rot);
 	}
 }
