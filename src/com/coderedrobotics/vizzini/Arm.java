@@ -1,6 +1,7 @@
 package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.PIDControllerAIAO;
+import com.coderedrobotics.libs.PIDSourceFilter;
 import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
@@ -19,7 +20,6 @@ import edu.wpi.first.wpilibj.PIDOutput;
  */
 public class Arm {
 
-    // will need to add limit switches and an encoder (maybe)
     private final CANTalon arm;
     private PIDControllerAIAO pidController;
     private final Pickup pickup;
@@ -32,14 +32,15 @@ public class Arm {
     public Arm(int armMotorPort, int pickupFrontMotorPort, int pickupRearMotorPort) {
         pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort);
         arm = new CANTalon(armMotorPort);
+       
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
         pidController = new PIDControllerAIAO(Calibration.ARM_P, Calibration.ARM_I,
-                Calibration.ARM_D, Calibration.ARM_F, arm, (double output) -> {
-                    arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : output);
+                Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.getEncPosition()), (double output) -> {
+                    arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : -output);
                 }, false, "arm");
 
-        arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-        arm.configPeakOutputVoltage(12, -12);
+        arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);  // why Relative and not absolute?
+        arm.configPeakOutputVoltage(6, -6);  // I reduced these from 12 until we resolve the weird problems 2/17/16 DVV
         arm.setPosition(0);
     }
 
@@ -105,7 +106,7 @@ public class Arm {
         if (!isCalibrated || recalibrate) {
             arm.changeControlMode(TalonControlMode.PercentVbus);
             isCalibrating = true;
-            arm.set(Calibration.ARM_CALIBRATION_MOTOR_SPEED); // start the arm in downward motion
+            arm.set(-Calibration.ARM_CALIBRATION_MOTOR_SPEED); // start the arm in downward motion
         }
     }
 }
