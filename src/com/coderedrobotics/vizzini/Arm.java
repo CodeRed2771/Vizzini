@@ -35,9 +35,9 @@ public class Arm {
        
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
         pidController = new PIDControllerAIAO(Calibration.ARM_P, Calibration.ARM_I,
-                Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.getEncPosition()), (double output) -> {
+                Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.pidGet()), (double output) -> {
                     arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : -output);
-                }, false, "arm");
+                }, true, "arm");
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);  // why Relative and not absolute?
         arm.configPeakOutputVoltage(6, -6);  // I reduced these from 12 until we resolve the weird problems 2/17/16 DVV

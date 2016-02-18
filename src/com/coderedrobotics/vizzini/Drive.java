@@ -49,7 +49,7 @@ public class Drive {
 		rotPid = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter(
 			new PIDDerivativeCalculator(
 				new PIDSourceFilter((double value) -> leftEncoder.getRaw() - rightEncoder.getRaw()), 10),
-			(double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), true, "rot");
+			(double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), false, "rot");
 		
 		drivePid.enable();
 		rotPid.enable();
