@@ -51,7 +51,7 @@ public class Arm {
 
         timePassed = Math.min(60, timePassed);
 
-        pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
+        pidController.setSetpoint(Math.max(Calibration.ARM_MIN_SETPOINT, Math.min(Calibration.ARM_MAX_SETPOINT, pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
     }
 
     public void gotoShootPosition() {

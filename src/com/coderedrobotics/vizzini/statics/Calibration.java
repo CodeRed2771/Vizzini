@@ -25,6 +25,9 @@ public class Calibration {
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
 
+    public static final double ARM_MIN_SETPOINT = 0;
+    public static final double ARM_MAX_SETPOINT = 2.4;
+
     public static final double DRIVE_TOP_SPEED = 13;
     public static final double DRIVE_P = 1;
     public static final double DRIVE_I = 0;
