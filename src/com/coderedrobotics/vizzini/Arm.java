@@ -56,8 +56,13 @@ public class Arm {
 
     public void gotoShootPosition() {
         // Uses PID Controller to move arm to position set in Calibration
+    	arm.setPosition(Calibration.ARM_SHOOT_POSITION);
     }
 
+    public void gotoPickupPosition() {
+    	arm.setPosition(0);
+    }
+    
     public void disablePIDController() {
         // Full manual.  In case of encoder failure.
     }
