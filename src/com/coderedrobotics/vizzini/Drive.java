@@ -29,16 +29,15 @@ public class Drive {
         leftEncoder = new Encoder(Wiring.LEFT_ENCODER_A, Wiring.LEFT_ENCODER_B);
         rightEncoder = new Encoder(Wiring.RIGHT_ENCODER_A, Wiring.RIGHT_ENCODER_B);
 
-        tankDrive
-                = new TankDrive(
-                        leftPwmSplitter2X = new PWMSplitter2X(
-                                Wiring.LEFT_DRIVE_MOTOR1,
-                                Wiring.LEFT_DRIVE_MOTOR2,
-                                false, leftEncoder),
-                        rightPwmSplitter2X = new PWMSplitter2X(
-                                Wiring.RIGHT_DRIVE_MOTOR1,
-                                Wiring.RIGHT_DRIVE_MOTOR2,
-                                true, rightEncoder));
+        tankDrive = new TankDrive(
+                leftPwmSplitter2X = new PWMSplitter2X(
+                        Wiring.LEFT_DRIVE_MOTOR1,
+                        Wiring.LEFT_DRIVE_MOTOR2,
+                        false, leftEncoder),
+                rightPwmSplitter2X = new PWMSplitter2X(
+                        Wiring.RIGHT_DRIVE_MOTOR1,
+                        Wiring.RIGHT_DRIVE_MOTOR2,
+                        true, rightEncoder));
 
         drivePid = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter(
                 new PIDDerivativeCalculator(
@@ -48,7 +47,7 @@ public class Drive {
         rotPid = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter(
                 new PIDDerivativeCalculator(
                         new PIDSourceFilter((double value) -> leftEncoder.getRaw() - rightEncoder.getRaw()), 10),
-                (double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), false, "rot");
+                (double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), true, "rot");
 
         drivePid.enable();
         rotPid.enable();
@@ -78,8 +77,8 @@ public class Drive {
 //        rotPid.setSetpoint(Math.abs(Math.pow(Math.abs(rot), (1 - Math.abs((left + right) / 2)) * 0.9)) * rot);
         rotPid.setSetpoint(rot);
     }
-    
+
     public void disablePID() {
-        
+
     }
 }

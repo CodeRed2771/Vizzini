@@ -19,15 +19,14 @@ public class Vizzini extends IterativeRobot {
     // WE WILL NEED A PLACE TRACKER.  
     // ALSO ANOTHER THING TO CONSIDER IS THAT AUTONOMOUS SELECTION IS GOING
     // TO BE VERY COMPLEX, WE WILL NEED TO WORK ON THAT.
-    
     KeyMap keyMap;
     Arm arm;
     Shooter shooter;
     Drive drive;
     RobotLEDs leds;
-    
+
     boolean firing = false;
-    
+
     /**
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
@@ -63,7 +62,7 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
-    	arm.tick();
+        arm.tick();
     }
 
     @Override
@@ -78,8 +77,8 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void teleopPeriodic() {
-    	drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
-    	
+        drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
+
         if (keyMap.getReverseDriveButton()) {
             keyMap.toggleReverseDrive();
         }
@@ -91,7 +90,7 @@ public class Vizzini extends IterativeRobot {
         }
 
         if (keyMap.getFeedInButton()) {
-        	arm.gotoPickupPosition();
+            arm.gotoPickupPosition();
             arm.feedIn();
             arm.gotoPickupPosition();
         }
@@ -102,17 +101,17 @@ public class Vizzini extends IterativeRobot {
             shooter.stop();
             arm.pickupAllStop();
         }
-        
+
         arm.move(keyMap.getArmAxis());
         arm.tick();
-        
+
         if (keyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
         }
         if (keyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
         }
-        
+
         shooter.tick();
         if (keyMap.getFireButton()) {
             shooter.spinUp();
@@ -134,8 +133,7 @@ public class Vizzini extends IterativeRobot {
         if (keyMap.getOverrideShooterPIDButton()) {
             shooter.enableOverrideMode();
         }
-      
-        
+
         if (keyMap.getSingleControllerToggleButton()) {
             keyMap.toggleSingleControllerMode();
         }
@@ -153,14 +151,14 @@ public class Vizzini extends IterativeRobot {
     public void testPeriodic() {
 
     }
-    
+
     @Override
     public void disabledInit() {
-        
+
     }
-    
+
     @Override
     public void disabledPeriodic() {
-        
+
     }
 }

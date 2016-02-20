@@ -27,14 +27,14 @@ public class Arm {
     private boolean overrideEnabled = false;
 
     public Arm(int armMotorPort, int pickupFrontMotorPort, int pickupRearMotorPort) {
-        pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort);
+        pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort, (Object o) -> gotoRestingPosition());
         arm = new CANTalon(armMotorPort);
 
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
         pidController = new PIDControllerAIAO(Calibration.ARM_P, Calibration.ARM_I,
                 Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.pidGet()), (double output) -> {
                     arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : -output);
-                }, true, "arm");
+                }, false, "arm");
 
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);  // why Relative and not absolute?
         arm.configPeakOutputVoltage(12, -12);  // I reduced these from 12 until we resolve the weird problems 2/17/16 DVV
@@ -49,7 +49,9 @@ public class Arm {
 
             timePassed = Math.min(60, timePassed);
 
-            pidController.setSetpoint(Math.max(Calibration.ARM_MIN_SETPOINT, Math.min(Calibration.ARM_MAX_SETPOINT, pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
+            pidController.setSetpoint(Math.min(Calibration.ARM_MIN_SETPOINT, 
+                    Math.max(Calibration.ARM_MAX_SETPOINT, 
+                            pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
         } else {
             arm.set(speed);
         }
@@ -61,6 +63,11 @@ public class Arm {
 
     public void gotoPickupPosition() {
         pidController.setSetpoint(0);
+    }
+    
+    public Object gotoRestingPosition() {
+        pidController.setSetpoint(-.4);
+        return null;
     }
     
     public void disablePIDController() {

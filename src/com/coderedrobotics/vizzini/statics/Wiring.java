@@ -27,14 +27,14 @@ public class Wiring {
     
     // DIGITAL INPUT
     public static final int ARM_LIMIT_SWITCH = 0;
-    public static final int LEFT_ENCODER_A = 4;
-    public static final int LEFT_ENCODER_B = 3;
-    public static final int RIGHT_ENCODER_A = 2;
-    public static final int RIGHT_ENCODER_B = 1;
+    public static final int LEFT_ENCODER_A = 2;
+    public static final int LEFT_ENCODER_B = 1;
+    public static final int RIGHT_ENCODER_A = 3;
+    public static final int RIGHT_ENCODER_B = 4;
 
     // ANALOG INPUT
     
     // Relays
-    public static final int RED_AND_GREEN_LEDS = 0;
-    public static final int BLUE_LEDS = 1;
+    public static final int RED_AND_GREEN_LEDS = 1;
+    public static final int BLUE_LEDS = 0;
 }
