@@ -49,8 +49,7 @@ public class Arm {
 
             timePassed = Math.min(60, timePassed);
 
-<<<<<<< HEAD
-            pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
+            pidController.setSetpoint(Math.max(Calibration.ARM_MIN_SETPOINT, Math.min(Calibration.ARM_MAX_SETPOINT, pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
         } else {
             arm.set(speed);
         }
@@ -62,18 +61,6 @@ public class Arm {
 
     public void gotoPickupPosition() {
         pidController.setSetpoint(0);
-=======
-        pidController.setSetpoint(Math.max(Calibration.ARM_MIN_SETPOINT, Math.min(Calibration.ARM_MAX_SETPOINT, pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
-    }
-
-    public void gotoShootPosition() {
-        // Uses PID Controller to move arm to position set in Calibration
-    	arm.setPosition(Calibration.ARM_SHOOT_POSITION);
->>>>>>> ded95a3e182c8685e84aa86dd65c6a80f5d8c58a
-    }
-
-    public void gotoPickupPosition() {
-    	arm.setPosition(0);
     }
     
     public void disablePIDController() {
