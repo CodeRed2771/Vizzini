@@ -1,6 +1,7 @@
 package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.CurrentBreaker;
+import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
@@ -60,6 +61,7 @@ public class Pickup {
     }
     
     public void tick() {
+        Logger.getInstance().log(String.valueOf(frontBreaker.getCurrent()));
         if (pickingUp && frontBreaker.step()) {
             frontWheels.set(0);
             pickingUp = false;

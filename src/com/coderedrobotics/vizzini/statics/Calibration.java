@@ -19,6 +19,7 @@ public class Calibration {
     
     public static final double ARM_SETPOINT_INCREMENT = .0007;
     public static final double ARM_CALIBRATION_MOTOR_SPEED = .3;
+    public static final double ARM_SHOOT_POSITION = 1.455810546875;
     public static final double ARM_P = 8;
     public static final double ARM_I = 0;
     public static final double ARM_D = 10;

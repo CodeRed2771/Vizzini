@@ -79,23 +79,26 @@ public class Vizzini extends IterativeRobot {
     public void teleopPeriodic() {
     	drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
     	
-        //tankDrive.setYRot(keyMap.getYDriveAxis(), keyMap.getRotDriveAxis());
-    	
         if (keyMap.getReverseDriveButton()) {
             keyMap.toggleReverseDrive();
         }
         if (keyMap.getReduceSpeedButton()) {
             keyMap.toggleReduceSpeed();
         }
+        if (keyMap.getOverrideDrivePIDButton()) {
+            drive.disablePID();
+        }
 
         if (keyMap.getFeedInButton()) {
             arm.feedIn();
+            arm.gotoPickupPosition();
         }
         if (keyMap.getFeedOutButton()) {
             arm.feedOut();
         }
         if (keyMap.getFeedStopButton()) {
-            arm.feedStop();
+            shooter.stop();
+            arm.pickupAllStop();
         }
         
         arm.move(keyMap.getArmAxis());
@@ -118,7 +121,6 @@ public class Vizzini extends IterativeRobot {
                 firing = false;
             }
         }
-        
         if (firing && shooter.hasBeenSpunUp()) {
             arm.dropBallInShooter();
             if (shooter.hasFired()) {
@@ -127,6 +129,10 @@ public class Vizzini extends IterativeRobot {
                 firing = false;
             }
         }
+        if (keyMap.getOverrideShooterPIDButton()) {
+            shooter.enableOverrideMode();
+        }
+      
         
         if (keyMap.getSingleControllerToggleButton()) {
             keyMap.toggleSingleControllerMode();

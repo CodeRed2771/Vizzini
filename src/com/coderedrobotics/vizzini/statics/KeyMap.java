@@ -34,7 +34,9 @@ public class KeyMap {
     private final HID.Button feedOutButton = LogitechF310.B;
     private final HID.Button feedStopButton = LogitechF310.X;
     private final HID.Button gotoShooterPositionButton = LogitechF310.Y;
-    private final HID.Button overrideArmPIDButton = LogitechF310.BUMPER_LEFT;
+    private final HID.Button overrideArmPIDButton = LogitechF310.DPAD_UP;
+    private final HID.Button overrideDrivePIDButton = LogitechF310.DPAD_LEFT;
+    private final HID.Button overrideShooterPIDButton = LogitechF310.DPAD_DOWN;
     private final HID.Axis armAxis = LogitechF310.STICK_LEFT_Y;
 
     // BUTTON STATES
@@ -120,7 +122,7 @@ public class KeyMap {
     }
     
     public double getArmAxis() {
-        return getHID(gamepad2).axis(armAxis);
+        return -getHID(gamepad2).axis(armAxis);
     }
 
     public boolean getFeedInButton() {
@@ -141,5 +143,13 @@ public class KeyMap {
 
     public boolean getOverrideArmPIDButton() {
         return getHID(gamepad2).button(overrideArmPIDButton);
+    }
+    
+    public boolean getOverrideDrivePIDButton() {
+        return getHID(gamepad2).button(overrideDrivePIDButton);
+    }
+    
+    public boolean getOverrideShooterPIDButton() {
+        return getHID(gamepad2).button(overrideShooterPIDButton);
     }
 }

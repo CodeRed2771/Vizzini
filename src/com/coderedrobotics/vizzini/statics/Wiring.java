@@ -17,9 +17,9 @@ public class Wiring {
     public static final int SHOOTER_MOTOR_2 = 7;
     
     // MOTOR CONTROLLER PDP PORTS
-    public static final int PICKUP_FRONT_PDP = 14;
-    public static final int PICKUP_REAR_PDP = 13;
-    public static final int SHOOTER_PDP = 0;
+    public static final int PICKUP_FRONT_PDP = 10;
+    public static final int PICKUP_REAR_PDP = 11;
+    public static final int SHOOTER_PDP = 12;
 
     // CAN MOTOR CONTROLLERS
     public static final int ARM_MOTOR = 1;  

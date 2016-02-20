@@ -85,6 +85,10 @@ public class Shooter {
             stopping = false;
         }
     }
+    
+    public void enableOverrideMode() {
+        
+    }
 
     private class AutoStop {
 
