@@ -8,7 +8,7 @@ public class Calibration {
     
     public static final double PICKUP_INTAKE_SPEED = .75;
     public static final double PICKUP_OUTPUT_SPEED  = 1;
-    public static final double PICKUP_SHOOTER_DROP_SPEED = 1;
+    public static final double PICKUP_SHOOTER_DROP_SPEED = .5;
      
     public static final double PICKUP_FRONT_CURRENT_THRESHOLD = 6;
     public static final int PICKUP_FRONT_CURRENT_TIMEOUT = 0;
@@ -24,6 +24,9 @@ public class Calibration {
     public static final double ARM_I = 0;
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
+
+    public static final double ARM_MIN_SETPOINT = 0;
+    public static final double ARM_MAX_SETPOINT = 2.4;
 
     public static final double DRIVE_TOP_SPEED = 13;
     public static final double DRIVE_P = 1;

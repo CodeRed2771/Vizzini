@@ -70,6 +70,7 @@ public class Vizzini extends IterativeRobot {
     public void teleopInit() {
         leds.activateTeleop();
         arm.calibrate(false);
+        shooter.stop();
     }
 
     /**
@@ -90,6 +91,7 @@ public class Vizzini extends IterativeRobot {
         }
 
         if (keyMap.getFeedInButton()) {
+        	arm.gotoPickupPosition();
             arm.feedIn();
             arm.gotoPickupPosition();
         }
