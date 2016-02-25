@@ -57,6 +57,14 @@ public class Drive {
         return encoderError;
     }
 
+    public boolean leftEncoderHasError() {
+        return leftPwmSplitter2X.getPWMControllerA().encoderHasError();
+    }
+
+    public boolean rightEncoderHasError() {
+        return rightPwmSplitter2X.getPWMControllerA().encoderHasError();
+    }
+
     public void setSquared(double left, double right) {
         set(Math.abs(left) * left, Math.abs(right) * right);
     }
@@ -67,15 +75,15 @@ public class Drive {
 //            drivePid.setPID(0, 0, 0, 1);
 //            rotPid.setPID(0, 0, 0, 1);
 //        } else {
-            drivePid.setPID(Calibration.DRIVE_P, Calibration.DRIVE_I, Calibration.DRIVE_D, 1);
-            rotPid.setPID(Calibration.ROT_P, Calibration.ROT_I, Calibration.ROT_D, 1);
+        drivePid.setPID(Calibration.DRIVE_P, Calibration.DRIVE_I, Calibration.DRIVE_D, 1);
+        rotPid.setPID(Calibration.ROT_P, Calibration.ROT_I, Calibration.ROT_D, 1);
 //        }
 
         double rot = (left - right) / 2;
 
         drivePid.setSetpoint((left + right) / 2);
-//        rotPid.setSetpoint(Math.abs(Math.pow(Math.abs(rot), (1 - Math.abs((left + right) / 2)) * 0.9)) * rot);
-        rotPid.setSetpoint(rot);
+        rotPid.setSetpoint(Math.abs(Math.pow(Math.abs(rot), (1 - Math.abs((left + right) / 2)) * 0.9)) * rot);
+//        rotPid.setSetpoint(rot);
     }
 
     public void disablePID() {

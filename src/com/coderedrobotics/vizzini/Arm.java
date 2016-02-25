@@ -1,5 +1,6 @@
 package com.coderedrobotics.vizzini;
 
+import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDSourceFilter;
 import com.coderedrobotics.vizzini.statics.Calibration;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 public class Arm {
 
     private final CANTalon arm;
-    private PIDControllerAIAO pidController;
+    private final PIDControllerAIAO pidController;
     private final Pickup pickup;
     private final DigitalInput limitSwitch;
     public long lastArmChange = 0;
@@ -35,7 +36,8 @@ public class Arm {
                 Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.pidGet()), (double output) -> {
                     arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : -output);
                 }, false, "arm");
-
+        pidController.setInputRange(Calibration.ARM_MIN_SETPOINT, Calibration.ARM_MAX_SETPOINT);
+        pidController.setAbsoluteTolerance(Calibration.ARM_PID_TEST_TOLERANCE);
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);  // why Relative and not absolute?
         arm.configPeakOutputVoltage(12, -12);  // I reduced these from 12 until we resolve the weird problems 2/17/16 DVV
         arm.setPosition(0);
@@ -49,9 +51,7 @@ public class Arm {
 
             timePassed = Math.min(60, timePassed);
 
-            pidController.setSetpoint(Math.min(Calibration.ARM_MIN_SETPOINT, 
-                    Math.max(Calibration.ARM_MAX_SETPOINT, 
-                            pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed))));
+            pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
         } else {
             arm.set(speed);
         }
@@ -93,7 +93,16 @@ public class Arm {
     public void stopRearPickupWheels() {
         pickup.stopShooterTriggerWheels();
     }
+    
+    public boolean isCalibrated() {
+        return isCalibrated;
+    }
 
+    public boolean passedLimitSwitchTest() {
+        Logger.getInstance().log(""+pidController.getError());
+        return isCalibrated && !limitSwitch.get() && Math.abs(pidController.getError()) < 0.2;
+    }
+    
     public void tick() {
 
         //  SmartDashboard.putNumber("Arm Position Target", targetArmPosition);

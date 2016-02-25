@@ -1,11 +1,11 @@
 package com.coderedrobotics.vizzini;
 
+import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.RobotLEDs;
-import com.coderedrobotics.libs.PWMSplitter2X;
-import com.coderedrobotics.libs.TankDrive;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -16,9 +16,6 @@ import com.coderedrobotics.vizzini.statics.Wiring;
  */
 public class Vizzini extends IterativeRobot {
 
-    // WE WILL NEED A PLACE TRACKER.  
-    // ALSO ANOTHER THING TO CONSIDER IS THAT AUTONOMOUS SELECTION IS GOING
-    // TO BE VERY COMPLEX, WE WILL NEED TO WORK ON THAT.
     KeyMap keyMap;
     Arm arm;
     Shooter shooter;
@@ -26,6 +23,9 @@ public class Vizzini extends IterativeRobot {
     RobotLEDs leds;
 
     boolean firing = false;
+    private int testStage = 0;
+    private long testTimer = 0;
+    private boolean hasError = false;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -139,9 +139,15 @@ public class Vizzini extends IterativeRobot {
         }
     }
 
+    PowerDistributionPanel pdp;
+
     @Override
     public void testInit() {
-
+        testStage = 0;
+        testTimer = System.currentTimeMillis() + 1000;
+        leds.activateTest();
+        pdp = new PowerDistributionPanel();
+        Logger.getInstance().log("test start");
     }
 
     /**
@@ -149,12 +155,139 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void testPeriodic() {
-
+//        arm.tick();
+//        switch (testStage) {
+//            case 0: // Drive Left
+//                drive.set(0.5, 0);
+//                if (drive.leftEncoderHasError()) {
+//                    leds.setColor(RobotLEDs.Color.RED, 2);
+//                    hasError = true;
+//                }
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 1000;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                }
+//                break;
+//            case 1: // Drive Right
+//                drive.set(0, 0.5);
+//                if (drive.rightEncoderHasError()) {
+//                    leds.setColor(RobotLEDs.Color.RED, 2);
+//                    hasError = true;
+//                }
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 12000;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    arm.calibrate(true);
+//                    drive.set(0, 0);
+//                }
+//                break;
+//            case 2: // Arm
+//                if (arm.isCalibrated()) {
+//                    arm.gotoRestingPosition();
+//
+//                    if (arm.passedLimitSwitchTest()) {
+//                        testStage++;
+//                        testStage++;
+//                        testTimer = System.currentTimeMillis() + 2000;
+//                        leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                        Logger.getInstance().log("2 passed");
+//                    }
+//                } else if (System.currentTimeMillis() > testTimer) {
+//                    testStage++;
+//                    hasError = true;
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                }
+//                break;
+//            case 3:
+//                leds.setColor(RobotLEDs.Color.RED, 2);
+//                hasError = true;
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 2000;
+//                }
+//                break;
+//            case 4: // Shooter 
+//                shooter.spinUp();
+//                if (shooter.isSpunUp()) {
+//                    shooter.stop();
+//                    testStage++;
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    Logger.getInstance().log("3 passed");
+//                } else if (System.currentTimeMillis() > testTimer) {
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    hasError = true;
+//                    testStage++;
+//                }
+//                break;
+//            case 5:
+//                leds.setColor(RobotLEDs.Color.RED, 2);
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                }
+//                break;
+//            case 6: // Pickup Front (Semi-Manual)
+//                arm.feedIn();
+//                if (pdp.getCurrent(Wiring.PICKUP_FRONT_PDP) > 2) {
+//                    testStage++;
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    arm.pickupAllStop();
+//                    Logger.getInstance().log("4 passed");
+//                } else if (System.currentTimeMillis() > testTimer) {
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    hasError = true;
+//                    testStage++;
+//                }
+//                break;
+//            case 7:
+//                leds.setColor(RobotLEDs.Color.RED, 2);
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    arm.pickupAllStop();
+//                }
+//                break;
+//            case 8: // Pickup Rear (Semi-Manual)
+//                arm.dropBallInShooter();
+//                if (pdp.getCurrent(Wiring.PICKUP_REAR_PDP) > 2) {
+//                    testStage++;
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    arm.stopRearPickupWheels();
+//                    Logger.getInstance().log("5 passed");
+//                } else if (System.currentTimeMillis() > testTimer) {
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    hasError = true;
+//                }
+//                break;
+//            case 9:
+//                leds.setColor(RobotLEDs.Color.RED, 2);
+//                if (System.currentTimeMillis() > testTimer) {
+//                    testStage++;
+//                    testTimer = System.currentTimeMillis() + 1500;
+//                    leds.setColor(RobotLEDs.Color.YELLOW, 2);
+//                    arm.stopRearPickupWheels();
+//                }
+//                break;
+//            case 9: // Done
+//                if (hasError) {
+//                    leds.setColor(RobotLEDs.Color.RED, 2);
+//                } else {
+//                    leds.setColor(RobotLEDs.Color.GREEN, 1);
+//                }
+//                break;
+//        }
     }
 
     @Override
     public void disabledInit() {
-
     }
 
     @Override

@@ -64,7 +64,7 @@ public class Pickup {
     }
     
     public void tick() {
-        Logger.getInstance().log(String.valueOf(frontBreaker.getCurrent()));
+//        Logger.getInstance().log(String.valueOf(frontBreaker.getCurrent()));
         if (pickingUp && frontBreaker.step()) {
             frontWheels.set(0);
             pickingUp = false;
