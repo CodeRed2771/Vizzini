@@ -20,6 +20,7 @@ public class Vizzini extends IterativeRobot {
     Arm arm;
     Shooter shooter;
     Drive drive;
+  //  DriveAuto driveAuto;
     RobotLEDs leds;
 
     boolean firing = false;
@@ -36,6 +37,7 @@ public class Vizzini extends IterativeRobot {
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
         drive = new Drive();
+      // 	driveAuto = new DriveAuto(drive.getLeftEncoderObject(), drive.getRightEncoderObject(), drive.getLeftPWM(), drive.getRightPWM());
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
     }
@@ -53,8 +55,10 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void autonomousInit() {
-        leds.activateAutonomous();
-        arm.calibrate(true);
+       // leds.activateAutonomous();
+       // arm.calibrate(true);
+     //   driveAuto.resetEncoders();
+    //	driveAuto.driveInches(24, 75);
     }
 
     /**
@@ -62,7 +66,8 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
-        arm.tick();
+      //  arm.tick();
+      //driveAuto.showEncoderValues();
     }
 
     @Override
@@ -70,6 +75,7 @@ public class Vizzini extends IterativeRobot {
         leds.activateTeleop();
         arm.calibrate(false);
         shooter.stop();
+        arm.pickupAllStop();
     }
 
     /**
