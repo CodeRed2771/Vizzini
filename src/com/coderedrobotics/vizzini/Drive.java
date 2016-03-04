@@ -78,11 +78,11 @@ public class Drive {
     public Encoder getRightEncoderObject() {
     	return rightEncoder;
     }
-    public PWMController getLeftPWM() {
-    	return rightPwmSplitter2X.getPWMControllerA();
+    public PWMSplitter2X getLeftPWM() {
+    	return rightPwmSplitter2X;
     }
-    public PWMController getRightPWM() {
-    	return leftPwmSplitter2X.getPWMControllerA();
+    public PWMSplitter2X getRightPWM() {
+    	return leftPwmSplitter2X;
     }
 
     public void set(double left, double right) {

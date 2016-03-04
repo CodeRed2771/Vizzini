@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -20,7 +21,7 @@ public class Vizzini extends IterativeRobot {
     Arm arm;
     Shooter shooter;
     Drive drive;
-  //  DriveAuto driveAuto;
+    DriveAuto driveAuto;
     RobotLEDs leds;
 
     boolean firing = false;
@@ -37,7 +38,7 @@ public class Vizzini extends IterativeRobot {
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
         drive = new Drive();
-      // 	driveAuto = new DriveAuto(drive.getLeftEncoderObject(), drive.getRightEncoderObject(), drive.getLeftPWM(), drive.getRightPWM());
+       	driveAuto = new DriveAuto(drive.getLeftEncoderObject(), drive.getRightEncoderObject(), drive.getLeftPWM(), drive.getRightPWM());
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
     }
@@ -57,8 +58,8 @@ public class Vizzini extends IterativeRobot {
     public void autonomousInit() {
        // leds.activateAutonomous();
        // arm.calibrate(true);
-     //   driveAuto.resetEncoders();
-    //	driveAuto.driveInches(24, 75);
+        driveAuto.resetEncoders();
+    	
     }
 
     /**
@@ -66,9 +67,17 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void autonomousPeriodic() {
+    	driveAuto.driveInches(24,.5);
       //  arm.tick();
-      //driveAuto.showEncoderValues();
-    }
+      driveAuto.showEncoderValues();
+      if (driveAuto.hasArrived()) {
+    	  driveAuto.stop();
+    	  SmartDashboard.putString("Drive Target: ", "Arrived");
+      } else {
+    	  driveAuto.updateDriveStatus();
+		  SmartDashboard.putString("Drive Target: ", "Driving");
+	      }
+	}
 
     @Override
     public void teleopInit() {
