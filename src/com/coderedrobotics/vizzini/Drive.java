@@ -52,8 +52,19 @@ public class Drive {
                         new PIDSourceFilter((double value) -> leftEncoder.getRaw() - rightEncoder.getRaw()), 10),
                 (double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), true, "rot");
 
-        drivePid.enable();
-        rotPid.enable();
+        setPIDstate(false);
+
+    }
+    
+    public void setPIDstate(boolean isEnabled) {
+    	if (isEnabled) {
+    		drivePid.enable();
+    		rotPid.enable();
+    	} else
+    	{
+    		drivePid.disable();
+     		rotPid.disable();
+    	}
     }
 
     public boolean encoderHasError() {
@@ -79,10 +90,10 @@ public class Drive {
     	return rightEncoder;
     }
     public PWMSplitter2X getLeftPWM() {
-    	return rightPwmSplitter2X;
+    	return leftPwmSplitter2X;
     }
     public PWMSplitter2X getRightPWM() {
-    	return leftPwmSplitter2X;
+    	return rightPwmSplitter2X;
     }
 
     public void set(double left, double right) {

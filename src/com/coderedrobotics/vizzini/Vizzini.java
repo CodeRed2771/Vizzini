@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -23,6 +24,13 @@ public class Vizzini extends IterativeRobot {
     Drive drive;
     DriveAuto driveAuto;
     RobotLEDs leds;
+    PowerDistributionPanel pdp;
+    SendableChooser chooser;
+    final String lowbarAuto = "Low Bar";
+    final String touchAuto = "Touch Defense Auto";
+    String autoSelected;
+    
+    int autoStep = 0;
 
     boolean firing = false;
     private int testStage = 0;
@@ -41,50 +49,23 @@ public class Vizzini extends IterativeRobot {
        	driveAuto = new DriveAuto(drive.getLeftEncoderObject(), drive.getRightEncoderObject(), drive.getLeftPWM(), drive.getRightPWM());
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
+
+        chooser = new SendableChooser();
+        chooser.addDefault("Touch Defense Auto", touchAuto);
+        chooser.addObject("Low Bar Auto", lowbarAuto);
+        SmartDashboard.putData("Auto choices", chooser);
+
     }
 
-    /**
-     * This autonomous (along with the chooser code above) shows how to select
-     * between different autonomous modes using the dashboard. The sendable
-     * chooser code works with the Java SmartDashboard. If you prefer the
-     * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-     * getString line to get the auto name from the text box below the Gyro
-     *
-     * You can add additional auto modes by adding additional comparisons to the
-     * switch structure below with additional strings. If using the
-     * SendableChooser make sure to add them to the chooser code above as well.
-     */
-    @Override
-    public void autonomousInit() {
-       // leds.activateAutonomous();
-       // arm.calibrate(true);
-        driveAuto.resetEncoders();
-    	
-    }
-
-    /**
-     * This function is called periodically during autonomous
-     */
-    @Override
-    public void autonomousPeriodic() {
-    	driveAuto.driveInches(24,.5);
-      //  arm.tick();
-      driveAuto.showEncoderValues();
-      if (driveAuto.hasArrived()) {
-    	  driveAuto.stop();
-    	  SmartDashboard.putString("Drive Target: ", "Arrived");
-      } else {
-    	  driveAuto.updateDriveStatus();
-		  SmartDashboard.putString("Drive Target: ", "Driving");
-	      }
-	}
-
+  
     @Override
     public void teleopInit() {
         leds.activateTeleop();
         arm.calibrate(false);
         shooter.stop();
         arm.pickupAllStop();
+        driveAuto.setPIDstate(false);
+        drive.setPIDstate(true);
     }
 
     /**
@@ -154,8 +135,126 @@ public class Vizzini extends IterativeRobot {
         }
     }
 
-    PowerDistributionPanel pdp;
+    
+    @Override
+    public void autonomousInit() {
+       // leds.activateAutonomous();
+       // arm.calibrate(true);
+    	driveAuto.setPIDstate(true);
+        driveAuto.resetEncoders();
 
+        autoSelected = (String) chooser.getSelected();
+		SmartDashboard.putString("Auto selected: ", autoSelected);
+		
+    	autoStep = 0;
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+    	
+    	SmartDashboard.putNumber("Auto Step: ", autoStep);
+    	
+    	switch(autoSelected) {
+    	
+    	case touchAuto:
+    		switch (autoStep) {
+		    	case 0: 
+		    		driveAuto.driveInches(36, .5);
+		    		autoStep++;
+		    		break;
+		    	case 1:
+		    		 if (driveAuto.hasArrived()) {
+		    	    	  driveAuto.stop();
+		    	    	  SmartDashboard.putString("Drive Target: ", "Arrived");
+		    	  			autoStep++;
+		
+		    	      } else {
+		    	    	  driveAuto.updateDriveStatus();
+		    			  SmartDashboard.putString("Drive Target: ", "Driving");
+		    		      }
+		        		break;
+		    	case 3:
+		    		SmartDashboard.putString("Autonomous Status", "Completed");
+		    }
+    		break;
+    		
+    	case lowbarAuto:
+    		switch (autoStep) {
+	    	case 0: 
+	    		driveAuto.driveInches(-12, .5); // backup off line
+	    		autoStep++;
+	    		break;
+	    	case 1:
+	    		if (driveAuto.hasArrived()) {
+	    	    	  //driveAuto.stop();
+	    	    	  SmartDashboard.putString("Auto Step Completed: ", "Drive back 12");
+	    	    	  autoStep++;
+	    	    } 
+	        	break;
+	    	case 2:
+	       		driveAuto.turnDegrees(90, .6); // turn towards low bar
+	    		autoStep++;
+	    		break;
+	    	case 3:
+	    		if (driveAuto.hasArrived()) {
+	    			//driveAuto.stop();
+	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face wall");
+	    	  		autoStep++;
+	    	    } 
+	        	break;
+	    	case 4:
+	       		driveAuto.driveInches(36, .5); // drive towards wall by low bar
+	    		autoStep++;
+	    		break;
+	    	case 5:
+	    		if (driveAuto.hasArrived()) {
+	    			//driveAuto.stop();
+	    			SmartDashboard.putString("Auto Step Completed: ", "Drive towards wall");
+	    	  		autoStep++;
+	    	    } 
+	        	break;
+	    	case 6:
+	       		driveAuto.turnDegrees(90, .6); // turn to face the low bar
+	    		autoStep++;
+	    		break;
+	    	case 7:
+	    		if (driveAuto.hasArrived()) {
+	    			//driveAuto.stop();
+	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face low bar");
+	    	  		autoStep++;
+	    	    } 
+	        	break;
+	    	case 8:
+	       		driveAuto.driveInches(60, .5); // drive through low bar
+	    		autoStep++;
+	    		break;
+	    	case 9:
+	    		if (driveAuto.hasArrived()) {
+	    			//driveAuto.stop();
+	    			SmartDashboard.putString("Auto Step Completed: ", "Drive through low bar");
+	    	  		autoStep++;
+	    	    } 
+	        	break;
+	    	case 10:
+	       		driveAuto.turnDegrees(45, .6); // turn to face the goal
+	    		autoStep++;
+	    		break;
+	    	case 11:
+	    		if (driveAuto.hasArrived()) {
+	    			//driveAuto.stop();
+	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 45 to face target");
+	    	  		autoStep++;
+	    	    } 
+	        	break;
+	    	case 12:
+	    		SmartDashboard.putString("Autonomous Status", "Completed");
+    		}
+		break;   		
+    	}
+     
+	}
+
+ 
     @Override
     public void testInit() {
         testStage = 0;
