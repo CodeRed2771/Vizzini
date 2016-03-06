@@ -68,7 +68,7 @@ public class Drive {
     }
 
     public boolean encoderHasError() {
-        return encoderError;
+        return leftEncoderHasError() || rightEncoderHasError();
     }
 
     public boolean leftEncoderHasError() {
