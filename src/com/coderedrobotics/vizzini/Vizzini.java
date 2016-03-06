@@ -284,6 +284,8 @@ public class Vizzini extends IterativeRobot {
  
     @Override
     public void testInit() {
+        driveAuto.setPIDstate(false);
+        drive.setPIDstate(true);
         pdp = new PowerDistributionPanel();
     	testManager.reset();
     	
