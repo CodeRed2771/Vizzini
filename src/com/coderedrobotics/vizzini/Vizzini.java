@@ -28,6 +28,7 @@ public class Vizzini extends IterativeRobot {
     SendableChooser chooser;
     final String lowbarAuto = "Low Bar";
     final String touchAuto = "Touch Defense Auto";
+    final String testAuto = "Test Auto";
     String autoSelected;
     
     int autoStep = 0;
@@ -53,6 +54,7 @@ public class Vizzini extends IterativeRobot {
         chooser = new SendableChooser();
         chooser.addDefault("Touch Defense Auto", touchAuto);
         chooser.addObject("Low Bar Auto", lowbarAuto);
+        chooser.addObject("Test Auto", testAuto);
         SmartDashboard.putData("Auto choices", chooser);
 
     }
@@ -155,6 +157,33 @@ public class Vizzini extends IterativeRobot {
     	SmartDashboard.putNumber("Auto Step: ", autoStep);
     	
     	switch(autoSelected) {
+
+    	case testAuto:
+    		switch (autoStep) {
+    		case 0:
+    			driveAuto.turnDegrees(-180, .6);
+    			autoStep++;
+    			break;
+    		case 1:
+    			 if (driveAuto.hasArrived()) {
+	    	    	  //driveAuto.stop();
+	    	    	  SmartDashboard.putString("Drive Target: ", "Arrived");
+	    	  			autoStep++;
+	
+	    	      } else {
+	    	    	  driveAuto.updateDriveStatus();
+	    			  SmartDashboard.putString("Drive Target: ", "Driving");
+	    		      }
+	        		break;
+    		case 2:
+    			driveAuto.turnDegrees(180, .6);
+    			autoStep++;
+    			break;
+    		case 3:
+  	    	  driveAuto.updateDriveStatus();
+  			  SmartDashboard.putString("Drive Target: ", "Driving");
+   			break;
+    		}
     	
     	case touchAuto:
     		switch (autoStep) {
