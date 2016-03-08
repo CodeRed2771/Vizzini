@@ -99,7 +99,6 @@ public class Arm {
     }
 
     public boolean passedLimitSwitchTest() {
-        Logger.getInstance().log(""+pidController.getError());
         return isCalibrated && !limitSwitch.get() && Math.abs(pidController.getError()) < 0.2;
     }
     

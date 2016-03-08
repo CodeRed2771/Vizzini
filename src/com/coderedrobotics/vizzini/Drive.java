@@ -68,7 +68,7 @@ public class Drive {
     }
 
     public boolean encoderHasError() {
-        return encoderError;
+        return leftEncoderHasError() || rightEncoderHasError();
     }
 
     public boolean leftEncoderHasError() {
@@ -97,14 +97,14 @@ public class Drive {
     }
 
     public void set(double left, double right) {
-//        if (encoderError = (rightPwmSplitter2X.getPWMControllerA().encoderHasError()
-//                || leftPwmSplitter2X.getPWMControllerA().encoderHasError())) {
-//            drivePid.setPID(0, 0, 0, 1);
-//            rotPid.setPID(0, 0, 0, 1);
-//        } else {
-        drivePid.setPID(Calibration.DRIVE_P, Calibration.DRIVE_I, Calibration.DRIVE_D, 1);
-        rotPid.setPID(Calibration.ROT_P, Calibration.ROT_I, Calibration.ROT_D, 1);
-//        }
+        if (encoderError = (rightPwmSplitter2X.getPWMControllerA().encoderHasError()
+                || leftPwmSplitter2X.getPWMControllerA().encoderHasError())) {
+            drivePid.setPID(0, 0, 0, 1);
+            rotPid.setPID(0, 0, 0, 1);
+        } else {
+        	drivePid.setPID(Calibration.DRIVE_P, Calibration.DRIVE_I, Calibration.DRIVE_D, 1);
+        	rotPid.setPID(Calibration.ROT_P, Calibration.ROT_I, Calibration.ROT_D, 1);
+        }
 
         double rot = (left - right) / 2;
 

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Vizzini extends IterativeRobot {
 
+    TestManager testManager;
     KeyMap keyMap;
     Arm arm;
     Shooter shooter;
@@ -44,6 +45,32 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void robotInit() {
+    	testManager = new TestManager();
+    	testManager.addStage(() -> {
+    		drive.set(0.2, 0.2);
+    		return drive.encoderHasError() ? TestResult.FAILURE : TestResult.INCONCLUSIVE;
+    	}, () -> { drive.set(0, 0); }, 1000, TestResult.SUCESS, "drive");
+    	testManager.addStage(() -> {
+    		arm.calibrate(true);
+    		return arm.isCalibrated() ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
+    	}, () -> { }, 10000, TestResult.FAILURE, "arm calibration");
+    	testManager.addStage(() -> {
+    		arm.gotoRestingPosition();
+    		return arm.passedLimitSwitchTest() ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
+    	}, () -> { }, 3000, TestResult.FAILURE, "arm");
+    	testManager.addStage(() -> {
+    		shooter.spinUp();
+    		return shooter.isSpunUp() ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
+    	}, () -> { shooter.stop(); }, 5000, TestResult.FAILURE, "shooter");
+    	testManager.addStage(() -> {
+    		arm.feedIn();
+    		return pdp.getCurrent(Wiring.PICKUP_FRONT_PDP) > 2 ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
+    	}, () -> { arm.pickupAllStop(); }, 1000, TestResult.FAILURE, "pickup front");
+    	testManager.addStage(() -> {
+    		arm.dropBallInShooter();
+    		return pdp.getCurrent(Wiring.PICKUP_REAR_PDP) > 2 ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
+    	}, () -> { arm.pickupAllStop(); }, 1000, TestResult.FAILURE, "pickup rear");
+    	
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
         drive = new Drive();
@@ -286,11 +313,15 @@ public class Vizzini extends IterativeRobot {
  
     @Override
     public void testInit() {
-        testStage = 0;
-        testTimer = System.currentTimeMillis() + 1000;
-        leds.activateTest();
+        driveAuto.setPIDstate(false);
+        drive.setPIDstate(true);
         pdp = new PowerDistributionPanel();
-        Logger.getInstance().log("test start");
+    	testManager.reset();
+    	
+//        testStage = 0;
+//        testTimer = System.currentTimeMillis() + 1000;
+//        leds.activateTest();
+//        Logger.getInstance().log("test start");
     }
 
     /**
@@ -298,7 +329,8 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void testPeriodic() {
-//        arm.tick();
+        arm.tick();
+        testManager.step();
 //        switch (testStage) {
 //            case 0: // Drive Left
 //                drive.set(0.5, 0);
@@ -419,7 +451,7 @@ public class Vizzini extends IterativeRobot {
 //                    arm.stopRearPickupWheels();
 //                }
 //                break;
-//            case 9: // Done
+//            case 10: // Done
 //                if (hasError) {
 //                    leds.setColor(RobotLEDs.Color.RED, 2);
 //                } else {
