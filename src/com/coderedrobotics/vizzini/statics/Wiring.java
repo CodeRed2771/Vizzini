@@ -22,7 +22,7 @@ public class Wiring {
     public static final int SHOOTER_PDP = 12;
 
     // CAN MOTOR CONTROLLERS
-    public static final int ARM_MOTOR = 1;  
+    public static final int ARM_MOTOR = 1;
     public static final int SHOOTER_MOTOR_1 = 2;
     
     // DIGITAL INPUT

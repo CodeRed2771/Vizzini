@@ -3,12 +3,14 @@ package com.coderedrobotics.vizzini;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDDerivativeCalculator;
 import com.coderedrobotics.libs.PIDSourceFilter;
+import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.PWMSplitter2X;
 import com.coderedrobotics.libs.TankDrive;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive {
 
@@ -19,6 +21,7 @@ public class Drive {
 
     private PIDControllerAIAO drivePid;
     private PIDControllerAIAO rotPid;
+    private PIDControllerAIAO driveDistPID;
 
     private PWMSplitter2X leftPwmSplitter2X;
     private PWMSplitter2X rightPwmSplitter2X;
@@ -29,7 +32,7 @@ public class Drive {
     public Drive() {
         leftEncoder = new Encoder(Wiring.LEFT_ENCODER_A, Wiring.LEFT_ENCODER_B);
         rightEncoder = new Encoder(Wiring.RIGHT_ENCODER_A, Wiring.RIGHT_ENCODER_B);
-
+     	
         tankDrive = new TankDrive(
                 leftPwmSplitter2X = new PWMSplitter2X(
                         Wiring.LEFT_DRIVE_MOTOR1,
@@ -50,12 +53,23 @@ public class Drive {
                         new PIDSourceFilter((double value) -> leftEncoder.getRaw() - rightEncoder.getRaw()), 10),
                 (double value) -> value / Calibration.ROT_TOP_SPEED), tankDrive.getRotPIDOutput(), true, "rot");
 
-        drivePid.enable();
-        rotPid.enable();
+        setPIDstate(false);
+
+    }
+    
+    public void setPIDstate(boolean isEnabled) {
+    	if (isEnabled) {
+    		drivePid.enable();
+    		rotPid.enable();
+    	} else
+    	{
+    		drivePid.disable();
+     		rotPid.disable();
+    	}
     }
 
     public boolean encoderHasError() {
-        return encoderError;
+        return leftEncoderHasError() || rightEncoderHasError();
     }
 
     public boolean leftEncoderHasError() {
@@ -68,6 +82,19 @@ public class Drive {
 
     public void setSquared(double left, double right) {
         set(Math.abs(left) * left, Math.abs(right) * right);
+    }
+    
+    public Encoder getLeftEncoderObject() {
+    	return leftEncoder;
+    }
+    public Encoder getRightEncoderObject() {
+    	return rightEncoder;
+    }
+    public PWMSplitter2X getLeftPWM() {
+    	return leftPwmSplitter2X;
+    }
+    public PWMSplitter2X getRightPWM() {
+    	return rightPwmSplitter2X;
     }
 
     public void set(double left, double right) {
