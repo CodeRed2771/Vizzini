@@ -80,6 +80,7 @@ public class Shooter {
     }
 
     public void tick() {
+//        Logger.getInstance().log(String.valueOf(shooter1.getEncVelocity()));
         if (stopping && System.currentTimeMillis() > timeout) {
             stop();
             stopping = false;

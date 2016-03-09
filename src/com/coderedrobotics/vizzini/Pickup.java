@@ -47,6 +47,11 @@ public class Pickup {
         frontWheels.set(-Calibration.PICKUP_OUTPUT_SPEED);
     }
     
+    public void feedInNudge() {
+        frontWheels.set(Calibration.PICKUP_NUDGE_SPEED);
+        pickingUp = false; // no auto
+    }
+    
     public void allStop() {
         frontWheels.set(0);
         rearWheels.set(0);
@@ -64,7 +69,7 @@ public class Pickup {
     }
     
     public void tick() {
-//        Logger.getInstance().log(String.valueOf(frontBreaker.getCurrent()));
+        Logger.getInstance().log(String.valueOf(frontBreaker.getCurrent()));
         if (pickingUp && frontBreaker.step()) {
             frontWheels.set(0);
             pickingUp = false;

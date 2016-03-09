@@ -53,7 +53,7 @@ public class Arm {
 
             pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
         } else {
-            arm.set(speed);
+            arm.set(-speed);
         }
     }
 
@@ -72,10 +72,15 @@ public class Arm {
     
     public void disablePIDController() {
         overrideEnabled = true;
+        pidController.disable();
     }
 
     public void feedIn() {
         pickup.feedIn();
+    }
+    
+    public void feedInNudge() {
+        pickup.feedInNudge();
     }
 
     public void feedOut() {

@@ -97,8 +97,9 @@ public class Vizzini extends IterativeRobot {
         if (keyMap.getFeedOutButton()) {
             arm.feedOut();
         }
-        if (keyMap.getFeedStopButton()) {
+        if (keyMap.getFeedStopButton() || keyMap.getDriverCancelFireButton()) {
             shooter.stop();
+            firing = false;
             arm.pickupAllStop();
         }
 
@@ -107,6 +108,7 @@ public class Vizzini extends IterativeRobot {
 
         if (keyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
+            shooter.spinUp();
         }
         if (keyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
@@ -124,9 +126,10 @@ public class Vizzini extends IterativeRobot {
         }
         if (firing && shooter.hasBeenSpunUp()) {
             arm.dropBallInShooter();
+            arm.feedInNudge();
             if (shooter.hasFired()) {
                 shooter.stop();
-                arm.stopRearPickupWheels();
+                arm.pickupAllStop();
                 firing = false;
             }
         }
