@@ -40,14 +40,13 @@ public class DriveAuto {
     	this.leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
     	this.rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
     	
-        leftDrivePID = new PIDControllerAIAO(.1, 0, 0, new PIDSourceFilter((double value) -> -this.leftEncoder.getDistance()), this.leftDrive,  false, "left");
-        rightDrivePID = new PIDControllerAIAO(.1, 0, 0, new PIDSourceFilter((double value) -> -this.rightEncoder.getDistance()), this.rightDrive, false, "right");
+        leftDrivePID = new PIDControllerAIAO(.12, 0, 0, new PIDSourceFilter((double value) -> -this.leftEncoder.getDistance()), this.leftDrive,  false, "autoleft");
+        rightDrivePID = new PIDControllerAIAO(.12, 0, 0, new PIDSourceFilter((double value) -> -this.rightEncoder.getDistance()), this.rightDrive, false, "autoright");
  
-        
        // leftDrivePID.setPercentTolerance(5); // this value hasn't really been validated yet
        // rightDrivePID.setPercentTolerance(5);
-        leftDrivePID.setAbsoluteTolerance(2);
-        rightDrivePID.setAbsoluteTolerance(2);
+        leftDrivePID.setAbsoluteTolerance(1);
+        rightDrivePID.setAbsoluteTolerance(1);
         leftDrivePID.setToleranceBuffer(10);
         rightDrivePID.setToleranceBuffer(10);
         leftDrivePID.setSetpoint(0);
@@ -66,6 +65,8 @@ public class DriveAuto {
     	rightDrivePID.setOutputRange(-maxPower, maxPower);
     	leftDrivePID.setOutputRange(-maxPower, maxPower);
     	
+    	resetEncoders();
+    	
     	leftDrivePID.setSetpoint(inches);
     	rightDrivePID.setSetpoint(inches);
     	
@@ -80,6 +81,8 @@ public class DriveAuto {
 
     	rightDrivePID.setOutputRange(-maxPower, maxPower);
     	leftDrivePID.setOutputRange(-maxPower, maxPower);
+
+    	resetEncoders();
     	
 		leftDrivePID.setSetpoint(inchesToTravel);
 		rightDrivePID.setSetpoint(-inchesToTravel);

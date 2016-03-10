@@ -2,6 +2,8 @@ package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.RobotLEDs;
+import com.coderedrobotics.libs.Timer;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
@@ -27,12 +29,11 @@ public class Vizzini extends IterativeRobot {
     RobotLEDs leds;
     PowerDistributionPanel pdp;
     SendableChooser chooser;
+    Timer autoTimer;
     final String lowbarAuto = "Low Bar";
     final String touchAuto = "Touch Defense Auto";
     final String testAuto = "Test Auto";
     String autoSelected;
-    
-    int autoStep = 0;
 
     boolean firing = false;
     private int testStage = 0;
@@ -45,6 +46,7 @@ public class Vizzini extends IterativeRobot {
      */
     @Override
     public void robotInit() {
+    	autoTimer = new Timer();
     	testManager = new TestManager();
     	testManager.addStage(() -> {
     		drive.set(0.2, 0.2);
@@ -172,60 +174,57 @@ public class Vizzini extends IterativeRobot {
     public void autonomousInit() {
        // leds.activateAutonomous();
        // arm.calibrate(true);
+    	drive.setPIDstate(false);
     	driveAuto.setPIDstate(true);
         driveAuto.resetEncoders();
 
         autoSelected = (String) chooser.getSelected();
 		SmartDashboard.putString("Auto selected: ", autoSelected);
 		
-    	autoStep = 0;
+    	autoTimer.setStage(0);
+    	autoTimer.resetTimer(100000); // make sure timer doesn't "hit" until we set it later
     }
 
     @Override
     public void autonomousPeriodic() {
     	
-    	SmartDashboard.putNumber("Auto Step: ", autoStep);
+    	SmartDashboard.putNumber("Auto Step: ", autoTimer.getStage());
     	
     	switch(autoSelected) {
 
     	case testAuto:
-    		switch (autoStep) {
+    		switch (autoTimer.getStage()) {
+    		
     		case 0:
-    			driveAuto.turnDegrees(-180, .6);
-    			autoStep++;
+    			autoTimer.setTimerAndAdvanceStage(3000);
+    			driveAuto.driveInches(120, .75);
     			break;
+    			
     		case 1:
-    			 if (driveAuto.hasArrived()) {
-	    	    	  //driveAuto.stop();
-	    	    	  SmartDashboard.putString("Drive Target: ", "Arrived");
-	    	  			autoStep++;
-	
-	    	      } else {
-	    	    	  driveAuto.updateDriveStatus();
-	    			  SmartDashboard.putString("Drive Target: ", "Driving");
-	    		      }
+    		//	 if (driveAuto.hasArrived()) {
+	    	//    	  //driveAuto.stop();
+	    	//    	  	SmartDashboard.putString("Drive Target: ", "Arrived");
+	    	//  			autoTimer.stopTimerAndAdvanceStage();
+		   // 	      } else {
+	    	//    	  driveAuto.updateDriveStatus();
+	    	//		  SmartDashboard.putString("Drive Target: ", "Driving");
+	    	//	      }
 	        		break;
-    		case 2:
-    			driveAuto.turnDegrees(180, .6);
-    			autoStep++;
-    			break;
-    		case 3:
-  	    	  driveAuto.updateDriveStatus();
-  			  SmartDashboard.putString("Drive Target: ", "Driving");
-   			break;
+	        		
     		}
+    		
+     		break;
     	
     	case touchAuto:
-    		switch (autoStep) {
+    		switch (autoTimer.getStage()) {
 		    	case 0: 
+		    		autoTimer.setTimerAndAdvanceStage(3000);
 		    		driveAuto.driveInches(36, .5);
-		    		autoStep++;
 		    		break;
 		    	case 1:
 		    		 if (driveAuto.hasArrived()) {
-		    	    	  driveAuto.stop();
+		    	  			autoTimer.stopTimerAndAdvanceStage();
 		    	    	  SmartDashboard.putString("Drive Target: ", "Arrived");
-		    	  			autoStep++;
 		
 		    	      } else {
 		    	    	  driveAuto.updateDriveStatus();
@@ -235,82 +234,81 @@ public class Vizzini extends IterativeRobot {
 		    	case 3:
 		    		SmartDashboard.putString("Autonomous Status", "Completed");
 		    }
+
     		break;
     		
     	case lowbarAuto:
-    		switch (autoStep) {
+    		switch (autoTimer.getStage()) {
 	    	case 0: 
+	    		autoTimer.setTimerAndAdvanceStage(2000);
 	    		driveAuto.driveInches(-12, .5); // backup off line
-	    		autoStep++;
 	    		break;
 	    	case 1:
 	    		if (driveAuto.hasArrived()) {
-	    	    	  //driveAuto.stop();
-	    	    	  SmartDashboard.putString("Auto Step Completed: ", "Drive back 12");
-	    	    	  autoStep++;
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    	SmartDashboard.putString("Auto Step Completed: ", "Drive back 12");
 	    	    } 
 	        	break;
 	    	case 2:
+	    		autoTimer.setTimerAndAdvanceStage(2000);
 	       		driveAuto.turnDegrees(90, .6); // turn towards low bar
-	    		autoStep++;
 	    		break;
 	    	case 3:
 	    		if (driveAuto.hasArrived()) {
-	    			//driveAuto.stop();
+    	  			autoTimer.stopTimerAndAdvanceStage();
 	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face wall");
-	    	  		autoStep++;
 	    	    } 
 	        	break;
 	    	case 4:
-	       		driveAuto.driveInches(36, .5); // drive towards wall by low bar
-	    		autoStep++;
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.driveInches(36, .5); // drive towards wall by low bar
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
-	    			//driveAuto.stop();
+    	  			autoTimer.stopTimerAndAdvanceStage();
 	    			SmartDashboard.putString("Auto Step Completed: ", "Drive towards wall");
-	    	  		autoStep++;
 	    	    } 
 	        	break;
 	    	case 6:
-	       		driveAuto.turnDegrees(90, .6); // turn to face the low bar
-	    		autoStep++;
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.turnDegrees(90, .6); // turn to face the low bar
+
 	    		break;
 	    	case 7:
 	    		if (driveAuto.hasArrived()) {
-	    			//driveAuto.stop();
+    	  			autoTimer.stopTimerAndAdvanceStage();
 	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face low bar");
-	    	  		autoStep++;
 	    	    } 
 	        	break;
 	    	case 8:
-	       		driveAuto.driveInches(60, .5); // drive through low bar
-	    		autoStep++;
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	    		driveAuto.driveInches(90, .5); // drive through low bar
 	    		break;
 	    	case 9:
 	    		if (driveAuto.hasArrived()) {
-	    			//driveAuto.stop();
+    	  			autoTimer.stopTimerAndAdvanceStage();
 	    			SmartDashboard.putString("Auto Step Completed: ", "Drive through low bar");
-	    	  		autoStep++;
 	    	    } 
 	        	break;
 	    	case 10:
-	       		driveAuto.turnDegrees(45, .6); // turn to face the goal
-	    		autoStep++;
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.turnDegrees(45, .6); // turn to face the goal
 	    		break;
 	    	case 11:
 	    		if (driveAuto.hasArrived()) {
-	    			//driveAuto.stop();
+    	  			autoTimer.stopTimerAndAdvanceStage();
 	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 45 to face target");
-	    	  		autoStep++;
 	    	    } 
 	        	break;
 	    	case 12:
+	    		driveAuto.stop();
 	    		SmartDashboard.putString("Autonomous Status", "Completed");
     		}
 		break;   		
     	}
-     
+    	
+		driveAuto.showEncoderValues();
+  	  	autoTimer.advanceWhenReady();
 	}
 
  
