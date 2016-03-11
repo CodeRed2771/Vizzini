@@ -31,6 +31,7 @@ public class Vizzini extends IterativeRobot {
     SendableChooser chooser;
     Timer autoTimer;
     final String lowbarAuto = "Low Bar";
+    final String lowbarStraightThru = "lowbarStraightThru";
     final String touchAuto = "Touch Defense Auto";
     final String testAuto = "Test Auto";
     String autoSelected;
@@ -82,7 +83,8 @@ public class Vizzini extends IterativeRobot {
 
         chooser = new SendableChooser();
         chooser.addDefault("Touch Defense Auto", touchAuto);
-        chooser.addObject("Low Bar Auto", lowbarAuto);
+        chooser.addObject("Low Bar One Away", lowbarAuto);
+        chooser.addObject("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto", testAuto);
         SmartDashboard.putData("Auto choices", chooser);
 
@@ -92,7 +94,7 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void teleopInit() {
         leds.activateTeleop();
-        arm.calibrate(false);
+        arm.calibrate(true);
         shooter.stop();
         arm.pickupAllStop();
         driveAuto.setPIDstate(false);
@@ -235,6 +237,41 @@ public class Vizzini extends IterativeRobot {
 		    		SmartDashboard.putString("Autonomous Status", "Completed");
 		    }
 
+    		break;
+    	
+    	case lowbarStraightThru:
+       		switch (autoTimer.getStage()) {
+	    	case 0: 
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.driveInches(-12, .5); // backup off line
+	    		break;
+	    	case 1:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 2:
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.turnDegrees(180, .5); // turn around
+	    		break;
+	    	case 3:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 4:
+	    		autoTimer.setTimerAndAdvanceStage(4000);
+	    		driveAuto.driveInches(70, .5); // drive through the low bar
+	    		break;
+	    	case 5:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 6:
+	    		driveAuto.stop();
+       		}
+    		
     		break;
     		
     	case lowbarAuto:

@@ -40,13 +40,13 @@ public class DriveAuto {
     	this.leftEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
     	this.rightEncoder.setPIDSourceType(PIDSourceType.kDisplacement);
     	
-        leftDrivePID = new PIDControllerAIAO(.12, 0, 0, new PIDSourceFilter((double value) -> -this.leftEncoder.getDistance()), this.leftDrive,  false, "autoleft");
-        rightDrivePID = new PIDControllerAIAO(.12, 0, 0, new PIDSourceFilter((double value) -> -this.rightEncoder.getDistance()), this.rightDrive, false, "autoright");
+        leftDrivePID = new PIDControllerAIAO(.12, 0.001, 0, new PIDSourceFilter((double value) -> -this.leftEncoder.getDistance()), this.leftDrive,  false, "autoleft");
+        rightDrivePID = new PIDControllerAIAO(.12, 0.001, 0, new PIDSourceFilter((double value) -> -this.rightEncoder.getDistance()), this.rightDrive, false, "autoright");
  
        // leftDrivePID.setPercentTolerance(5); // this value hasn't really been validated yet
        // rightDrivePID.setPercentTolerance(5);
-        leftDrivePID.setAbsoluteTolerance(1);
-        rightDrivePID.setAbsoluteTolerance(1);
+        leftDrivePID.setAbsoluteTolerance(.5);
+        rightDrivePID.setAbsoluteTolerance(.5);
         leftDrivePID.setToleranceBuffer(10);
         rightDrivePID.setToleranceBuffer(10);
         leftDrivePID.setSetpoint(0);
@@ -121,13 +121,19 @@ public class DriveAuto {
     	//SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
     	//SmartDashboard.putNumber("Right PID error", rightDrivePID.getError());
      	SmartDashboard.putNumber("Left Drive PID Avg Error: ", leftDrivePID.getAvgError());
-     	
-     	SmartDashboard.putNumber("Left PID error", leftDrivePID.getError());
-     	SmartDashboard.putNumber("Left Drive Encoder Raw: ", leftEncoder.getRaw());
-     	SmartDashboard.putNumber("Left Drive Distance: ", leftEncoder.getDistance());
-      	SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
+      	SmartDashboard.putNumber("Right Drive PID Avg Error: ", rightDrivePID.getAvgError());
 
-      	SmartDashboard.putBoolean("On Target", leftDrivePID.onTarget());
+      	SmartDashboard.putNumber("Left Drive Encoder Raw: ", leftEncoder.getRaw());
+     	SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
+     	
+     	SmartDashboard.putNumber("Left Drive Distance: ", leftEncoder.getDistance());
+     	SmartDashboard.putNumber("Right Drive Distance: ", rightEncoder.getDistance());
+      	
+     	SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
+      	SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
+      	
+     	SmartDashboard.putBoolean("Left On Target", leftDrivePID.onTarget());
+      	SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
       	
      	//SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
        	   	
