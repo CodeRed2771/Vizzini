@@ -4,6 +4,7 @@ import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.RobotLEDs;
 import com.coderedrobotics.libs.Timer;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
@@ -80,11 +81,11 @@ public class Vizzini extends IterativeRobot {
        	driveAuto = new DriveAuto(drive.getLeftEncoderObject(), drive.getRightEncoderObject(), drive.getLeftPWM(), drive.getRightPWM());
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
-
+      
         chooser = new SendableChooser();
-        chooser.addDefault("Touch Defense Auto", touchAuto);
+        chooser.addObject("Touch Defense Auto", touchAuto);
         chooser.addObject("Low Bar One Away", lowbarAuto);
-        chooser.addObject("Low Bar Straight Thru", lowbarStraightThru);
+        chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto", testAuto);
         SmartDashboard.putData("Auto choices", chooser);
 
@@ -174,8 +175,7 @@ public class Vizzini extends IterativeRobot {
     
     @Override
     public void autonomousInit() {
-       // leds.activateAutonomous();
-       // arm.calibrate(true);
+        //leds.activateAutonomous();
     	drive.setPIDstate(false);
     	driveAuto.setPIDstate(true);
         driveAuto.resetEncoders();
@@ -183,14 +183,29 @@ public class Vizzini extends IterativeRobot {
         autoSelected = (String) chooser.getSelected();
 		SmartDashboard.putString("Auto selected: ", autoSelected);
 		
-    	autoTimer.setStage(0);
+		autoTimer.setStage(0);
     	autoTimer.resetTimer(100000); // make sure timer doesn't "hit" until we set it later
+    	
+		Logger.getInstance().log("start auto");
+
     }
 
+    
+    int laststage = -1;
+    boolean hasprintedcalibrated;
+    boolean lastcalibration;
+    
     @Override
     public void autonomousPeriodic() {
     	
     	SmartDashboard.putNumber("Auto Step: ", autoTimer.getStage());
+//    	if (autoTimer.getStage() != laststage || !hasprintedcalibrated || arm.isCalibrated() != lastcalibration) {
+//    		Logger.getInstance().log("Calibrated : " + arm.isCalibrated() + "\tStage: " + autoTimer.getStage());
+//    		laststage = autoTimer.getStage();
+//    		hasprintedcalibrated = true;
+//    		lastcalibration = arm.isCalibrated();
+//    	}
+    	arm.tick();
     	
     	switch(autoSelected) {
 
@@ -199,7 +214,7 @@ public class Vizzini extends IterativeRobot {
     		
     		case 0:
     			autoTimer.setTimerAndAdvanceStage(3000);
-    			driveAuto.driveInches(120, .75);
+    			driveAuto.driveInches(120, .7);
     			break;
     			
     		case 1:
@@ -216,8 +231,8 @@ public class Vizzini extends IterativeRobot {
     		}
     		
      		break;
-    	
-    	case touchAuto:
+   	
+     	case touchAuto:
     		switch (autoTimer.getStage()) {
 		    	case 0: 
 		    		autoTimer.setTimerAndAdvanceStage(3000);
@@ -243,57 +258,87 @@ public class Vizzini extends IterativeRobot {
        		switch (autoTimer.getStage()) {
 	    	case 0: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.driveInches(-12, .5); // backup off line
+	    		driveAuto.driveInches(12, .4); // Go forward 1 foot
 	    		break;
 	    	case 1:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 2:
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.turnDegrees(180, .5); // turn around
+	    		}
 	    		break;
-	    	case 3:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
+	    	case 2:
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	            arm.calibrate(true);
 	        	break;
+	    	case 3:
+	    		if (arm.isCalibrated()){
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
 	    	case 4:
-	    		autoTimer.setTimerAndAdvanceStage(4000);
-	    		driveAuto.driveInches(70, .5); // drive through the low bar
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	    		driveAuto.driveInches(210, .6);
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 6:
+	    		autoTimer.setTimerAndAdvanceStage(4000);
+	    		driveAuto.turnDegrees(45, .6);
+	    		arm.calibrate(true);  // force arm recalibrate
+	    		break;
+	    	case 7:
+	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
 	        	break;
-	    	case 6:
+	    	case 8:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		driveAuto.stop();
+	    		arm.gotoShootPosition();
+	    		shooter.spinUp();
+	    		break;
+	    	case 9:
+	    		// Wait for shooter to spin up
+	    		break;
+	    	case 10:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		arm.dropBallInShooter();//Drops the ball in the shooter
+	    		break;
+	    	case 11:
+	    		//wait for shooter to shoot
+	    		break;
+	    	case 12:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		shooter.stop();
+	    		arm.gotoPickupPosition();
+	    		break;
+	    	case 13:
+	    		//Have a nice day! :)
+	    		break;
        		}
-    		
     		break;
     		
+    			
     	case lowbarAuto:
     		switch (autoTimer.getStage()) {
 	    	case 0: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.driveInches(-12, .5); // backup off line
+	    		driveAuto.driveInches(12, .5); // move away from the line
 	    		break;
 	    	case 1:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    	SmartDashboard.putString("Auto Step Completed: ", "Drive back 12");
 	    	    } 
 	        	break;
 	    	case 2:
 	    		autoTimer.setTimerAndAdvanceStage(2000);
-	       		driveAuto.turnDegrees(90, .6); // turn towards low bar
+	       		driveAuto.turnDegrees(-90, .6); // turn towards low bar
 	    		break;
 	    	case 3:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face wall");
 	    	    } 
 	        	break;
 	    	case 4:
@@ -303,7 +348,6 @@ public class Vizzini extends IterativeRobot {
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    			SmartDashboard.putString("Auto Step Completed: ", "Drive towards wall");
 	    	    } 
 	        	break;
 	    	case 6:
@@ -314,7 +358,6 @@ public class Vizzini extends IterativeRobot {
 	    	case 7:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 90 to face low bar");
 	    	    } 
 	        	break;
 	    	case 8:
@@ -324,7 +367,6 @@ public class Vizzini extends IterativeRobot {
 	    	case 9:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    			SmartDashboard.putString("Auto Step Completed: ", "Drive through low bar");
 	    	    } 
 	        	break;
 	    	case 10:
@@ -334,12 +376,10 @@ public class Vizzini extends IterativeRobot {
 	    	case 11:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
-	    			SmartDashboard.putString("Auto Step Completed: ", "Turn 45 to face target");
 	    	    } 
 	        	break;
 	    	case 12:
 	    		driveAuto.stop();
-	    		SmartDashboard.putString("Autonomous Status", "Completed");
     		}
 		break;   		
     	}

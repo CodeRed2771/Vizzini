@@ -139,6 +139,9 @@ public class Arm {
         if (!isCalibrated || recalibrate) {
             arm.changeControlMode(TalonControlMode.PercentVbus);
             isCalibrating = true;
+            isCalibrated = false;
+            pidController.disable();
+            pidController.setSetpoint(0);
             arm.set(-Calibration.ARM_CALIBRATION_MOTOR_SPEED); // start the arm in downward motion
         }
     }
