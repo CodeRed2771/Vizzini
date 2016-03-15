@@ -35,6 +35,7 @@ public class Calibration {
     public static final double DRIVE_D = 0.6;
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
+    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 16.276; // this is the one used for Auto
     
     public static final double ROT_TOP_SPEED = 10;
     public static final double ROT_P = 1;
