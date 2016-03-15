@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -35,10 +36,12 @@ public class Arm {
                 Calibration.ARM_D, Calibration.ARM_F, new PIDSourceFilter(arm, (double value) -> -arm.pidGet()), (double output) -> {
                     arm.pidWrite(limitSwitch.get() && output > 0 ? 0 : -output);
                 }, false, "arm");
+        
         pidController.setInputRange(Calibration.ARM_MIN_SETPOINT, Calibration.ARM_MAX_SETPOINT);
+        
         pidController.setAbsoluteTolerance(Calibration.ARM_PID_TEST_TOLERANCE);
-        arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);  // why Relative and not absolute?
-        arm.configPeakOutputVoltage(12, -12);  // I reduced these from 12 until we resolve the weird problems 2/17/16 DVV
+        arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);  // why Relative and not absolute? (Changed to Absolute to fix it - DVV 3/10/16)
+        arm.configPeakOutputVoltage(12, -12);  
         arm.setPosition(0);
     }
 
@@ -49,7 +52,7 @@ public class Arm {
             lastArmChange = now;
 
             timePassed = Math.min(60, timePassed);
-
+                  
             pidController.setSetpoint(pidController.getSetpoint() + (timePassed * Calibration.ARM_SETPOINT_INCREMENT * speed));
         } else {
             arm.set(-speed);
@@ -89,7 +92,7 @@ public class Arm {
     public void pickupAllStop() {
         pickup.allStop();
     }
-
+    
     public void dropBallInShooter() {
         pickup.dropBallInShooter();
     }
@@ -125,6 +128,9 @@ public class Arm {
                 isCalibrated = true;
             }
         }
+        
+		SmartDashboard.putBoolean("Calibration: ", isCalibrated);
+
     }
 
     public void calibrate(boolean recalibrate) {
@@ -132,6 +138,9 @@ public class Arm {
         if (!isCalibrated || recalibrate) {
             arm.changeControlMode(TalonControlMode.PercentVbus);
             isCalibrating = true;
+            isCalibrated = false;
+            pidController.disable();
+            pidController.setSetpoint(0);
             arm.set(-Calibration.ARM_CALIBRATION_MOTOR_SPEED); // start the arm in downward motion
         }
     }

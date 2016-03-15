@@ -18,7 +18,7 @@ public class Calibration {
     public static final int PICKUP_REAR_CURRENT_IGNORE_DURATION = 1000;
     
     public static final double ARM_SETPOINT_INCREMENT = .001;
-    public static final double ARM_CALIBRATION_MOTOR_SPEED = .3;
+    public static final double ARM_CALIBRATION_MOTOR_SPEED = .6; // was .3 3/10/16
     public static final double ARM_SHOOT_POSITION = 1.455810546875;
     public static final double ARM_P = 8;
     public static final double ARM_I = 0;
@@ -35,6 +35,7 @@ public class Calibration {
     public static final double DRIVE_D = 0.6;
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
+    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 16.276; // this is the one used for Auto
     
     public static final double ROT_TOP_SPEED = 10;
     public static final double ROT_P = 1;
