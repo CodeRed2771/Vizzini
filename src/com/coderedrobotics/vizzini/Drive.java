@@ -3,18 +3,16 @@ package com.coderedrobotics.vizzini;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDDerivativeCalculator;
 import com.coderedrobotics.libs.PIDSourceFilter;
-import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.PWMSplitter2X;
 import com.coderedrobotics.libs.TankDrive;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
 
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive {
 
-    private TankDrive tankDrive;
+    private final TankDrive tankDrive;
 
     private Encoder leftEncoder;
     private Encoder rightEncoder;
@@ -23,8 +21,8 @@ public class Drive {
     private PIDControllerAIAO rotPid;
     private PIDControllerAIAO driveDistPID;
 
-    private PWMSplitter2X leftPwmSplitter2X;
-    private PWMSplitter2X rightPwmSplitter2X;
+    private final PWMSplitter2X leftPwmSplitter2X;
+    private final PWMSplitter2X rightPwmSplitter2X;
 
     private boolean encoderError = false;
     private boolean disablePID = false;

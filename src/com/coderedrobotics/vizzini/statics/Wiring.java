@@ -37,4 +37,5 @@ public class Wiring {
     // Relays
     public static final int RED_AND_GREEN_LEDS = 1;
     public static final int BLUE_LEDS = 0;
+    public static final int SHOOTER_LIGHT = 3;
 }

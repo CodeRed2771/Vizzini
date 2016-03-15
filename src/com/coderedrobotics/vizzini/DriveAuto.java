@@ -1,13 +1,9 @@
 package com.coderedrobotics.vizzini;
 
-import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDSourceFilter;
-import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.PWMSplitter2X;
-import com.coderedrobotics.libs.TankDrive;
 import com.coderedrobotics.vizzini.statics.Calibration;
-import com.coderedrobotics.vizzini.statics.Wiring;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -17,13 +13,11 @@ public class DriveAuto {
 
     private Encoder leftEncoder;
     private Encoder rightEncoder;
-    private PWMSplitter2X leftDrive;
-    private PWMSplitter2X rightDrive;
+    private final PWMSplitter2X leftDrive;
+    private final PWMSplitter2X rightDrive;
 
-    private PIDControllerAIAO leftDrivePID;
-    private PIDControllerAIAO rightDrivePID;
-    
-    private double myCounter = 0;
+    private final PIDControllerAIAO leftDrivePID;
+    private final PIDControllerAIAO rightDrivePID;
     
     public DriveAuto(Encoder leftEncoder, Encoder rightEncoder, PWMSplitter2X leftDrive, PWMSplitter2X rightDrive) {
      	

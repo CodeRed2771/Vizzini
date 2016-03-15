@@ -1,12 +1,12 @@
 package com.coderedrobotics.vizzini;
 
-import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
+import edu.wpi.first.wpilibj.Relay;
 
 public class Shooter {
 
@@ -14,12 +14,13 @@ public class Shooter {
     private final PWMController shooter2;
     private final PIDControllerAIAO pid;
     private final AutoStop autoStop;
+    private final Relay light;
     private boolean stopping;
     private double smoothedOutput = 0;
     private long timeout;
     private boolean hasBeenSpunUp = false;
 
-    public Shooter(int talon, int victor) {
+    public Shooter(int talon, int victor, int light) {
         shooter1 = new CANTalon(talon);
         shooter2 = new PWMController(victor, false);
         pid = new PIDControllerAIAO(Calibration.SHOOTER_P, Calibration.SHOOTER_I,
@@ -44,6 +45,7 @@ public class Shooter {
                 }, false, "Shooter");
         pid.setOutputRange(0, 1);
         autoStop = new AutoStop();
+        this.light = new Relay(light);
     }
 
     public boolean isSpunUp() {
@@ -65,7 +67,7 @@ public class Shooter {
     public void stop() {
         smoothedOutput = 0;
         pid.setSetpoint(0);
-        pid.disable();        
+        pid.disable();
         autoStop.reset();
         hasBeenSpunUp = false;
     }
@@ -86,11 +88,23 @@ public class Shooter {
             stopping = false;
         }
     }
-    
+
     public void enableOverrideMode() {
-        
+
+    }
+    
+    public void lightOn() {
+        light.set(Relay.Value.kOn);
     }
 
+    public void lightOff() {
+        light.set(Relay.Value.kOff);
+    }
+    
+    public void toggleLight() {
+        light.set(light.get() == Relay.Value.kOn ? Relay.Value.kOff : Relay.Value.kOn);
+    }
+    
     private class AutoStop {
 
         private boolean hasFired = false;
@@ -101,7 +115,7 @@ public class Shooter {
                 hasFired = true;
                 time = System.currentTimeMillis();
             }
-           
+
             return hasFired && System.currentTimeMillis() > Calibration.SHOOTER_AUTOSTOP_DELAY + time;
         }
 
