@@ -36,6 +36,7 @@ public class Vizzini extends IterativeRobot {
     final String touchAuto = "Touch Defense Auto";
     final String testAuto = "Test Auto";
     final String testAutoTurn = "Test Auto Turn";
+    final String testIncDrive = "Test Incremental Drive";
     String autoSelected;
 
     boolean firing = false;
@@ -89,6 +90,7 @@ public class Vizzini extends IterativeRobot {
         chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto Drive 10'", testAuto);
         chooser.addObject("Test Auto Turn 180'", testAutoTurn);
+        chooser.addObject("Test Incremental Drive", testIncDrive);
         SmartDashboard.putData("Auto choices", chooser);
 
     }
@@ -210,6 +212,27 @@ public class Vizzini extends IterativeRobot {
     	
     	switch(autoSelected) {
 
+    	case testIncDrive:
+    		switch (autoTimer.getStage()) {
+    		
+    		case 0:
+    			autoTimer.setTimerAndAdvanceStage(8000);
+    			driveAuto.driveInches(30, .3);
+    			break;
+    			
+    		case 1:
+    			if (driveAuto.getDistanceTravelled() > 20) {
+    				driveAuto.addInches(40);
+    				driveAuto.setMaxPowerOutput(.5);
+    			}
+    			
+    			if (driveAuto.hasArrived()) {
+	    	    	  driveAuto.stop();
+    			}
+	    		break;
+    		}
+    		break;
+    		
     	case testAuto:
     		switch (autoTimer.getStage()) {
     		
@@ -290,7 +313,7 @@ public class Vizzini extends IterativeRobot {
 	    		}
 	    		break;
 	    	case 2:
-	    		autoTimer.setTimerAndAdvanceStage(15000);  //use all of auto to calibrate cuz if it doesn't calibrate 
+	    		autoTimer.setTimerAndAdvanceStage(15000);  //use all of auto to calibrate cuz if it doesn't calibrate we don't want to continue
 	            arm.calibrate(true);
 	        	break;
 	    	case 3:
@@ -426,6 +449,7 @@ public class Vizzini extends IterativeRobot {
 		break;   		
     	}
     	
+    	driveAuto.tick(); // tick currently manages power ramping
 		driveAuto.showEncoderValues();
   	  	autoTimer.advanceWhenReady();
 	}

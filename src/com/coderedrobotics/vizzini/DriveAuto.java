@@ -24,6 +24,10 @@ public class DriveAuto {
     private Drive mainDrive;
     
     private boolean drivingStraight = true;
+    
+    private double maxPowerAllowed = 1;
+    private double curPowerSetting = 1;
+    private long timeDriveStarted = 0;
         
     public DriveAuto(Drive mainDrive) {
      	this.mainDrive = mainDrive;
@@ -45,30 +49,42 @@ public class DriveAuto {
     }
    
     public void driveInches(int inches, double maxPower) {
-    	rightDrivePID.setOutputRange(-maxPower, maxPower);
-    	leftDrivePID.setOutputRange(-maxPower, maxPower);
+    	
+    	stop();
+    	
+    	maxPowerAllowed = maxPower;
+    	curPowerSetting = .1;
+    	
+    	setPowerOutput(curPowerSetting);
     	
     	resetEncoders();
     	drivingStraight = true;
     	
     	rightDrivePID.setPID(.003, 0, 0);
-    	leftDrivePID.setPID(.003,  0,  0);
+    	leftDrivePID.setPID(.003, 0, 0);
     	
     	rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(inches));
     	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inches));
     	
     	rightDrivePID.enable();
     	leftDrivePID.enable();
+    	
+    	timeDriveStarted = System.currentTimeMillis();
+    	
     }
     
     
     public void turnDegrees(int degrees, double maxPower) {
     	
     	double inchesToTravel = degrees/6.6;
-  	
-    	rightDrivePID.setOutputRange(-maxPower, maxPower);
-    	leftDrivePID.setOutputRange(-maxPower, maxPower);
-
+       	
+    	stop();
+    	
+    	maxPowerAllowed = maxPower;
+    	curPowerSetting = .1;
+         	
+    	setPowerOutput(curPowerSetting);
+    	
     	resetEncoders();
        	drivingStraight = false;
             	
@@ -80,6 +96,34 @@ public class DriveAuto {
       	
     	leftDrivePID.enable();
     	rightDrivePID.enable();
+
+    	timeDriveStarted = System.currentTimeMillis();
+   }
+    
+    public void tick() {
+    	if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
+			curPowerSetting += .01;
+			if (curPowerSetting > maxPowerAllowed) curPowerSetting = maxPowerAllowed;
+			setPowerOutput(curPowerSetting);
+    	}
+    }
+    
+    private void setPowerOutput(double maxPower) {
+       	rightDrivePID.setOutputRange(-maxPower, maxPower);
+    	leftDrivePID.setOutputRange(-maxPower, maxPower);
+    }
+    
+    public void setMaxPowerOutput(double maxPower) {
+    	maxPowerAllowed = maxPower;
+    }
+    
+    public void addInches(int inches) {
+    	leftDrivePID.setSetpoint(leftDrivePID.getSetpoint() + convertToTicks(inches));
+    	rightDrivePID.setSetpoint(rightDrivePID.getSetpoint() + convertToTicks(inches));
+    }
+    
+    public double getDistanceTravelled() {
+    	return Math.abs(convertTicksToInches(mainDrive.getLeftEncoderObject().get())); 
     }
     
     private double encoderAdjust() {
@@ -124,6 +168,10 @@ public class DriveAuto {
     }
     private int convertToTicks(double inches) {
     	return (int)(inches * Calibration.DRIVE_DISTANCE_TICKS_PER_INCH);
+    }
+    
+    private double convertTicksToInches(int ticks) {
+    	return ticks / Calibration.DRIVE_DISTANCE_TICKS_PER_INCH;
     }
    
 	private class PIDHolder implements PIDOutput {
