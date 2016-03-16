@@ -300,7 +300,7 @@ public class Vizzini extends IterativeRobot {
 	    		break;
 	    	case 4:
 	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.driveInches(210, .3);
+	    		driveAuto.driveInches(160, .4);
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
@@ -308,38 +308,55 @@ public class Vizzini extends IterativeRobot {
 	    		}
 	    		break;
 	    	case 6:
-	    		autoTimer.setTimerAndAdvanceStage(4000);
-	    		driveAuto.turnDegrees(60, .6);
-	    		arm.calibrate(true);  // force arm recalibrate
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		arm.calibrate(true);
 	    		break;
-	    	case 7:
+	       	case 7:
+	    		if (arm.isCalibrated()){
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	       	case 8:
+	       		autoTimer.setTimerAndAdvanceStage(2000);
+	       		arm.gotoShootPosition();
+	       		break;
+	       	case 9: 
+	       		break;
+	    	case 10:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.turnDegrees(54, .6);
+	    		shooter.spinUp();
+	    		break;
+	    	case 11:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
-	        	break;
-	    	case 8:
+	    		break;
+	    	case 12: 
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.driveInches(18, .3); // Go forward 1 foot
+	    		break;
+	    	case 13:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+
+	    	case 14:
 	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		driveAuto.stop();
-	    		arm.gotoShootPosition();
-	    		shooter.spinUp();
-	    		break;
-	    	case 9:
-	    		// Wait for shooter to spin up
-	    		break;
-	    	case 10:
-	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		arm.dropBallInShooter();//Drops the ball in the shooter
 	    		break;
-	    	case 11:
+	    	case 15:
 	    		//wait for shooter to shoot
 	    		break;
-	    	case 12:
+	    	case 16:
 	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		shooter.stop();
 	    		arm.gotoPickupPosition();
 	    		arm.pickupAllStop();
 	    		break;
-	    	case 13:
+	    	case 17:
 	    		//Have a nice day! :)
 	    		break;
        		}

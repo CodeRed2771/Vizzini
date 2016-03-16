@@ -30,8 +30,8 @@ public class DriveAuto {
      	leftPIDHolder = new PIDHolder();
      	rightPIDHolder = new PIDHolder();
      	
-        leftDrivePID = new PIDControllerAIAO(.01, 0, 0, new PIDSourceFilter((double value) -> -mainDrive.getLeftEncoderObject().get()), leftPIDHolder,  false, "autoleft");
-        rightDrivePID = new PIDControllerAIAO(.01, 0, 0, new PIDSourceFilter((double value) -> -mainDrive.getRightEncoderObject().get()), rightPIDHolder, false, "autoright");
+        leftDrivePID = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter((double value) -> -mainDrive.getLeftEncoderObject().get()), leftPIDHolder,  false, "autoleft");
+        rightDrivePID = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter((double value) -> -mainDrive.getRightEncoderObject().get()), rightPIDHolder, false, "autoright");
  
         leftDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
         rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH/ 2);
@@ -50,7 +50,10 @@ public class DriveAuto {
     	
     	resetEncoders();
     	drivingStraight = true;
-
+    	
+    	rightDrivePID.setPID(.003, 0, 0);
+    	leftDrivePID.setPID(.003,  0,  0);
+    	
     	rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(inches));
     	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inches));
     	
@@ -61,7 +64,7 @@ public class DriveAuto {
     
     public void turnDegrees(int degrees, double maxPower) {
     	
-    	double inchesToTravel = degrees/6;
+    	double inchesToTravel = degrees/6.6;
   	
     	rightDrivePID.setOutputRange(-maxPower, maxPower);
     	leftDrivePID.setOutputRange(-maxPower, maxPower);
@@ -69,7 +72,10 @@ public class DriveAuto {
     	resetEncoders();
        	drivingStraight = false;
             	
-   		leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inchesToTravel));	
+      	rightDrivePID.setPID(.007, 0, 0);
+    	leftDrivePID.setPID(.007, 0, 0);
+
+    	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inchesToTravel));	
 		rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(-inchesToTravel));
       	
     	leftDrivePID.enable();
@@ -78,7 +84,7 @@ public class DriveAuto {
     
     private double encoderAdjust() {
     	if (drivingStraight) 
-    		return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .01;
+    		return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
     	else
     		return 0;
     }
