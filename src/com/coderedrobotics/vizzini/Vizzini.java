@@ -81,7 +81,7 @@ public class Vizzini extends IterativeRobot {
         drive = new Drive();
        	driveAuto = new DriveAuto(drive);
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
-        shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2);
+        shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
       
         chooser = new SendableChooser();
         chooser.addObject("Touch Defense Auto", touchAuto);
