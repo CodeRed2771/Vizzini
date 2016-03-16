@@ -1,6 +1,5 @@
 package com.coderedrobotics.vizzini;
 
-import com.coderedrobotics.libs.Logger;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDSourceFilter;
 import com.coderedrobotics.vizzini.statics.Calibration;
