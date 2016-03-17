@@ -180,8 +180,9 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void autonomousInit() {
         //leds.activateAutonomous();
+    	drive.set(0, 0);
     	drive.setPIDstate(true);
-    	driveAuto.setPIDstate(true);
+    	//driveAuto.setPIDstate(true);
 
         autoSelected = (String) chooser.getSelected();
 		SmartDashboard.putString("Auto selected: ", autoSelected);
@@ -192,7 +193,6 @@ public class Vizzini extends IterativeRobot {
 		Logger.getInstance().log("start auto");
 
     }
-
     
     int laststage = -1;
     boolean hasprintedcalibrated;
@@ -222,10 +222,17 @@ public class Vizzini extends IterativeRobot {
     			
     		case 1:
     			if (driveAuto.getDistanceTravelled() > 20) {
-    				driveAuto.addInches(40);
+    				driveAuto.addInches(30);
     				driveAuto.setMaxPowerOutput(.5);
+    				autoTimer.nextStage();
     			}
     			
+    			if (driveAuto.hasArrived()) {
+	    	    	  driveAuto.stop();
+    			}
+	    		break;
+    		case 2:
+
     			if (driveAuto.hasArrived()) {
 	    	    	  driveAuto.stop();
     			}
@@ -346,8 +353,8 @@ public class Vizzini extends IterativeRobot {
 	       	case 9: 
 	       		break;
 	    	case 10:
-	    		autoTimer.setTimerAndAdvanceStage(3000);
-	    		driveAuto.turnDegrees(54, .6);
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	    		driveAuto.turnDegrees(54, .7);
 	    		shooter.spinUp();
 	    		break;
 	    	case 11:

@@ -53,8 +53,10 @@ public class DriveAuto {
     	stop();
     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .1;
-    	
+    	curPowerSetting = .05;
+       	rightDrivePID.disable();
+    	leftDrivePID.disable();
+   	
     	setPowerOutput(curPowerSetting);
     	
     	resetEncoders();
@@ -73,6 +75,9 @@ public class DriveAuto {
     	
     }
     
+    public void curveDrive(int inches, double ratio) {
+    	
+    }
     
     public void turnDegrees(int degrees, double maxPower) {
     	
@@ -83,6 +88,9 @@ public class DriveAuto {
     	maxPowerAllowed = maxPower;
     	curPowerSetting = .1;
          	
+      	rightDrivePID.disable();
+    	leftDrivePID.disable();
+ 
     	setPowerOutput(curPowerSetting);
     	
     	resetEncoders();
@@ -102,7 +110,7 @@ public class DriveAuto {
     
     public void tick() {
     	if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-			curPowerSetting += .01;
+			curPowerSetting += .005;
 			if (curPowerSetting > maxPowerAllowed) curPowerSetting = maxPowerAllowed;
 			setPowerOutput(curPowerSetting);
     	}
@@ -201,7 +209,7 @@ public class DriveAuto {
       	SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
       	
      	SmartDashboard.putBoolean("Left On Target", leftDrivePID.onTarget());
-      SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
+        SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
       	
      	//SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
        	   	
