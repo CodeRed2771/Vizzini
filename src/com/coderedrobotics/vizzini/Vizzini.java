@@ -143,6 +143,7 @@ public class Vizzini extends IterativeRobot {
         if (keyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
             shooter.spinUp();
+            shooter.lightOn();
         }
         if (keyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
@@ -151,6 +152,7 @@ public class Vizzini extends IterativeRobot {
         shooter.tick();
         if (keyMap.getFireButton()) {
             shooter.spinUp();
+            shooter.lightOn();
             firing = true;
             if (keyMap.getFireOverrideButton()) {
                 arm.dropBallInShooter();
@@ -163,10 +165,16 @@ public class Vizzini extends IterativeRobot {
             arm.feedInNudge();
             if (shooter.hasFired()) {
                 shooter.stop();
+                shooter.lightOff();
                 arm.pickupAllStop();
                 firing = false;
             }
         }
+        
+        if (keyMap.getShooterLightToggleButton()) {
+        	shooter.toggleLight();
+        }
+        
         if (keyMap.getOverrideShooterPIDButton()) {
             shooter.enableOverrideMode();
         }
@@ -182,6 +190,7 @@ public class Vizzini extends IterativeRobot {
         //leds.activateAutonomous();
     	drive.set(0, 0);
     	drive.setPIDstate(true);
+    	driveAuto.stop();
     	//driveAuto.setPIDstate(true);
 
         autoSelected = (String) chooser.getSelected();
@@ -244,7 +253,7 @@ public class Vizzini extends IterativeRobot {
     		switch (autoTimer.getStage()) {
     		
     		case 0:
-    			autoTimer.setTimerAndAdvanceStage(3000);
+    			autoTimer.setTimerAndAdvanceStage(5000);
     			driveAuto.driveInches(120, .7);
     			break;
     			
@@ -267,7 +276,7 @@ public class Vizzini extends IterativeRobot {
     		switch (autoTimer.getStage()) {
     		
     		case 0:
-    			autoTimer.setTimerAndAdvanceStage(3000);
+    			autoTimer.setTimerAndAdvanceStage(6000);
     			driveAuto.turnDegrees(180,  .7);
     			break;
     			
@@ -290,7 +299,7 @@ public class Vizzini extends IterativeRobot {
     		switch (autoTimer.getStage()) {
 		    	case 0: 
 		    		autoTimer.setTimerAndAdvanceStage(3000);
-		    		driveAuto.driveInches(36, .5);
+		    		driveAuto.driveInches(36, .4);
 		    		break;
 		    	case 1:
 		    		 if (driveAuto.hasArrived()) {
@@ -330,7 +339,7 @@ public class Vizzini extends IterativeRobot {
 	    		break;
 	    	case 4:
 	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.driveInches(160, .4);
+	    		driveAuto.driveInches(155, .4);
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
@@ -354,7 +363,7 @@ public class Vizzini extends IterativeRobot {
 	       		break;
 	    	case 10:
 	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.turnDegrees(54, .7);
+	    		driveAuto.turnDegrees(62, .7);
 	    		shooter.spinUp();
 	    		break;
 	    	case 11:
@@ -385,6 +394,7 @@ public class Vizzini extends IterativeRobot {
 	    		shooter.stop();
 	    		arm.gotoPickupPosition();
 	    		arm.pickupAllStop();
+	    		driveAuto.stop();
 	    		break;
 	    	case 17:
 	    		//Have a nice day! :)
@@ -393,11 +403,11 @@ public class Vizzini extends IterativeRobot {
     		break;
     		
     			
-    	case lowbarAuto:
+    	case lowbarAuto: // from second position
     		switch (autoTimer.getStage()) {
 	    	case 0: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.driveInches(12, .5); // move away from the line
+	    		driveAuto.driveInches(12, .3); // move away from the line
 	    		break;
 	    	case 1:
 	    		if (driveAuto.hasArrived()) {
@@ -406,16 +416,16 @@ public class Vizzini extends IterativeRobot {
 	        	break;
 	    	case 2:
 	    		autoTimer.setTimerAndAdvanceStage(2000);
-	       		driveAuto.turnDegrees(-90, .6); // turn towards low bar
+	    		arm.calibrate(true);
 	    		break;
-	    	case 3:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
+	       	case 3:
+	    		if (arm.isCalibrated()){
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
 	    	case 4:
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.driveInches(36, .5); // drive towards wall by low bar
+	    		autoTimer.setTimerAndAdvanceStage(4000);
+	       		driveAuto.turnDegrees(-90, .7); // turn towards low bar
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
@@ -423,9 +433,8 @@ public class Vizzini extends IterativeRobot {
 	    	    } 
 	        	break;
 	    	case 6:
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.turnDegrees(90, .6); // turn to face the low bar
-
+	    		autoTimer.setTimerAndAdvanceStage(2500);
+	    		driveAuto.driveInches(36, .4); // drive towards wall by low bar
 	    		break;
 	    	case 7:
 	    		if (driveAuto.hasArrived()) {
@@ -433,8 +442,9 @@ public class Vizzini extends IterativeRobot {
 	    	    } 
 	        	break;
 	    	case 8:
-	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.driveInches(90, .5); // drive through low bar
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.turnDegrees(90, .7); // turn to face the low bar
+
 	    		break;
 	    	case 9:
 	    		if (driveAuto.hasArrived()) {
@@ -442,14 +452,23 @@ public class Vizzini extends IterativeRobot {
 	    	    } 
 	        	break;
 	    	case 10:
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.turnDegrees(45, .6); // turn to face the goal
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	    		driveAuto.driveInches(110, .5); // drive through low bar
 	    		break;
 	    	case 11:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
 	        	break;
+//	    	case 10:
+//	    		autoTimer.setTimerAndAdvanceStage(3000);
+//	    		driveAuto.turnDegrees(45, .7); // turn to face the goal
+//	    		break;
+//	    	case 11:
+//	    		if (driveAuto.hasArrived()) {
+//    	  			autoTimer.stopTimerAndAdvanceStage();
+//	    	    } 
+//	        	break;
 	    	case 12:
 	    		driveAuto.stop();
     		}

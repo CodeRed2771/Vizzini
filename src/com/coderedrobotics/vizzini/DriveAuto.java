@@ -39,8 +39,8 @@ public class DriveAuto {
  
         leftDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
         rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH/ 2);
-        leftDrivePID.setToleranceBuffer(10); // ten readings
-        rightDrivePID.setToleranceBuffer(10);
+        leftDrivePID.setToleranceBuffer(20); // ten readings
+        rightDrivePID.setToleranceBuffer(20);
         leftDrivePID.setSetpoint(0);
         leftDrivePID.reset();
         rightDrivePID.setSetpoint(0);
@@ -53,17 +53,17 @@ public class DriveAuto {
     	stop();
     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .05;
+    	curPowerSetting = .1;
        	rightDrivePID.disable();
     	leftDrivePID.disable();
    	
     	setPowerOutput(curPowerSetting);
     	
     	resetEncoders();
-    	drivingStraight = true;
+    	drivingStraight = true;   
     	
-    	rightDrivePID.setPID(.003, 0, 0);
-    	leftDrivePID.setPID(.003, 0, 0);
+    	rightDrivePID.setPID(Calibration.AUTO_DRIVE_P, 0, 0);
+    	leftDrivePID.setPID(Calibration.AUTO_DRIVE_P, 0, 0);
     	
     	rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(inches));
     	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inches));
@@ -86,7 +86,7 @@ public class DriveAuto {
     	stop();
     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .1;
+    	curPowerSetting = .18;
          	
       	rightDrivePID.disable();
     	leftDrivePID.disable();
@@ -96,8 +96,8 @@ public class DriveAuto {
     	resetEncoders();
        	drivingStraight = false;
             	
-      	rightDrivePID.setPID(.007, 0, 0);
-    	leftDrivePID.setPID(.007, 0, 0);
+      	rightDrivePID.setPID(Calibration.AUTO_TURN_P, 0, .01);
+    	leftDrivePID.setPID(Calibration.AUTO_TURN_P, 0, .01);
 
     	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inchesToTravel));	
 		rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(-inchesToTravel));

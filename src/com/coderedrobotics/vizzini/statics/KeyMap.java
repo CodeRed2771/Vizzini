@@ -45,7 +45,8 @@ public class KeyMap {
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
     private final HID.ButtonState singleControllerModeState = HID.newButtonState();
     private final HID.ButtonState reduceSpeedButtonState = HID.newButtonState();
-    private final HID.ButtonState shooterLightButtonState = HID.newButtonState();
+    private final HID.ButtonState shooterLightButtonState1 = HID.newButtonState();
+    private final HID.ButtonState shooterLightButtonState2 = HID.newButtonState();
     
     public KeyMap() {
 
@@ -161,6 +162,6 @@ public class KeyMap {
     }
     
     public boolean getShooterLightToggleButton() {
-        return getHID(gamepad2).buttonPressed(shooterLightButton, shooterLightButtonState);
+        return getHID(gamepad1).buttonPressed(shooterLightButton, shooterLightButtonState1) || getHID(gamepad2).buttonPressed(shooterLightButton, shooterLightButtonState2);
     }
 }
