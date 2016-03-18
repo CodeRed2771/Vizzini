@@ -85,9 +85,9 @@ public class Vizzini extends IterativeRobot {
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
       
         chooser = new SendableChooser();
-        chooser.addObject("Touch Defense Auto", touchAuto);
+        chooser.addDefault("Drive up to Defense", touchAuto);
         chooser.addObject("Low Bar One Away", lowbarAuto);
-        chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
+        chooser.addObject("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto Drive 10'", testAuto);
         chooser.addObject("Test Auto Turn 180'", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
