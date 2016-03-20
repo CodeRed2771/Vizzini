@@ -42,7 +42,7 @@ public class Calibration {
 //    public static final double AUTO_TURN_P = .007; // Lucky
     
     public static final double AUTO_DRIVE_P = .002; // Vizzini
-    public static final double AUTO_TURN_P = .01; // Vizzini
+    public static final double AUTO_TURN_P = .012; // Vizzini
     
     public static final double ROT_TOP_SPEED = 10;
     public static final double ROT_P = 1;

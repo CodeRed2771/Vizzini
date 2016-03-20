@@ -12,13 +12,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the IterativeRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the manifest file in the resource
- * directory.
- */
 public class Vizzini extends IterativeRobot {
 
     TestManager testManager;
@@ -44,10 +37,6 @@ public class Vizzini extends IterativeRobot {
     private long testTimer = 0;
     private boolean hasError = false;
 
-    /**
-     * This function is run when the robot is first started up and should be
-     * used for any initialization code.
-     */
     @Override
     public void robotInit() {
     	autoTimer = new Timer();
@@ -106,9 +95,6 @@ public class Vizzini extends IterativeRobot {
         drive.setPIDstate(true);
     }
 
-    /**
-     * This function is called periodically during operator control
-     */
     @Override
     public void teleopPeriodic() {
         drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
@@ -362,7 +348,7 @@ public class Vizzini extends IterativeRobot {
 	    	case 8:
 	    		autoTimer.setTimerAndAdvanceStage(4000);
 	       		arm.gotoShootPosition();
-	    		driveAuto.turnDegrees(57, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm)
+	    		driveAuto.turnDegrees(58, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm)
 	    		shooter.spinUp();
 	    		break;
 	    	case 9:
