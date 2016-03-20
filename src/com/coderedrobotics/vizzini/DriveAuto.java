@@ -149,6 +149,8 @@ public class DriveAuto {
    public void stop() {
     	leftDrivePID.disable();
     	rightDrivePID.disable();
+    	mainDrive.set(0, 0);
+    	
     }
     
     public boolean hasArrived() {

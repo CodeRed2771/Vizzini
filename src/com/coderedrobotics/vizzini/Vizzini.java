@@ -85,9 +85,9 @@ public class Vizzini extends IterativeRobot {
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
       
         chooser = new SendableChooser();
-        chooser.addDefault("Drive up to Defense", touchAuto);
+        chooser.addObject("Drive up to Defense", touchAuto);
         chooser.addObject("Low Bar One Away", lowbarAuto);
-        chooser.addObject("Low Bar Straight Thru", lowbarStraightThru);
+        chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto Drive 10'", testAuto);
         chooser.addObject("Test Auto Turn 180'", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
@@ -148,6 +148,10 @@ public class Vizzini extends IterativeRobot {
         if (keyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
         }
+        if (keyMap.getPortcullisButton()) {
+        	arm.feedOut();
+        	arm.gotoPortcullisPosition();
+        }
 
         shooter.tick();
         if (keyMap.getFireButton()) {
@@ -187,7 +191,7 @@ public class Vizzini extends IterativeRobot {
     
     @Override
     public void autonomousInit() {
-        //leds.activateAutonomous();
+        leds.activateAutonomous();
     	drive.set(0, 0);
     	drive.setPIDstate(true);
     	driveAuto.stop();
@@ -304,7 +308,7 @@ public class Vizzini extends IterativeRobot {
 		    	case 1:
 		    		 if (driveAuto.hasArrived()) {
 		    	  			autoTimer.stopTimerAndAdvanceStage();
-		    	    	  SmartDashboard.putString("Drive Target: ", "Arrived");
+		    	    		arm.calibrate(true);
 		
 		    	      } else {
 		    	    	
@@ -339,7 +343,7 @@ public class Vizzini extends IterativeRobot {
 	    		break;
 	    	case 4:
 	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.driveInches(155, .4);
+	    		driveAuto.driveInches(155, .45);
 	    		break;
 	    	case 5:
 	    		if (driveAuto.hasArrived()) {
@@ -355,48 +359,43 @@ public class Vizzini extends IterativeRobot {
 	    			autoTimer.stopTimerAndAdvanceStage();
 	    		}
 	    		break;
-	       	case 8:
-	       		autoTimer.setTimerAndAdvanceStage(2000);
+	    	case 8:
+	    		autoTimer.setTimerAndAdvanceStage(4000);
 	       		arm.gotoShootPosition();
-	       		break;
-	       	case 9: 
-	       		break;
-	    	case 10:
-	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.turnDegrees(62, .7);
+	    		driveAuto.turnDegrees(57, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm)
 	    		shooter.spinUp();
 	    		break;
-	    	case 11:
+	    	case 9:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
 	    		break;
-	    	case 12: 
+	    	case 10: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
 	    		driveAuto.driveInches(18, .3); // Go forward 1 foot
 	    		break;
-	    	case 13:
+	    	case 11:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    		}
 	    		break;
 
-	    	case 14:
+	    	case 12:
 	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		driveAuto.stop();
 	    		arm.dropBallInShooter();//Drops the ball in the shooter
 	    		break;
-	    	case 15:
+	    	case 13:
 	    		//wait for shooter to shoot
 	    		break;
-	    	case 16:
+	    	case 14:
 	    		autoTimer.setTimerAndAdvanceStage(3000);
 	    		shooter.stop();
 	    		arm.gotoPickupPosition();
 	    		arm.pickupAllStop();
 	    		driveAuto.stop();
 	    		break;
-	    	case 17:
+	    	case 15:
 	    		//Have a nice day! :)
 	    		break;
        		}
@@ -405,36 +404,32 @@ public class Vizzini extends IterativeRobot {
     			
     	case lowbarAuto: // from second position
     		switch (autoTimer.getStage()) {
-	    	case 0: 
+    		case 0:
+    			autoTimer.setTimerAndAdvanceStage(3000); // wait three seconds before starting to give alliance time to get out of the way
+    			break;
+    		case 1:
+    			// do nothing - the timer will expire and move to the next stage
+	    	case 2: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
 	    		driveAuto.driveInches(12, .3); // move away from the line
 	    		break;
-	    	case 1:
+	    	case 3:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
 	        	break;
-	    	case 2:
+	    	case 4:
 	    		autoTimer.setTimerAndAdvanceStage(2000);
 	    		arm.calibrate(true);
 	    		break;
-	       	case 3:
+	       	case 5:
 	    		if (arm.isCalibrated()){
 	    			autoTimer.stopTimerAndAdvanceStage();
 	    		}
 	    		break;
-	    	case 4:
+	    	case 6:
 	    		autoTimer.setTimerAndAdvanceStage(4000);
 	       		driveAuto.turnDegrees(-90, .7); // turn towards low bar
-	    		break;
-	    	case 5:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 6:
-	    		autoTimer.setTimerAndAdvanceStage(2500);
-	    		driveAuto.driveInches(36, .4); // drive towards wall by low bar
 	    		break;
 	    	case 7:
 	    		if (driveAuto.hasArrived()) {
@@ -442,9 +437,8 @@ public class Vizzini extends IterativeRobot {
 	    	    } 
 	        	break;
 	    	case 8:
-	    		autoTimer.setTimerAndAdvanceStage(3000);
-	    		driveAuto.turnDegrees(90, .7); // turn to face the low bar
-
+	    		autoTimer.setTimerAndAdvanceStage(2500);
+	    		driveAuto.driveInches(51, .4); // drive towards wall by low bar
 	    		break;
 	    	case 9:
 	    		if (driveAuto.hasArrived()) {
@@ -452,10 +446,20 @@ public class Vizzini extends IterativeRobot {
 	    	    } 
 	        	break;
 	    	case 10:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.turnDegrees(90, .7); // turn to face the low bar
+
+	    		break;
+	    	case 11:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 12:
 	    		autoTimer.setTimerAndAdvanceStage(5000);
 	    		driveAuto.driveInches(110, .5); // drive through low bar
 	    		break;
-	    	case 11:
+	    	case 13:
 	    		if (driveAuto.hasArrived()) {
     	  			autoTimer.stopTimerAndAdvanceStage();
 	    	    } 
@@ -469,7 +473,7 @@ public class Vizzini extends IterativeRobot {
 //    	  			autoTimer.stopTimerAndAdvanceStage();
 //	    	    } 
 //	        	break;
-	    	case 12:
+	    	case 14:
 	    		driveAuto.stop();
     		}
 		break;   		

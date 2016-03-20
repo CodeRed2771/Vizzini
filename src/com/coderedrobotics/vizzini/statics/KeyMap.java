@@ -40,6 +40,7 @@ public class KeyMap {
     private final HID.Button overrideShooterPIDButton = LogitechF310.DPAD_DOWN;
     private final HID.Button shooterLightButton = LogitechF310.START;
     private final HID.Axis armAxis = LogitechF310.STICK_LEFT_Y;
+    private final HID.Button portcullisButton = LogitechF310.BACK;
 
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
@@ -163,5 +164,9 @@ public class KeyMap {
     
     public boolean getShooterLightToggleButton() {
         return getHID(gamepad1).buttonPressed(shooterLightButton, shooterLightButtonState1) || getHID(gamepad2).buttonPressed(shooterLightButton, shooterLightButtonState2);
+    }
+    
+    public boolean getPortcullisButton() {
+    	return getHID(gamepad2).button(portcullisButton);
     }
 }

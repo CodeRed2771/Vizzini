@@ -72,6 +72,10 @@ public class Arm {
         return null;
     }
     
+    public void gotoPortcullisPosition() {
+    	pidController.setSetpoint(-.15);
+    }
+    
     public void disablePIDController() {
         overrideEnabled = true;
         pidController.disable();
