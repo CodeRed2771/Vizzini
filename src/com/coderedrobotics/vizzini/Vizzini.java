@@ -348,7 +348,7 @@ public class Vizzini extends IterativeRobot {
 	    	case 8:
 	    		autoTimer.setTimerAndAdvanceStage(4000);
 	       		arm.gotoShootPosition();
-	    		driveAuto.turnDegrees(58, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm)
+	    		driveAuto.turnDegrees(59, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
 	    		shooter.spinUp();
 	    		break;
 	    	case 9:

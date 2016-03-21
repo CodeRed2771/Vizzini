@@ -42,7 +42,7 @@ public class Calibration {
 //    public static final double AUTO_TURN_P = .007; // Lucky
     
     public static final double AUTO_DRIVE_P = .002; // Vizzini
-    public static final double AUTO_TURN_P = .012; // Vizzini
+    public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
     
     public static final double ROT_TOP_SPEED = 10;
     public static final double ROT_P = 1;
