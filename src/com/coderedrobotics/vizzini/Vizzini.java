@@ -1,6 +1,7 @@
 package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.Logger;
+import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.RobotLEDs;
 import com.coderedrobotics.libs.Timer;
 
@@ -31,6 +32,9 @@ public class Vizzini extends IterativeRobot {
     final String testAutoTurn = "Test Auto Turn";
     final String testIncDrive = "Test Incremental Drive";
     String autoSelected;
+
+    PWMController tape;
+    PWMController lift;
 
     boolean firing = false;
     private int testStage = 0;
@@ -82,6 +86,8 @@ public class Vizzini extends IterativeRobot {
         chooser.addObject("Test Incremental Drive", testIncDrive);
         SmartDashboard.putData("Auto choices", chooser);
 
+        tape = new PWMController(8, false);
+        lift = new PWMController(9, false);
     }
 
   
