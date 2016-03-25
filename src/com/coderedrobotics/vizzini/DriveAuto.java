@@ -75,6 +75,12 @@ public class DriveAuto {
     	
     }
     
+    public void test() {
+    	rightDrivePID.disable();
+    	leftDrivePID.disable();
+    	mainDrive.set(0.8, -.8);
+    }
+    
     public void curveDrive(int inches, double ratio) {
     	
     }
@@ -96,8 +102,8 @@ public class DriveAuto {
     	resetEncoders();
        	drivingStraight = false;
             	
-      	rightDrivePID.setPID(Calibration.AUTO_TURN_P, 0, .01);
-    	leftDrivePID.setPID(Calibration.AUTO_TURN_P, 0, .01);
+      	rightDrivePID.setPID(Calibration.AUTO_TURN_P, Calibration.AUTO_TURN_I, Calibration.AUTO_TURN_D);
+    	leftDrivePID.setPID(Calibration.AUTO_TURN_P, Calibration.AUTO_TURN_I, Calibration.AUTO_TURN_D);
 
     	leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inchesToTravel));	
 		rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(-inchesToTravel));
@@ -110,7 +116,7 @@ public class DriveAuto {
     
     public void tick() {
     	if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-			curPowerSetting += .005;
+			curPowerSetting += .007; 
 			if (curPowerSetting > maxPowerAllowed) curPowerSetting = maxPowerAllowed;
 			setPowerOutput(curPowerSetting);
     	}
@@ -189,7 +195,16 @@ public class DriveAuto {
 		
 		@Override
 		public void pidWrite(double output) {
-			PIDvalue = output;
+			if (drivingStraight) {
+				PIDvalue = output;
+			} else
+				PIDvalue = output;
+//				if (output < 0) {
+//					PIDvalue = - .3;
+//				} else {
+//					PIDvalue = .3;					
+//				}
+
 			outputToDriveTrain();
 		}
 	}

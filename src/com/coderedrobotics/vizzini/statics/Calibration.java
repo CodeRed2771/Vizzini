@@ -19,15 +19,18 @@ public class Calibration {
     
     public static final double ARM_SETPOINT_INCREMENT = .001;
     public static final double ARM_CALIBRATION_MOTOR_SPEED = .6; // was .3 3/10/16
-//    public static final double ARM_SHOOT_POSITION = 1.455810546875; // Lucky
-    public static final double ARM_SHOOT_POSITION = 1.094; // Vizzini
+    
+    public static final double ARM_SHOOT_POSITION = 1.455810546875; // Lucky
+  //  public static final double ARM_SHOOT_POSITION = 1.094; // Vizzini
+    
     public static final double ARM_P = 8;
     public static final double ARM_I = 0;
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
 
-//    public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
-    public static final double ARM_MIN_SETPOINT = -1.868; // Vizzini
+    public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
+ //   public static final double ARM_MIN_SETPOINT = -1.868; // Vizzini
+    
     public static final double ARM_MAX_SETPOINT = 0;
     public static final double ARM_PID_TEST_TOLERANCE = 0.1;
 
@@ -38,11 +41,15 @@ public class Calibration {
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
     public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 16.276; // this is the one used for Auto
-//    public static final double AUTO_DRIVE_P = .003; // Lucky
-//    public static final double AUTO_TURN_P = .007; // Lucky
+
+    public static final double AUTO_DRIVE_P = .003; // Lucky
     
-    public static final double AUTO_DRIVE_P = .002; // Vizzini
-    public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
+    public static final double AUTO_TURN_P = .013; // Lucky - was .007 3/24/16
+    public static final double AUTO_TURN_I = 0.001;
+    public static final double AUTO_TURN_D = 0.01;
+    
+    //public static final double AUTO_DRIVE_P = .002; // Vizzini
+    //public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
     
     public static final double ROT_TOP_SPEED = 10;
     public static final double ROT_P = 1;

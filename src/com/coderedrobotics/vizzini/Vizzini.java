@@ -97,8 +97,12 @@ public class Vizzini extends IterativeRobot {
 
     @Override
     public void teleopPeriodic() {
+    	
         drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
 
+        SmartDashboard.putNumber("Left Axis", keyMap.getLeftAxis());
+        SmartDashboard.putNumber("Right Axis", keyMap.getRightAxis());
+        
         if (keyMap.getReverseDriveButton()) {
             keyMap.toggleReverseDrive();
         }
@@ -131,15 +135,18 @@ public class Vizzini extends IterativeRobot {
             shooter.spinUp();
             shooter.lightOn();
         }
+        
         if (keyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
         }
+        
         if (keyMap.getPortcullisButton()) {
         	arm.feedOut();
         	arm.gotoPortcullisPosition();
         }
 
         shooter.tick();
+        
         if (keyMap.getFireButton()) {
             shooter.spinUp();
             shooter.lightOn();
@@ -267,7 +274,7 @@ public class Vizzini extends IterativeRobot {
     		
     		case 0:
     			autoTimer.setTimerAndAdvanceStage(6000);
-    			driveAuto.turnDegrees(180,  .7);
+    			driveAuto.turnDegrees(60,  .7);
     			break;
     			
     		case 1:
@@ -282,7 +289,7 @@ public class Vizzini extends IterativeRobot {
 	        		break;
 	        		
     		}
-    		
+    		//driveAuto.test();
      		break;
      		
      	case touchAuto:
