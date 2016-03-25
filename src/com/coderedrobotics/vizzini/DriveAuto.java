@@ -53,7 +53,8 @@ public class DriveAuto {
     	stop();
     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .1;
+    	curPowerSetting = .1;  // the minimum power required to start moving.  (Untested)
+    	
        	rightDrivePID.disable();
     	leftDrivePID.disable();
    	
@@ -92,7 +93,7 @@ public class DriveAuto {
     	stop();
     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .18;
+    	curPowerSetting = .2; // was .18 before 3/25/16 - this is a minimum power to start moving.
          	
       	rightDrivePID.disable();
     	leftDrivePID.disable();
@@ -116,7 +117,7 @@ public class DriveAuto {
     
     public void tick() {
     	if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-			curPowerSetting += .007; 
+			curPowerSetting += .005; 
 			if (curPowerSetting > maxPowerAllowed) curPowerSetting = maxPowerAllowed;
 			setPowerOutput(curPowerSetting);
     	}
@@ -156,7 +157,6 @@ public class DriveAuto {
     	leftDrivePID.disable();
     	rightDrivePID.disable();
     	mainDrive.set(0, 0);
-    	
     }
     
     public boolean hasArrived() {
@@ -210,27 +210,28 @@ public class DriveAuto {
 	}
 	   
     public void showEncoderValues() {
-    	//SmartDashboard.putNumber("Left Drive Encoder Distance: ", leftEncoder.getDistance());
-    	//SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
-    	//SmartDashboard.putNumber("Right PID error", rightDrivePID.getError());
      	SmartDashboard.putNumber("Left Drive PID Avg Error: ", leftDrivePID.getAvgError());
       	SmartDashboard.putNumber("Right Drive PID Avg Error: ", rightDrivePID.getAvgError());
-
-      	SmartDashboard.putNumber("Left Drive Encoder Get: ", mainDrive.getLeftEncoderObject().get());
-     	SmartDashboard.putNumber("Right Drive Encoder Get: ", mainDrive.getRightEncoderObject().get());
-     	
-//     	SmartDashboard.putNumber("Left Drive Distance: ", leftEncoder.getDistance());
-//     	SmartDashboard.putNumber("Right Drive Distance: ", rightEncoder.getDistance());
-      	
-     	SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
-      	SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
-      	
      	SmartDashboard.putBoolean("Left On Target", leftDrivePID.onTarget());
         SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
+        
+    	//		SmartDashboard.putNumber("Left Drive Encoder Distance: ", leftEncoder.getDistance());
+    	//		SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
+    	//		SmartDashboard.putNumber("Right PID error", rightDrivePID.getError());
+     	
+      	//   	SmartDashboard.putNumber("Left Drive Encoder Get: ", mainDrive.getLeftEncoderObject().get());
+      	//  	SmartDashboard.putNumber("Right Drive Encoder Get: ", mainDrive.getRightEncoderObject().get());
+     	
+      	//     	SmartDashboard.putNumber("Left Drive Distance: ", leftEncoder.getDistance());
+      	//     	SmartDashboard.putNumber("Right Drive Distance: ", rightEncoder.getDistance());
+
+      	//  	SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
+      	//   	SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
       	
-     	//SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
+      	
+     	//		SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
        	   	
-      	//SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
+      	//		SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
     }
    
 }
