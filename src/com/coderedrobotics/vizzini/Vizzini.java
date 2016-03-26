@@ -5,11 +5,13 @@ import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.RobotLEDs;
 import com.coderedrobotics.libs.Timer;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,11 +26,13 @@ public class Vizzini extends IterativeRobot {
     RobotLEDs leds;
     PowerDistributionPanel pdp;
     SendableChooser chooser;
+    AnalogGyro gyro;
     Timer autoTimer;
     final String lowbarAuto = "Low Bar";
     final String lowbarStraightThru = "lowbarStraightThru";
     final String touchAuto = "Touch Defense Auto";
     final String testAuto = "Test Auto";
+    final String lowbarStraightThruOrig = "lowbarStraightThruOrig";
     final String testAutoTurn = "Test Auto Turn";
     final String testIncDrive = "Test Incremental Drive";
     String autoSelected;
@@ -70,10 +74,13 @@ public class Vizzini extends IterativeRobot {
     		return pdp.getCurrent(Wiring.PICKUP_REAR_PDP) > 2 ? TestResult.SUCESS : TestResult.INCONCLUSIVE;
     	}, () -> { arm.pickupAllStop(); }, 1000, TestResult.FAILURE, "pickup rear");
     	
+    	gyro = new AnalogGyro(Wiring.GYRO);
+    	gyro.initGyro();
+    	gyro.calibrate();
         keyMap = new KeyMap();
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
         drive = new Drive();
-       	driveAuto = new DriveAuto(drive);
+       	driveAuto = new DriveAuto(drive, gyro);
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
       
@@ -88,6 +95,8 @@ public class Vizzini extends IterativeRobot {
 
         tape = new PWMController(8, false);
         lift = new PWMController(9, false);
+        
+       
     }
 
   
@@ -191,6 +200,7 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void autonomousInit() {
         leds.activateAutonomous();
+        gyro.reset();
     	drive.set(0, 0);
     	drive.setPIDstate(true);
     	driveAuto.stop();
@@ -319,8 +329,190 @@ public class Vizzini extends IterativeRobot {
 		    }
 
     		break;
-    	
+    	//
+    	//
+    	// LOW BAR - STRAIGHT THRU - SHOOT - HEAD BACK
+    	//
+    	// Main Auto Routine
+    	//
     	case lowbarStraightThru:
+       		switch (autoTimer.getStage()) {
+	    	case 0: 
+	    		autoTimer.setTimerAndAdvanceStage(6000);
+	    		driveAuto.driveInches(167, .3); 
+	            arm.calibrate(true);
+	    		break;
+	    	case 1:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		else {
+	    			if (driveAuto.getDistanceTravelled() > 50)
+	    				driveAuto.setMaxPowerOutput(.45);
+	    		}
+	    		break;
+	    	case 2:
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		arm.calibrate(true);
+	    		break;
+	       	case 3:
+	    		if (arm.isCalibrated()){
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 4:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	       		arm.gotoShootPosition();
+	    		driveAuto.turnDegrees(59, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
+	    		shooter.spinUp();
+	    		break;
+	    	case 5:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	    		break;
+	    	case 6: 
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.driveInches(18, .3); // Go forward 1 foot and a half
+	    		break;
+	    	case 7:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+
+	    	case 8:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.stop();
+	    		arm.dropBallInShooter();//Drops the ball in the shooter
+	    		break;
+	    	case 9:
+	    		 if (shooter.hasFired())
+	    			 autoTimer.stopTimerAndAdvanceStage();
+	    		//wait for shooter to shoot
+	    		break;
+	    	case 10:
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		shooter.stop();
+	    		arm.pickupAllStop();
+	    		driveAuto.driveInches(-18, .3); // Go backward 1 foot and a half
+	    		break;
+	    	case 11:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 12:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.turnDegrees(-59, .7);
+	    		break;
+	    	case 13:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 14:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		arm.gotoPickupPosition();
+	    		driveAuto.driveInches(-50, .3); 
+	    	case 15:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 16:
+	    		driveAuto.stop();
+	    	
+	    	//Have a nice day! :)
+	    		break;
+       		}
+    		break;
+    		
+    	   	// END OF MAIN LOW BAR AUTO
+
+    		
+    	// LOW BAR FROM SECOND POSITION
+    		
+    	case lowbarAuto: // from second position
+    		switch (autoTimer.getStage()) {
+    		case 0:
+    			autoTimer.setTimerAndAdvanceStage(3000); // wait three seconds before starting to give alliance time to get out of the way
+    			break;
+    		case 1:
+    			// do nothing - the timer will expire and move to the next stage
+	    	case 2: 
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		driveAuto.driveInches(12, .3); // move away from the line
+	    		break;
+	    	case 3:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 4:
+	    		autoTimer.setTimerAndAdvanceStage(2000);
+	    		arm.calibrate(true);
+	    		break;
+	       	case 5:
+	    		if (arm.isCalibrated()){
+	    			autoTimer.stopTimerAndAdvanceStage();
+	    		}
+	    		break;
+	    	case 6:
+	    		autoTimer.setTimerAndAdvanceStage(4000);
+	       		driveAuto.turnDegrees(-90, .7); // turn towards low bar
+	    		break;
+	    	case 7:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 8:
+	    		autoTimer.setTimerAndAdvanceStage(2500);
+	    		driveAuto.driveInches(51, .4); // drive towards wall by low bar
+	    		break;
+	    	case 9:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 10:
+	    		autoTimer.setTimerAndAdvanceStage(3000);
+	    		driveAuto.turnDegrees(90, .7); // turn to face the low bar
+
+	    		break;
+	    	case 11:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	    	case 12:
+	    		autoTimer.setTimerAndAdvanceStage(5000);
+	    		driveAuto.driveInches(110, .5); // drive through low bar
+	    		break;
+	    	case 13:
+	    		if (driveAuto.hasArrived()) {
+    	  			autoTimer.stopTimerAndAdvanceStage();
+	    	    } 
+	        	break;
+	        	
+	        	
+//	    	case 10:
+//	    		autoTimer.setTimerAndAdvanceStage(3000);
+//	    		driveAuto.turnDegrees(45, .7); // turn to face the goal
+//	    		break;
+//	    	case 11:
+//	    		if (driveAuto.hasArrived()) {
+//    	  			autoTimer.stopTimerAndAdvanceStage();
+//	    	    } 
+//	        	break;
+	    	case 14:
+	    		driveAuto.stop();
+    		}
+    		
+    		//WORKING LOW BAR FROM INDY DO NOT CHANGE UNDER PENALTY OF DEATH!!!
+    		
+    	case lowbarStraightThruOrig:
        		switch (autoTimer.getStage()) {
 	    	case 0: 
 	    		autoTimer.setTimerAndAdvanceStage(2000);
@@ -398,83 +590,6 @@ public class Vizzini extends IterativeRobot {
 	    		//Have a nice day! :)
 	    		break;
        		}
-    		break;
-    		
-    			
-    	case lowbarAuto: // from second position
-    		switch (autoTimer.getStage()) {
-    		case 0:
-    			autoTimer.setTimerAndAdvanceStage(3000); // wait three seconds before starting to give alliance time to get out of the way
-    			break;
-    		case 1:
-    			// do nothing - the timer will expire and move to the next stage
-	    	case 2: 
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		driveAuto.driveInches(12, .3); // move away from the line
-	    		break;
-	    	case 3:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 4:
-	    		autoTimer.setTimerAndAdvanceStage(2000);
-	    		arm.calibrate(true);
-	    		break;
-	       	case 5:
-	    		if (arm.isCalibrated()){
-	    			autoTimer.stopTimerAndAdvanceStage();
-	    		}
-	    		break;
-	    	case 6:
-	    		autoTimer.setTimerAndAdvanceStage(4000);
-	       		driveAuto.turnDegrees(-90, .7); // turn towards low bar
-	    		break;
-	    	case 7:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 8:
-	    		autoTimer.setTimerAndAdvanceStage(2500);
-	    		driveAuto.driveInches(51, .4); // drive towards wall by low bar
-	    		break;
-	    	case 9:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 10:
-	    		autoTimer.setTimerAndAdvanceStage(3000);
-	    		driveAuto.turnDegrees(90, .7); // turn to face the low bar
-
-	    		break;
-	    	case 11:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-	    	case 12:
-	    		autoTimer.setTimerAndAdvanceStage(5000);
-	    		driveAuto.driveInches(110, .5); // drive through low bar
-	    		break;
-	    	case 13:
-	    		if (driveAuto.hasArrived()) {
-    	  			autoTimer.stopTimerAndAdvanceStage();
-	    	    } 
-	        	break;
-//	    	case 10:
-//	    		autoTimer.setTimerAndAdvanceStage(3000);
-//	    		driveAuto.turnDegrees(45, .7); // turn to face the goal
-//	    		break;
-//	    	case 11:
-//	    		if (driveAuto.hasArrived()) {
-//    	  			autoTimer.stopTimerAndAdvanceStage();
-//	    	    } 
-//	        	break;
-	    	case 14:
-	    		driveAuto.stop();
-    		}
 		break;   		
     	}
     	

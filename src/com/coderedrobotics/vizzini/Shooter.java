@@ -42,7 +42,7 @@ public class Shooter {
                     smoothedOutput = ((output * 0.2) + (smoothedOutput * 0.8));
                     shooter1.set(smoothedOutput);
                     shooter2.set(smoothedOutput);
-                }, false, "Shooter");
+                }, true, "Shooter");
         pid.setOutputRange(0, 1);
         autoStop = new AutoStop();
         this.light = new Relay(light);

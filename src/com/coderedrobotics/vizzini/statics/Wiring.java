@@ -33,6 +33,7 @@ public class Wiring {
     public static final int RIGHT_ENCODER_B = 4;
 
     // ANALOG INPUT
+    public static final int GYRO = 0;
     
     // Relays
     public static final int RED_AND_GREEN_LEDS = 1;

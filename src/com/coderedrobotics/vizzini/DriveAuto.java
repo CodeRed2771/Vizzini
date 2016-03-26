@@ -9,6 +9,7 @@ import com.coderedrobotics.libs.TankDrive;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -22,15 +23,18 @@ public class DriveAuto {
     private PIDControllerAIAO leftDrivePID;
     private PIDControllerAIAO rightDrivePID;
     private Drive mainDrive;
-    
+    private AnalogGyro gyro; 
+        
     private boolean drivingStraight = true;
     
     private double maxPowerAllowed = 1;
     private double curPowerSetting = 1;
     private long timeDriveStarted = 0;
         
-    public DriveAuto(Drive mainDrive) {
+    public DriveAuto(Drive mainDrive, AnalogGyro gyro) {
      	this.mainDrive = mainDrive;
+     	this.gyro = gyro;
+     	
      	leftPIDHolder = new PIDHolder();
      	rightPIDHolder = new PIDHolder();
      	
@@ -38,20 +42,20 @@ public class DriveAuto {
         rightDrivePID = new PIDControllerAIAO(0, 0, 0, new PIDSourceFilter((double value) -> -mainDrive.getRightEncoderObject().get()), rightPIDHolder, false, "autoright");
  
         leftDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
-        rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH/ 2);
+        rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2);
         leftDrivePID.setToleranceBuffer(20); // ten readings
         rightDrivePID.setToleranceBuffer(20);
         leftDrivePID.setSetpoint(0);
         leftDrivePID.reset();
         rightDrivePID.setSetpoint(0);
         rightDrivePID.reset();
-        
     }
    
     public void driveInches(int inches, double maxPower) {
     	
     	stop();
-    	
+
+    	gyro.reset();
     	maxPowerAllowed = maxPower;
     	curPowerSetting = .1;  // the minimum power required to start moving.  (Untested)
     	
@@ -141,19 +145,23 @@ public class DriveAuto {
     	return Math.abs(convertTicksToInches(mainDrive.getLeftEncoderObject().get())); 
     }
     
-    private double encoderAdjust() {
+    private double alignmentAdjust() {
     	if (drivingStraight) 
-    		return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
+    		if (gyro.getAngle() < 180)
+    			return (gyro.getAngle() * .1);
+    		else
+    			return (gyro.getAngle() - 360 * .1);
+    	//return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
     	else
     		return 0;
     }
     
     private void outputToDriveTrain() {
     	// this is called from the PIDWrites to send the new output values to the main drive object
-    	mainDrive.set(leftPIDHolder.PIDvalue, rightPIDHolder.PIDvalue + encoderAdjust());
+    	mainDrive.set(leftPIDHolder.PIDvalue, rightPIDHolder.PIDvalue + alignmentAdjust());
     }
     
-   public void stop() {
+    public void stop() {
     	leftDrivePID.disable();
     	rightDrivePID.disable();
     	mainDrive.set(0, 0);
@@ -214,6 +222,7 @@ public class DriveAuto {
       	SmartDashboard.putNumber("Right Drive PID Avg Error: ", rightDrivePID.getAvgError());
      	SmartDashboard.putBoolean("Left On Target", leftDrivePID.onTarget());
         SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
+        SmartDashboard.putNumber("Gyro", gyro.getAngle());
         
     	//		SmartDashboard.putNumber("Left Drive Encoder Distance: ", leftEncoder.getDistance());
     	//		SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
