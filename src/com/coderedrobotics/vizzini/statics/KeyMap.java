@@ -41,6 +41,9 @@ public class KeyMap {
     private final HID.Button shooterLightButton = LogitechF310.START;
     private final HID.Axis armAxis = LogitechF310.STICK_LEFT_Y;
     private final HID.Button portcullisButton = LogitechF310.BACK;
+    private final HID.Axis tapeMeasureAxis = LogitechF310.STICK_RIGHT_Y;
+    private final HID.Button liftInButton = LogitechF310.BUMPER_RIGHT;
+    private final HID.Button liftOutButton = LogitechF310.BUMPER_LEFT;
 
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
@@ -168,5 +171,17 @@ public class KeyMap {
     
     public boolean getPortcullisButton() {
     	return getHID(gamepad2).button(portcullisButton);
+    }
+    
+    public double getTapeMeasureAxis() {
+        return getHID(gamepad2).axis(tapeMeasureAxis);
+    }
+    
+    public boolean getLiftInButton() {
+        return getHID(gamepad2).button(liftInButton);
+    }
+    
+    public boolean getLiftOutButton() {
+        return getHID(gamepad2).button(liftOutButton);
     }
 }

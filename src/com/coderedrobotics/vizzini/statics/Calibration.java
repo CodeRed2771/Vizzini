@@ -68,4 +68,6 @@ public class Calibration {
     public static final double SHOOTER_I = -.75;
     public static final double SHOOTER_D = -0.001;
     public static final double SHOOTER_F = -1d / 50000d;
+    
+    public static final double LIFT_SPEED = 0.6;
 }

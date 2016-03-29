@@ -23,6 +23,7 @@ public class Vizzini extends IterativeRobot {
     Shooter shooter;
     Drive drive;
     DriveAuto driveAuto;
+    Lift lift;
     RobotLEDs leds;
     PowerDistributionPanel pdp;
     SendableChooser chooser;
@@ -36,9 +37,6 @@ public class Vizzini extends IterativeRobot {
     final String testAutoTurn = "Test Auto Turn";
     final String testIncDrive = "Test Incremental Drive";
     String autoSelected;
-
-    PWMController tape;
-    PWMController lift;
 
     boolean firing = false;
     private int testStage = 0;
@@ -83,7 +81,8 @@ public class Vizzini extends IterativeRobot {
        	driveAuto = new DriveAuto(drive, gyro);
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
-      
+        lift = new Lift(Wiring.TAPE_MEASURE_MOTOR, Wiring.LIFT_MOTOR);
+        
         chooser = new SendableChooser();
         chooser.addObject("Drive up to Defense", touchAuto);
         chooser.addObject("Low Bar One Away", lowbarAuto);
@@ -92,9 +91,9 @@ public class Vizzini extends IterativeRobot {
         chooser.addObject("Test Auto Turn 180'", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
         SmartDashboard.putData("Auto choices", chooser);
-
-        tape = new PWMController(8, false);
-        lift = new PWMController(9, false);
+//
+//        tape = new PWMController(8, false);
+//        lift = new PWMController(9, false);
         
        
     }
@@ -182,14 +181,21 @@ public class Vizzini extends IterativeRobot {
                 firing = false;
             }
         }
-        
         if (keyMap.getShooterLightToggleButton()) {
         	shooter.toggleLight();
         }
-        
         if (keyMap.getOverrideShooterPIDButton()) {
             shooter.enableOverrideMode();
         }
+        
+        if (keyMap.getLiftInButton()) {
+            lift.liftIn();
+        } else if (keyMap.getLiftOutButton()) {
+            lift.liftOut();
+        } else {
+            lift.stop();
+        }
+        lift.tapeMeasure(keyMap.getTapeMeasureAxis());
 
         if (keyMap.getSingleControllerToggleButton()) {
             keyMap.toggleSingleControllerMode();
