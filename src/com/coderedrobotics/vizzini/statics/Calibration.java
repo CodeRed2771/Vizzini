@@ -23,6 +23,8 @@ public class Calibration {
     public static final double ARM_SHOOT_POSITION = 1.455810546875; // Lucky
   //  public static final double ARM_SHOOT_POSITION = 1.094; // Vizzini
     
+    public static final double ARM_CHIVAL_POSITION = .4; //Lucky
+    
     public static final double ARM_P = 8;
     public static final double ARM_I = 0;
     public static final double ARM_D = 10;
@@ -48,11 +50,15 @@ public class Calibration {
     public static final double AUTO_TURN_I = 0.001;
     public static final double AUTO_TURN_D = 0.01;
     
+    public static final double AUTO_GYRO_P = .05;
+    public static final double AUTO_GYRO_I = 0;
+    public static final double AUTO_GYRO_D = 0;
+    
     //public static final double AUTO_DRIVE_P = .002; // Vizzini
     //public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
     
     public static final double ROT_TOP_SPEED = 10;
-    public static final double ROT_P = 1;
+    public static final double ROT_P = 1; //this is used by the main drive class
     public static final double ROT_I = 0;
     public static final double ROT_D = 0;
     
@@ -69,5 +75,7 @@ public class Calibration {
     public static final double SHOOTER_D = -0.001;
     public static final double SHOOTER_F = -1d / 50000d;
     
-    public static final double LIFT_SPEED = 0.6;
+    public static final double LIFT_OUT = 0.6; //lifts down
+    public static final double LIFT_IN = 1; //lifts up
+    
 }

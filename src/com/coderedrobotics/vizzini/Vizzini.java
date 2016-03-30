@@ -36,12 +36,15 @@ public class Vizzini extends IterativeRobot {
     final String lowbarStraightThruOrig = "lowbarStraightThruOrig";
     final String testAutoTurn = "Test Auto Turn";
     final String testIncDrive = "Test Incremental Drive";
+    final String chivalAuto = "ChivalDeFrise";
+    final String autoDefenseFire = "AutoDefenseFire";
     String autoSelected;
 
     boolean firing = false;
     private int testStage = 0;
     private long testTimer = 0;
     private boolean hasError = false;
+    private double robotPosition = 0;
 
     @Override
     public void robotInit() {
@@ -88,9 +91,12 @@ public class Vizzini extends IterativeRobot {
         chooser.addObject("Low Bar One Away", lowbarAuto);
         chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
         chooser.addObject("Test Auto Drive 10'", testAuto);
-        chooser.addObject("Test Auto Turn 180'", testAutoTurn);
+        chooser.addObject("Test Auto Turn", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
+        chooser.addObject("Chival De Frise Auto (REVERSE DIRECTION!)",chivalAuto);
+        chooser.addObject("Auto Defense Fire", autoDefenseFire);
         SmartDashboard.putData("Auto choices", chooser);
+        SmartDashboard.putNumber("Robot Position (From Lowbar)", robotPosition);
 //
 //        tape = new PWMController(8, false);
 //        lift = new PWMController(9, false);
@@ -239,7 +245,60 @@ public class Vizzini extends IterativeRobot {
     	arm.tick();
     	
     	switch(autoSelected) {
-
+    	
+    	//simply testing automatic defense auto
+    	case autoDefenseFire:
+    		switch (autoTimer.getStage()) {
+    		case 0:
+    			
+    			robotPosition = SmartDashboard.getNumber("Robot Position (From Lowbar)", 0);
+				switch((int)robotPosition){
+				case 1:
+					driveAuto.turnDegrees(40, .6);
+					break;
+				case 2:
+					driveAuto.turnDegrees(5, .6);
+					break;
+				case 3:
+					driveAuto.turnDegrees(-4, .6);
+					break;
+				case 4:
+					driveAuto.turnDegrees(-20, .6);
+					break;
+				}
+				break;
+    		case 1:
+ 				if(driveAuto.hasArrived()){
+ 					autoTimer.stopTimerAndAdvanceStage();
+ 				}
+ 				break;
+ 			case 2:
+ 				autoTimer.setTimerAndAdvanceStage(2500);
+ 				shooter.spinUp();
+ 				arm.gotoShootPosition();
+ 				break;
+ 			case 3:
+ 				break;
+ 			case 4:
+ 				autoTimer.setTimerAndAdvanceStage(2000);
+ 				arm.dropBallInShooter();
+ 				break;
+ 			case 5:
+ 				if (shooter.hasFired())
+ 					autoTimer.stopTimerAndAdvanceStage();
+	    		//wait for shooter to shoot
+ 				break;
+   	    	case 6:
+   	    		autoTimer.setTimerAndAdvanceStage(3000);
+   	    		shooter.stop();
+   	    		arm.pickupAllStop();
+   	    		arm.gotoPickupPosition();
+   	    		break;
+   	    		
+			// TEST ENDS HERE
+    		}
+    		break;
+    	
     	case testIncDrive:
     		switch (autoTimer.getStage()) {
     		
@@ -335,6 +394,90 @@ public class Vizzini extends IterativeRobot {
 		    }
 
     		break;
+     	case chivalAuto:
+     		switch(autoTimer.getStage()){
+     			case 0:
+     				autoTimer.setTimerAndAdvanceStage(2000);
+     				arm.calibrate(true);
+     				break;
+     			case 1:
+     				//Waiting for timer to expire
+     				break;
+     			case 2:
+     				autoTimer.setTimerAndAdvanceStage(3000);
+     				arm.gotoChivalDeFrisePosition();
+     				driveAuto.driveInches(-36, .4);
+     				break;
+     			case 3:
+     				if (driveAuto.hasArrived()){
+     					autoTimer.stopTimerAndAdvanceStage();
+     				}
+     				break;
+     			case 4:
+     				autoTimer.setTimerAndAdvanceStage(2500);
+     				arm.gotoPickupPosition();
+     				break;
+     			case 5:
+     				//Waiting for timer to expire
+     				break;
+     			case 6:
+     				autoTimer.setTimerAndAdvanceStage(4000);
+     				driveAuto.driveInches(-80, .35);
+     				break;
+     			case 7:
+     				if(driveAuto.hasArrived()){
+     					autoTimer.stopTimerAndAdvanceStage();
+     				}
+     				break;
+     			//STARTING SHOOTING CASES
+     			case 8:
+     				autoTimer.setTimerAndAdvanceStage(2000);
+     				robotPosition = SmartDashboard.getNumber("Robot Position (From Lowbar)", 0);
+     				switch((int)robotPosition){
+     				case 1:
+     					driveAuto.turnDegrees(40, .6);
+     					break;
+     				case 2:
+     					driveAuto.turnDegrees(5, .6);
+     					break;
+     				case 3:
+     					driveAuto.turnDegrees(-4, .6);
+     					break;
+     				case 4:
+     					driveAuto.turnDegrees(-20, .6);
+     					break;
+     				}
+     				break;
+     			case 9:
+     				if(driveAuto.hasArrived()){
+     					autoTimer.stopTimerAndAdvanceStage();
+     				}
+     				break;
+     			case 10:
+     				autoTimer.setTimerAndAdvanceStage(2500);
+     				shooter.spinUp();
+     				arm.gotoShootPosition();
+     				break;
+     			case 11:
+     				break;
+     			case 12:
+     				autoTimer.setTimerAndAdvanceStage(2000);
+     				arm.dropBallInShooter();
+     				break;
+     			case 13:
+     				if (shooter.hasFired())
+     					autoTimer.stopTimerAndAdvanceStage();
+   	    		//wait for shooter to shoot
+     				break;
+	   	    	case 14:
+	   	    		autoTimer.setTimerAndAdvanceStage(3000);
+	   	    		shooter.stop();
+	   	    		arm.pickupAllStop();
+	   	    		arm.gotoPickupPosition();
+	   	    		break;
+	   	    		
+     		}
+     		break;
     	//
     	//
     	// LOW BAR - STRAIGHT THRU - SHOOT - HEAD BACK
