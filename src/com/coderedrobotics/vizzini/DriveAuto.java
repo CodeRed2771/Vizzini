@@ -6,6 +6,7 @@ import com.coderedrobotics.vizzini.statics.Calibration;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveAuto {
@@ -15,7 +16,7 @@ public class DriveAuto {
 
     private PIDControllerAIAO leftDrivePID;
     private PIDControllerAIAO rightDrivePID;
-    private PIDControllerAIAO rotDrivePID;
+    public PIDControllerAIAO rotDrivePID;
     private Drive mainDrive;
     private AnalogGyro gyro;
 
@@ -38,12 +39,16 @@ public class DriveAuto {
 
         leftDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
         rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2);
+        rotDrivePID.setAbsoluteTolerance(.5);
+        rotDrivePID.setToleranceBuffer(10);
+        
         leftDrivePID.setToleranceBuffer(20); // ten readings
         rightDrivePID.setToleranceBuffer(20);
         leftDrivePID.setSetpoint(0);
         leftDrivePID.reset();
         rightDrivePID.setSetpoint(0);
         rightDrivePID.reset();
+        
     }
 
     public void driveInches(int inches, double maxPower) {
@@ -56,6 +61,7 @@ public class DriveAuto {
 
         rightDrivePID.disable();
         leftDrivePID.disable();
+        rotDrivePID.disable();
 
         setPowerOutput(curPowerSetting);
 
@@ -151,9 +157,9 @@ public class DriveAuto {
     private double alignmentAdjust() {
         if (drivingStraight) {
             if (gyro.getAngle() < 180) {
-                return (gyro.getAngle() * .1);
+                return (gyro.getAngle() * .10);
             } else {
-                return (gyro.getAngle() - 360 * .1);
+                return (gyro.getAngle() - 360 * .10); // was .1, .2 (drove jumpy), .15
             }
         } //return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
         else {
@@ -169,6 +175,7 @@ public class DriveAuto {
     public void stop() {
         leftDrivePID.disable();
         rightDrivePID.disable();
+        rotDrivePID.disable();
         mainDrive.set(0, 0);
     }
 
@@ -185,9 +192,11 @@ public class DriveAuto {
         if (isEnabled) {
             leftDrivePID.enable();
             rightDrivePID.enable();
+            rotDrivePID.enable();
         } else {
             leftDrivePID.disable();
             rightDrivePID.disable();
+            rotDrivePID.disable();
         }
     }
 
@@ -230,6 +239,7 @@ public class DriveAuto {
         SmartDashboard.putBoolean("Left On Target", leftDrivePID.onTarget());
         SmartDashboard.putBoolean("Right On Target", rightDrivePID.onTarget());
         SmartDashboard.putNumber("Gyro", gyro.getAngle());
+        SmartDashboard.putNumber("Gyro PID error", rotDrivePID.getAvgError());
 
         //		SmartDashboard.putNumber("Left Drive Encoder Distance: ", leftEncoder.getDistance());
         //		SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
