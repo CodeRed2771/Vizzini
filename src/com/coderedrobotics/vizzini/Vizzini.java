@@ -1,19 +1,16 @@
 package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.Logger;
-import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.libs.RobotLEDs;
 import com.coderedrobotics.libs.Timer;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.KeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -538,7 +535,7 @@ public class Vizzini extends IterativeRobot {
     		case 4:
     			autoTimer.setTimerAndAdvanceStage(3000);
     			arm.gotoShootPosition();
-    			driveAuto.turnDegrees(30, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
+    			driveAuto.turnDegrees(36, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
     			shooter.spinUp();
     			break;
     		case 5:
