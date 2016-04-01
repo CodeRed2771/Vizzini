@@ -75,6 +75,9 @@ public class Arm {
     public void gotoPortcullisPosition() {
     	pidController.setSetpoint(-.15);
     }
+    public void gotoChivalDeFrisePosition(){
+    	pidController.setSetpoint(-Calibration.ARM_CHIVAL_POSITION);
+    }
     
     public void disablePIDController() {
         overrideEnabled = true;

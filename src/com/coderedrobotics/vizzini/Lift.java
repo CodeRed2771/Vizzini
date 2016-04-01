@@ -15,7 +15,7 @@ public class Lift {
     private PWMController tapeMeasure;
     private PWMController lift;
 
-    // contstructor (2 wiring ports)
+    // constructor (2 wiring ports)
     public Lift(int tapePort, int liftPort) {
         tapeMeasure = new PWMController(tapePort, false);
         lift = new PWMController(liftPort, false);
@@ -28,13 +28,13 @@ public class Lift {
     
     // lift out
     public void liftOut(){
-        lift.set(-Calibration.LIFT_SPEED);
+        lift.set(-Calibration.LIFT_OUT);
     }
     
     // lift in
     
     public void liftIn(){
-        lift.set(Calibration.LIFT_SPEED);
+        lift.set(Calibration.LIFT_IN);
     }
     
     public void stop() {

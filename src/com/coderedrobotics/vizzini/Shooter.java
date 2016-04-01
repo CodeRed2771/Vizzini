@@ -19,7 +19,7 @@ public class Shooter {
     private double smoothedOutput = 0;
     private long timeout;
     private boolean hasBeenSpunUp = false;
-    private double speed;
+    private double speed = Calibration.SHOOTER_SPIN_SPEED;
 
     public Shooter(int talon, int victor, int light) {
         shooter1 = new CANTalon(talon);
