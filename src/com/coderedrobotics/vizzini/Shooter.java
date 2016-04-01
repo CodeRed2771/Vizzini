@@ -19,6 +19,7 @@ public class Shooter {
     private double smoothedOutput = 0;
     private long timeout;
     private boolean hasBeenSpunUp = false;
+    private double speed;
 
     public Shooter(int talon, int victor, int light) {
         shooter1 = new CANTalon(talon);
@@ -60,7 +61,7 @@ public class Shooter {
     }
 
     public void spinUp() {
-        pid.setSetpoint(Calibration.SHOOTER_SPIN_SPEED);
+        pid.setSetpoint(speed);
         pid.enable();
     }
 
@@ -103,6 +104,18 @@ public class Shooter {
     
     public void toggleLight() {
         light.set(light.get() == Relay.Value.kOn ? Relay.Value.kOff : Relay.Value.kOn);
+    }
+    
+    public void setSpeedStraightOuterWorks() {
+        speed = Calibration.SHOOTER_SPIN_SPEED_STRAIGHT;
+    }
+    
+    public void setSpeedLowBar() {
+        speed = Calibration.SHOOTER_SPIN_SPEED_LOW_BAR;
+    }
+    
+    public void setDefaultSpeed() {
+        speed = Calibration.SHOOTER_SPIN_SPEED;
     }
     
     private class AutoStop {

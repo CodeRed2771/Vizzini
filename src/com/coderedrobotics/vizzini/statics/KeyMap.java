@@ -29,7 +29,7 @@ public class KeyMap {
     private final HID.Button fireButton = LogitechF310.TRIGGER_RIGHT;
     private final HID.Button fireOverrideButton = LogitechF310.TRIGGER_LEFT;
     private final HID.Button cancelFireButton = LogitechF310.X;
-    
+
     // CONTROLLER 1
     private final HID.Button feedInButton = LogitechF310.A;
     private final HID.Button feedOutButton = LogitechF310.B;
@@ -44,6 +44,8 @@ public class KeyMap {
     private final HID.Axis tapeMeasureAxis = LogitechF310.STICK_RIGHT_Y;
     private final HID.Button liftInButton = LogitechF310.BUMPER_RIGHT;
     private final HID.Button liftOutButton = LogitechF310.BUMPER_LEFT;
+    private final HID.Button shooterSpeedModifierStraightOuterWorks = LogitechF310.TRIGGER_RIGHT;
+    private final HID.Button shooterSpeedModifierLowBar = LogitechF310.TRIGGER_LEFT;
 
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
@@ -51,7 +53,7 @@ public class KeyMap {
     private final HID.ButtonState reduceSpeedButtonState = HID.newButtonState();
     private final HID.ButtonState shooterLightButtonState1 = HID.newButtonState();
     private final HID.ButtonState shooterLightButtonState2 = HID.newButtonState();
-    
+
     public KeyMap() {
 
     }
@@ -118,21 +120,21 @@ public class KeyMap {
     public boolean getFireOverrideButton() {
         return getHID(gamepad1).button(fireOverrideButton);
     }
-    
+
     public double getLeftAxis() {
-    	return (reverseDrive ? -(getHID(gamepad1).axis(driveRightAxis)) : (getHID(gamepad1).axis(driveLeftAxis))) *
-    			(reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
+        return (reverseDrive ? -(getHID(gamepad1).axis(driveRightAxis)) : (getHID(gamepad1).axis(driveLeftAxis)))
+                * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
     }
-    
+
     public double getRightAxis() {
-    	return (reverseDrive ? -(getHID(gamepad1).axis(driveLeftAxis)) : (getHID(gamepad1).axis(driveRightAxis))) *
-    			(reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
+        return (reverseDrive ? -(getHID(gamepad1).axis(driveLeftAxis)) : (getHID(gamepad1).axis(driveRightAxis)))
+                * (reduceSpeed ? Calibration.DRIVE_TRAIN_REDUCTION_FACTOR : 1);
     }
-    
+
     public boolean getDriverCancelFireButton() {
         return getHID(gamepad1).button(cancelFireButton);
     }
-    
+
     public double getArmAxis() {
         return -getHID(gamepad2).axis(armAxis);
     }
@@ -156,32 +158,40 @@ public class KeyMap {
     public boolean getOverrideArmPIDButton() {
         return getHID(gamepad2).button(overrideArmPIDButton);
     }
-    
+
     public boolean getOverrideDrivePIDButton() {
         return getHID(gamepad2).button(overrideDrivePIDButton);
     }
-    
+
     public boolean getOverrideShooterPIDButton() {
         return getHID(gamepad2).button(overrideShooterPIDButton);
     }
-    
+
     public boolean getShooterLightToggleButton() {
         return getHID(gamepad1).buttonPressed(shooterLightButton, shooterLightButtonState1) || getHID(gamepad2).buttonPressed(shooterLightButton, shooterLightButtonState2);
     }
-    
+
     public boolean getPortcullisButton() {
-    	return getHID(gamepad2).button(portcullisButton);
+        return getHID(gamepad2).button(portcullisButton);
     }
-    
+
     public double getTapeMeasureAxis() {
         return getHID(gamepad2).axis(tapeMeasureAxis);
     }
-    
+
     public boolean getLiftInButton() {
         return getHID(gamepad2).button(liftInButton);
     }
-    
+
     public boolean getLiftOutButton() {
         return getHID(gamepad2).button(liftOutButton);
+    }
+
+    public boolean getShooterSpeedModifierStraightOuterWorks() {
+        return getHID(gamepad2).button(shooterSpeedModifierStraightOuterWorks);
+    }
+
+    public boolean getShooterSpeedModifierLowBar() {
+        return getHID(gamepad2).button(shooterSpeedModifierLowBar);
     }
 }
