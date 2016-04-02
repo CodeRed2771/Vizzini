@@ -90,8 +90,22 @@ public class DriveAuto {
     public void curveDrive(int inches, double ratio) {
 
     }
-
+    public void turnDegreesFromZero(int degrees, double maxPower) {
+        leftDrivePID.disable();
+        rightDrivePID.disable();
+        drivingStraight = false;
+        rotDrivePID.setSetpoint(degrees);
+        rotDrivePID.enable();
+        rotDrivePID.setOutputRange(-maxPower, maxPower);
+    }
+    
     public void turnDegrees(int degrees, double maxPower) {
+        leftDrivePID.disable();
+        rightDrivePID.disable();
+        drivingStraight = false;
+        rotDrivePID.setSetpoint(gyro.getAngle() + degrees);
+        rotDrivePID.enable();
+        rotDrivePID.setOutputRange(-maxPower, maxPower);
 
 //        double inchesToTravel = degrees / 6.6;
 //
@@ -118,12 +132,6 @@ public class DriveAuto {
 //        rightDrivePID.enable();
 //
 //        timeDriveStarted = System.currentTimeMillis();
-        leftDrivePID.disable();
-        rightDrivePID.disable();
-        drivingStraight = false;
-        rotDrivePID.setSetpoint(gyro.getAngle() + degrees);
-        rotDrivePID.enable();
-        rotDrivePID.setOutputRange(-maxPower, maxPower);
     }
 
     public void tick() {
@@ -155,13 +163,15 @@ public class DriveAuto {
     }
 
     private double alignmentAdjust() {
-        if (drivingStraight) {
-            if (gyro.getAngle() < 180) {
-                return (gyro.getAngle() * .10);
-            } else {
-                return (gyro.getAngle() - 360 * .10); // was .1, .2 (drove jumpy), .15
-            }
-        } //return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
+//        if (drivingStraight) {
+//            if (gyro.getAngle() < 180) {
+//                return (gyro.getAngle() * .08);
+//            } else {
+//                return (gyro.getAngle() - 360 * .08); // was .1, .2 (drove jumpy), .15
+//            }
+//        } 
+        if (drivingStraight) 
+        	return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
         else {
             return 0;
         }

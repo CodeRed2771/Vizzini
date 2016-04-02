@@ -88,10 +88,10 @@ public class Vizzini extends IterativeRobot {
         gyro.initGyro();
         gyro.calibrate();
         keyMap = new KeyMap();
-        arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR);
+        leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
+        arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR, leds);
         drive = new Drive();
         driveAuto = new DriveAuto(drive, gyro);
-        leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
         lift = new Lift(Wiring.TAPE_MEASURE_MOTOR, Wiring.LIFT_MOTOR);
 
@@ -378,10 +378,18 @@ public class Vizzini extends IterativeRobot {
 
     		case 0:
     			autoTimer.setTimerAndAdvanceStage(6000);
-    			driveAuto.turnDegrees(60,  .7);
+    			driveAuto.turnDegrees(45,  .7);
+    			break;
+    			
+    		case 1:
+    			break;
+    			
+    		case 2:
+    			autoTimer.setTimerAndAdvanceStage(6000);
+    			driveAuto.turnDegreesFromZero(90,  .7);
     			break;
 
-    		case 1:
+    		case 3:
     			//	 if (driveAuto.hasArrived()) {
     			//    	  //driveAuto.stop();
     			//    	  	SmartDashboard.putString("Drive Target: ", "Arrived");
@@ -417,6 +425,10 @@ public class Vizzini extends IterativeRobot {
     		}
 
     		break;
+    		
+    	//
+    	// CHIVAL DE FREESE
+    	//
     	case chivalAuto:
     		switch(autoTimer.getStage()){
     		case 0:
@@ -535,7 +547,7 @@ public class Vizzini extends IterativeRobot {
     		case 4:
     			autoTimer.setTimerAndAdvanceStage(3000);
     			arm.gotoShootPosition();
-    			driveAuto.turnDegrees(36, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
+    			driveAuto.turnDegrees(58, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
     			shooter.spinUp();
     			break;
     		case 5:
@@ -576,7 +588,7 @@ public class Vizzini extends IterativeRobot {
     			break;
     		case 12:
     			autoTimer.setTimerAndAdvanceStage(3000);
-    			driveAuto.turnDegrees(-30, .7);
+    			driveAuto.turnDegrees(-50, .7);
     			break;
     		case 13:
     			if (driveAuto.hasArrived()) {
@@ -608,10 +620,11 @@ public class Vizzini extends IterativeRobot {
     	case lowbarAuto: // from second position
     		switch (autoTimer.getStage()) {
     		case 0:
-    			autoTimer.setTimerAndAdvanceStage(3000); // wait three seconds before starting to give alliance time to get out of the way
+    			autoTimer.setTimerAndAdvanceStage(2000); // wait three seconds before starting to give alliance time to get out of the way
     			break;
     		case 1:
     			// do nothing - the timer will expire and move to the next stage
+    			break;
     		case 2: 
     			autoTimer.setTimerAndAdvanceStage(2000);
     			driveAuto.driveInches(12, .3); // move away from the line
@@ -622,7 +635,7 @@ public class Vizzini extends IterativeRobot {
     			} 
     			break;
     		case 4:
-    			autoTimer.setTimerAndAdvanceStage(2000);
+    			autoTimer.setTimerAndAdvanceStage(1000);
     			arm.calibrate(true);
     			break;
     		case 5:
@@ -631,8 +644,8 @@ public class Vizzini extends IterativeRobot {
     			}
     			break;
     		case 6:
-    			autoTimer.setTimerAndAdvanceStage(4000);
-    			driveAuto.turnDegrees(-90, .7); // turn towards low bar
+    			autoTimer.setTimerAndAdvanceStage(2500);
+    			driveAuto.turnDegrees(-90, .7); // turn towards wall
     			break;
     		case 7:
     			if (driveAuto.hasArrived()) {
@@ -641,7 +654,7 @@ public class Vizzini extends IterativeRobot {
     			break;
     		case 8:
     			autoTimer.setTimerAndAdvanceStage(2500);
-    			driveAuto.driveInches(51, .4); // drive towards wall by low bar
+    			driveAuto.driveInches(49, .4); // drive towards wall by low bar
     			break;
     		case 9:
     			if (driveAuto.hasArrived()) {
@@ -649,7 +662,7 @@ public class Vizzini extends IterativeRobot {
     			} 
     			break;
     		case 10:
-    			autoTimer.setTimerAndAdvanceStage(3000);
+    			autoTimer.setTimerAndAdvanceStage(2000);
     			driveAuto.turnDegrees(90, .7); // turn to face the low bar
 
     			break;
@@ -659,7 +672,7 @@ public class Vizzini extends IterativeRobot {
     			} 
     			break;
     		case 12:
-    			autoTimer.setTimerAndAdvanceStage(5000);
+    			autoTimer.setTimerAndAdvanceStage(4000);
     			driveAuto.driveInches(110, .5); // drive through low bar
     			break;
     		case 13:
@@ -667,20 +680,21 @@ public class Vizzini extends IterativeRobot {
     				autoTimer.stopTimerAndAdvanceStage();
     			} 
     			break;
-
-
-    			//	    	case 10:
-    			//	    		autoTimer.setTimerAndAdvanceStage(3000);
-    			//	    		driveAuto.turnDegrees(45, .7); // turn to face the goal
-    			//	    		break;
-    			//	    	case 11:
-    			//	    		if (driveAuto.hasArrived()) {
-    			//    	  			autoTimer.stopTimerAndAdvanceStage();
-    			//	    	    } 
-    			//	        	break;
     		case 14:
+    			autoTimer.setTimerAndAdvanceStage(2000);
+    			driveAuto.turnDegrees(35, .7); // turn to face the low bar
+
+    			break;
+    		case 15:
+    			if (driveAuto.hasArrived()) {
+    				autoTimer.stopTimerAndAdvanceStage();
+    			} 
+    			break;
+    		case 16:
     			driveAuto.stop();
+    			break;
     		}
+    		break;
 
     		//WORKING LOW BAR FROM INDY DO NOT CHANGE UNDER PENALTY OF DEATH!!!
 

@@ -2,6 +2,8 @@ package com.coderedrobotics.vizzini;
 
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDSourceFilter;
+import com.coderedrobotics.libs.RobotLEDs;
+import com.coderedrobotics.libs.RobotLEDs.Color;
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.Wiring;
 
@@ -22,13 +24,15 @@ public class Arm {
     private final Pickup pickup;
     private final DigitalInput limitSwitch;
     public long lastArmChange = 0;
+    private final RobotLEDs leds;
 
     private boolean isCalibrating = false;
     private boolean isCalibrated = false;
     private boolean overrideEnabled = false;
 
-    public Arm(int armMotorPort, int pickupFrontMotorPort, int pickupRearMotorPort) {
-        pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort, (Object o) -> gotoRestingPosition());
+    public Arm(int armMotorPort, int pickupFrontMotorPort, int pickupRearMotorPort, RobotLEDs leds) {
+    	this.leds = leds;
+        pickup = new Pickup(pickupFrontMotorPort, pickupRearMotorPort, (Object o) -> pickupBallEvent());
         arm = new CANTalon(armMotorPort);
 
         limitSwitch = new DigitalInput(Wiring.ARM_LIMIT_SWITCH);
@@ -67,9 +71,14 @@ public class Arm {
         pidController.setSetpoint(0);
     }
     
-    public Object gotoRestingPosition() {
+    public Object pickupBallEvent() {
+    	gotoRestingPosition();
+    	leds.blinkThrice(Color.WHITE, 3);
+    	return null;
+    }
+    
+    public void gotoRestingPosition() {
         pidController.setSetpoint(-.4);
-        return null;
     }
     
     public void gotoPortcullisPosition() {
