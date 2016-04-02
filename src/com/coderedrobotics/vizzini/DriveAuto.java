@@ -170,8 +170,12 @@ public class DriveAuto {
 //                return (gyro.getAngle() - 360 * .08); // was .1, .2 (drove jumpy), .15
 //            }
 //        } 
-        if (drivingStraight) 
-        	return (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
+
+        if (drivingStraight)   	{
+        	double adjustAmt = (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
+            SmartDashboard.putNumber("DriveStraight Adjustment", adjustAmt);
+        	return adjustAmt;
+        }
         else {
             return 0;
         }
@@ -251,16 +255,17 @@ public class DriveAuto {
         SmartDashboard.putNumber("Gyro", gyro.getAngle());
         SmartDashboard.putNumber("Gyro PID error", rotDrivePID.getAvgError());
 
-        //		SmartDashboard.putNumber("Left Drive Encoder Distance: ", leftEncoder.getDistance());
-        //		SmartDashboard.putNumber("Right Drive Encoder Distance: ", rightEncoder.getDistance());
+        SmartDashboard.putNumber("Left Drive Encoder Raw: ", mainDrive.getLeftEncoderObject().get());
+        SmartDashboard.putNumber("Right Drive Encoder Raw: ", mainDrive.getRightEncoderObject().get());
+        SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
+        SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
+       
         //		SmartDashboard.putNumber("Right PID error", rightDrivePID.getError());
         //   	SmartDashboard.putNumber("Left Drive Encoder Get: ", mainDrive.getLeftEncoderObject().get());
         //  	SmartDashboard.putNumber("Right Drive Encoder Get: ", mainDrive.getRightEncoderObject().get());
         //     	SmartDashboard.putNumber("Left Drive Distance: ", leftEncoder.getDistance());
         //     	SmartDashboard.putNumber("Right Drive Distance: ", rightEncoder.getDistance());
-        //  	SmartDashboard.putNumber("Left Setpoint: ", leftDrivePID.getSetpoint());
-        //   	SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
-        //		SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
+         //		SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
         //		SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
     }
 
