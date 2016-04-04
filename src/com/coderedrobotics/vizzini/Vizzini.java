@@ -28,6 +28,10 @@ public class Vizzini extends IterativeRobot {
     SendableChooser chooser;
     AnalogGyro gyro;
     Timer autoTimer;
+    private MotionProfileTrapezoidal motionProfile;
+    private DriveAutoMP driveAutoMP;
+    private double autoStartTime;
+    
     final String lowbarAuto = "Low Bar";
     final String lowbarStraightThru = "lowbarStraightThru";
     final String touchAuto = "Touch Defense Auto";
@@ -37,6 +41,8 @@ public class Vizzini extends IterativeRobot {
     final String testIncDrive = "Test Incremental Drive";
     final String chivalAuto = "ChivalDeFrise";
     final String autoDefenseFire = "AutoDefenseFire";
+    final String motionAutoTest = "MotionAutoTest";
+    
     String autoSelected;
 
     boolean firing = false;
@@ -93,6 +99,7 @@ public class Vizzini extends IterativeRobot {
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR, leds);
         drive = new Drive();
         driveAuto = new DriveAuto(drive, gyro);
+        driveAutoMP = new DriveAutoMP(drive, gyro);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
         lift = new Lift(Wiring.TAPE_MEASURE_MOTOR, Wiring.LIFT_MOTOR);
 
@@ -105,6 +112,8 @@ public class Vizzini extends IterativeRobot {
         chooser.addObject("Test Incremental Drive", testIncDrive);
         chooser.addObject("Chival De Frise Auto (REVERSE DIRECTION!)",chivalAuto);
         chooser.addObject("Auto Defense Fire", autoDefenseFire);
+        chooser.addObject("Motion Test", motionAutoTest);
+        
         SmartDashboard.putData("Auto choices", chooser);
         SmartDashboard.putNumber("Robot Position (From Lowbar)", robotPosition);
         SmartDashboard.putNumber("AUTO TURN DEGREES", autoTurnDegrees);
@@ -112,6 +121,10 @@ public class Vizzini extends IterativeRobot {
 		SmartDashboard.putNumber("ROT P", Calibration.AUTO_GYRO_P);
 		SmartDashboard.putNumber("ROT I", Calibration.AUTO_GYRO_I);
 		SmartDashboard.putNumber("ROT D", Calibration.AUTO_GYRO_D);
+		
+		SmartDashboard.putNumber("MP Accel", .2);
+		SmartDashboard.putNumber("MP Decel", .2);
+		SmartDashboard.putNumber("MP MaxSpeed", 1);
 
 //
 //        tape = new PWMController(8, false);
@@ -249,6 +262,13 @@ public class Vizzini extends IterativeRobot {
 		Logger.getInstance().log("start auto");
 		
 		driveAuto.rotDrivePID.setPID(SmartDashboard.getNumber("ROT P"),SmartDashboard.getNumber("ROT I"),SmartDashboard.getNumber("ROT D"));
+		
+        motionProfile = new MotionProfileTrapezoidal();
+    	motionProfile.SetAccel(SmartDashboard.getNumber("MP Accel"));
+    	motionProfile.SetDecel(SmartDashboard.getNumber("MP Decel"));
+    	motionProfile.SetMaxSpeed(SmartDashboard.getNumber("MP MaxSpeed"));
+    	
+    	autoStartTime = System.currentTimeMillis();
 
     }
 
@@ -258,19 +278,36 @@ public class Vizzini extends IterativeRobot {
 
     @Override
     public void autonomousPeriodic() {
-
+    	
+    	double elapsedTime = System.currentTimeMillis() - autoStartTime;
+    	
         SmartDashboard.putNumber("Auto Step: ", autoTimer.getStage());
-//    	if (autoTimer.getStage() != laststage || !hasprintedcalibrated || arm.isCalibrated() != lastcalibration) {
-//    		Logger.getInstance().log("Calibrated : " + arm.isCalibrated() + "\tStage: " + autoTimer.getStage());
-//    		laststage = autoTimer.getStage();
-//    		hasprintedcalibrated = true;
-//    		lastcalibration = arm.isCalibrated();
-//    	}
 
     	arm.tick();
     	
     	switch(autoSelected) {
 
+    	case motionAutoTest:
+    		switch (autoTimer.getStage()) {
+    		case 0:
+    			motionProfile.SetDistance(convertToTicks(120));
+    			motionProfile.CalcParams();
+    			autoTimer.nextStage();
+    			elapsedTime = System.currentTimeMillis() - autoStartTime;
+    			// break;  (intentionally left out)
+    		case 1:
+    			double newPosition = motionProfile.Position(elapsedTime);
+    			driveAutoMP.setPosition(newPosition, newPosition);
+    			break;
+    		}
+    		
+    		SmartDashboard.putNumber("MP Accel Time", motionProfile.GetAccelTime());
+    		SmartDashboard.putNumber("MP Decel Time", motionProfile.GetDecelTime());
+    		
+    		driveAutoMP.showEncoderValues();
+    		
+    		break;
+    		
     	//simply testing automatic defense auto
     	case autoDefenseFire:
     		SmartDashboard.putString("Hello", "world");
@@ -949,4 +986,8 @@ public class Vizzini extends IterativeRobot {
     public void disabledPeriodic() {
 
     }
+    private int convertToTicks(int inches) {
+        return (int) (inches * Calibration.DRIVE_DISTANCE_TICKS_PER_INCH);
+    }
+
 }
