@@ -44,6 +44,7 @@ public class Vizzini extends IterativeRobot {
     private long testTimer = 0;
     private boolean hasError = false;
     private double robotPosition = 0;
+    private int autoTurnDegrees = 59;
 
     @Override
     public void robotInit() {
@@ -106,6 +107,7 @@ public class Vizzini extends IterativeRobot {
         chooser.addObject("Auto Defense Fire", autoDefenseFire);
         SmartDashboard.putData("Auto choices", chooser);
         SmartDashboard.putNumber("Robot Position (From Lowbar)", robotPosition);
+        SmartDashboard.putNumber("AUTO TURN DEGREES", autoTurnDegrees);
         
 		SmartDashboard.putNumber("ROT P", Calibration.AUTO_GYRO_P);
 		SmartDashboard.putNumber("ROT I", Calibration.AUTO_GYRO_I);
@@ -238,6 +240,8 @@ public class Vizzini extends IterativeRobot {
 
         autoSelected = (String) chooser.getSelected();
 		SmartDashboard.putString("Auto selected: ", autoSelected);
+		autoTurnDegrees = (int)SmartDashboard.getNumber("AUTO TURN DEGREES");
+		SmartDashboard.putNumber("Degree specified", autoTurnDegrees);
 		
 		autoTimer.setStage(0);
     	autoTimer.resetTimer(100000); // make sure timer doesn't "hit" until we set it later
@@ -291,7 +295,7 @@ public class Vizzini extends IterativeRobot {
     			}
     			break;
     		case 1:
-    			if(driveAuto.hasArrived()){
+    			if(driveAuto.turnCompleted()){
     				autoTimer.stopTimerAndAdvanceStage();
     			}
     			break;
@@ -382,6 +386,7 @@ public class Vizzini extends IterativeRobot {
     			break;
     			
     		case 1:
+    			SmartDashboard.putBoolean("TURN COMPLETED", driveAuto.turnCompleted());
     			break;
     			
     		case 2:
@@ -390,7 +395,8 @@ public class Vizzini extends IterativeRobot {
     			break;
 
     		case 3:
-    			//	 if (driveAuto.hasArrived()) {
+    			SmartDashboard.putBoolean("TURN COMPLETED", driveAuto.turnCompleted());
+    			    			//	 if (driveAuto.hasArrived()) {
     			//    	  //driveAuto.stop();
     			//    	  	SmartDashboard.putString("Drive Target: ", "Arrived");
     			//  			autoTimer.stopTimerAndAdvanceStage();
@@ -484,7 +490,7 @@ public class Vizzini extends IterativeRobot {
     			}
     			break;
     		case 9:
-    			if(driveAuto.hasArrived()){
+    			if(driveAuto.turnCompleted()){
     				autoTimer.stopTimerAndAdvanceStage();
     			}
     			break;
@@ -547,11 +553,11 @@ public class Vizzini extends IterativeRobot {
     		case 4:
     			autoTimer.setTimerAndAdvanceStage(3000);
     			arm.gotoShootPosition();
-    			driveAuto.turnDegrees(58, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
+    			driveAuto.turnDegrees(autoTurnDegrees, .7);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
     			shooter.spinUp();
     			break;
     		case 5:
-    			if (driveAuto.hasArrived()) {
+    			if (driveAuto.turnCompleted()) {
     				autoTimer.stopTimerAndAdvanceStage();
     			} 
     			break;
@@ -588,10 +594,10 @@ public class Vizzini extends IterativeRobot {
     			break;
     		case 12:
     			autoTimer.setTimerAndAdvanceStage(3000);
-    			driveAuto.turnDegrees(-50, .7);
+    			driveAuto.turnDegrees(-autoTurnDegrees, .7);
     			break;
     		case 13:
-    			if (driveAuto.hasArrived()) {
+    			if (driveAuto.turnCompleted()) {
     				autoTimer.stopTimerAndAdvanceStage();
     			}
     			break;
@@ -648,7 +654,7 @@ public class Vizzini extends IterativeRobot {
     			driveAuto.turnDegrees(-90, .7); // turn towards wall
     			break;
     		case 7:
-    			if (driveAuto.hasArrived()) {
+    			if (driveAuto.turnCompleted()) {
     				autoTimer.stopTimerAndAdvanceStage();
     			} 
     			break;
@@ -667,7 +673,7 @@ public class Vizzini extends IterativeRobot {
 
     			break;
     		case 11:
-    			if (driveAuto.hasArrived()) {
+    			if (driveAuto.turnCompleted()) {
     				autoTimer.stopTimerAndAdvanceStage();
     			} 
     			break;
@@ -686,7 +692,7 @@ public class Vizzini extends IterativeRobot {
 
     			break;
     		case 15:
-    			if (driveAuto.hasArrived()) {
+    			if (driveAuto.turnCompleted()) {
     				autoTimer.stopTimerAndAdvanceStage();
     			} 
     			break;

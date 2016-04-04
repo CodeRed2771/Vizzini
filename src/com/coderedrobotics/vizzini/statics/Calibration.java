@@ -57,7 +57,7 @@ public class Calibration {
 //    public static final double AUTO_GYRO_I = 0; // Lucky
 //    public static final double AUTO_GYRO_D = 0.12; // Lucky
 
-    public static final double AUTO_GYRO_P = .045; // Vizzini
+    public static final double AUTO_GYRO_P = .05; // Vizzini
     public static final double AUTO_GYRO_I = 0; // Vizzini
     public static final double AUTO_GYRO_D = 0.10; // Vizzini
 

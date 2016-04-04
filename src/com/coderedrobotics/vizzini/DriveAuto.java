@@ -39,7 +39,7 @@ public class DriveAuto {
 
         leftDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
         rightDrivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2);
-        rotDrivePID.setAbsoluteTolerance(.5);
+        rotDrivePID.setAbsoluteTolerance(1.2);
         rotDrivePID.setToleranceBuffer(10);
         
         leftDrivePID.setToleranceBuffer(20); // ten readings
@@ -103,6 +103,7 @@ public class DriveAuto {
         leftDrivePID.disable();
         rightDrivePID.disable();
         drivingStraight = false;
+        SmartDashboard.putNumber("TURN CALL", degrees);
         rotDrivePID.setSetpoint(gyro.getAngle() + degrees);
         rotDrivePID.enable();
         rotDrivePID.setOutputRange(-maxPower, maxPower);
@@ -195,6 +196,10 @@ public class DriveAuto {
 
     public boolean hasArrived() {
         return leftDrivePID.onTarget() && rightDrivePID.onTarget();
+    }
+
+    public boolean turnCompleted() {
+        return rotDrivePID.onTarget();
     }
 
     private void resetEncoders() {
