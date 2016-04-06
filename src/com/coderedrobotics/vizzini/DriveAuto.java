@@ -89,6 +89,8 @@ public class DriveAuto {
 
    
     public void turnDegreesFromZero(int degrees, double maxPower) {
+       	// Turns using the Gyro, relative to the ZERO position
+    	// Use "turnCompleted" method to determine when the turn is done
         leftDrivePID.disable();
         rightDrivePID.disable();
         drivingStraight = false;
@@ -98,6 +100,9 @@ public class DriveAuto {
     }
     
     public void turnDegrees(int degrees, double maxPower) {
+    	// Turns using the Gyro, relative to the current position
+    	// Use "turnCompleted" method to determine when the turn is done
+    	
         leftDrivePID.disable();
         rightDrivePID.disable();
         drivingStraight = false;
@@ -106,31 +111,6 @@ public class DriveAuto {
         rotDrivePID.enable();
         rotDrivePID.setOutputRange(-maxPower, maxPower);
 
-//        double inchesToTravel = degrees / 6.6;
-//
-//        stop();
-//
-//        maxPowerAllowed = maxPower;
-//        curPowerSetting = .2; // was .18 before 3/25/16 - this is a minimum power to start moving.
-//
-//        rightDrivePID.disable();
-//        leftDrivePID.disable();
-//
-//        setPowerOutput(curPowerSetting);
-//
-//        resetEncoders();
-//        drivingStraight = false;
-//
-//        rightDrivePID.setPID(Calibration.AUTO_TURN_P, Calibration.AUTO_TURN_I, Calibration.AUTO_TURN_D);
-//        leftDrivePID.setPID(Calibration.AUTO_TURN_P, Calibration.AUTO_TURN_I, Calibration.AUTO_TURN_D);
-//
-//        leftDrivePID.setSetpoint(-mainDrive.getLeftEncoderObject().get() + convertToTicks(inchesToTravel));
-//        rightDrivePID.setSetpoint(-mainDrive.getRightEncoderObject().get() + convertToTicks(-inchesToTravel));
-//
-//        leftDrivePID.enable();
-//        rightDrivePID.enable();
-//
-//        timeDriveStarted = System.currentTimeMillis();
     }
 
     public void tick() {
@@ -162,30 +142,6 @@ public class DriveAuto {
         return Math.abs(convertTicksToInches(mainDrive.getLeftEncoderObject().get()));
     }
 
-    private double alignmentAdjust() {
-//        if (drivingStraight) {
-//            if (gyro.getAngle() < 180) {
-//                return (gyro.getAngle() * .08);
-//            } else {
-//                return (gyro.getAngle() - 360 * .08); // was .1, .2 (drove jumpy), .15
-//            }
-//        } 
-
-        if (drivingStraight)   	{
-        	double adjustAmt = (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .03;  // was .02 4/5/16    .04 is too high   
-        	SmartDashboard.putNumber("DriveStraight Adjustment", adjustAmt);
-        	return adjustAmt;
-        }
-        else {
-            return 0;
-        }
-    }
-
-    private void outputToDriveTrain() {
-        // this is called from the PIDWrites to send the new output values to the main drive object
-        mainDrive.set(leftPIDHolder.PIDvalue - alignmentAdjust() , rightPIDHolder.PIDvalue  );
-    }
-
     public void stop() {
         leftDrivePID.disable();
         rightDrivePID.disable();
@@ -200,8 +156,34 @@ public class DriveAuto {
     public boolean turnCompleted() {
         return rotDrivePID.onTarget();
     }
+  
+    private void outputToDriveTrain() {
+        // this is called from the PIDWrites to send the new output values to the main drive object
+        mainDrive.set(leftPIDHolder.PIDvalue - alignmentAdjust() , rightPIDHolder.PIDvalue  );
+    }
 
-    private void resetEncoders() {
+    private double alignmentAdjust() {
+        if (drivingStraight)   	{
+        	double adjustAmt = (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .03;  // was .02 4/5/16    .04 is too high   
+        	SmartDashboard.putNumber("DriveStraight Adjustment", adjustAmt);
+        	return adjustAmt;
+        }
+        else {
+            return 0;
+        }
+        
+        //        if (drivingStraight) {
+//            if (gyro.getAngle() < 180) {
+//                return (gyro.getAngle() * .08);
+//            } else {
+//                return (gyro.getAngle() - 360 * .08); // was .1, .2 (drove jumpy), .15
+//            }
+//        } 
+
+
+    }
+
+   private void resetEncoders() {
         mainDrive.getLeftEncoderObject().reset();
         mainDrive.getRightEncoderObject().reset();
     }
@@ -241,11 +223,6 @@ public class DriveAuto {
             } else {
                 PIDvalue = output;
             }
-//				if (output < 0) {
-//					PIDvalue = - .3;
-//				} else {
-//					PIDvalue = .3;					
-//				}
 
             outputToDriveTrain();
         }
