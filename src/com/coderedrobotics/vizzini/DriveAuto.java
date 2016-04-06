@@ -57,7 +57,7 @@ public class DriveAuto {
 
         gyro.reset();
         maxPowerAllowed = maxPower;
-        curPowerSetting = .1;  // the minimum power required to start moving.  (Untested)
+        curPowerSetting = .05;  // the minimum power required to start moving.  (Untested)
 
         rightDrivePID.disable();
         leftDrivePID.disable();
@@ -87,9 +87,7 @@ public class DriveAuto {
         mainDrive.set(0.8, -.8);
     }
 
-    public void curveDrive(int inches, double ratio) {
-
-    }
+   
     public void turnDegreesFromZero(int degrees, double maxPower) {
         leftDrivePID.disable();
         rightDrivePID.disable();
@@ -137,7 +135,8 @@ public class DriveAuto {
 
     public void tick() {
         if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-            curPowerSetting += .005;
+            curPowerSetting += .007;
+            SmartDashboard.putNumber("CurPower", curPowerSetting);
             if (curPowerSetting > maxPowerAllowed) {
                 curPowerSetting = maxPowerAllowed;
             }
@@ -173,8 +172,8 @@ public class DriveAuto {
 //        } 
 
         if (drivingStraight)   	{
-        	double adjustAmt = (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .02;
-            SmartDashboard.putNumber("DriveStraight Adjustment", adjustAmt);
+        	double adjustAmt = (mainDrive.getRightEncoderObject().get() - mainDrive.getLeftEncoderObject().get()) * .03;  // was .02 4/5/16    .04 is too high   
+        	SmartDashboard.putNumber("DriveStraight Adjustment", adjustAmt);
         	return adjustAmt;
         }
         else {
@@ -184,7 +183,7 @@ public class DriveAuto {
 
     private void outputToDriveTrain() {
         // this is called from the PIDWrites to send the new output values to the main drive object
-        mainDrive.set(leftPIDHolder.PIDvalue, rightPIDHolder.PIDvalue + alignmentAdjust());
+        mainDrive.set(leftPIDHolder.PIDvalue - alignmentAdjust() , rightPIDHolder.PIDvalue  );
     }
 
     public void stop() {
