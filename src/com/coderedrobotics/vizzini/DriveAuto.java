@@ -91,12 +91,19 @@ public class DriveAuto {
     public void turnDegreesFromZero(int degrees, double maxPower) {
        	// Turns using the Gyro, relative to the ZERO position
     	// Use "turnCompleted" method to determine when the turn is done
+    	
+    	maxPowerAllowed = maxPower;
+    	
         leftDrivePID.disable();
         rightDrivePID.disable();
         drivingStraight = false;
+        
         rotDrivePID.setSetpoint(degrees);
         rotDrivePID.enable();
-        rotDrivePID.setOutputRange(-maxPower, maxPower);
+        rotDrivePID.setOutputRange(-maxPower, maxPower);   // so, this currently doesn't do power ramping.  to change to that, make this call a setPowerOutput(curPowerSetting)
+        												   // AND add a rotDrivePID.setOutputRange() call in the setPowerOutput method
+        												   // probably should change turnDegrees too
+        												
     }
     
     public void turnDegrees(int degrees, double maxPower) {
@@ -114,8 +121,9 @@ public class DriveAuto {
     }
 
     public void tick() {
+    	// this is called roughly 50 times per second
         if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-            curPowerSetting += .007;
+            curPowerSetting += .01; // was .007 evening of 4/5 // to figure out how fast this would be, multiply by 50 to see how much it would increase in 1 second.
             SmartDashboard.putNumber("CurPower", curPowerSetting);
             if (curPowerSetting > maxPowerAllowed) {
                 curPowerSetting = maxPowerAllowed;
