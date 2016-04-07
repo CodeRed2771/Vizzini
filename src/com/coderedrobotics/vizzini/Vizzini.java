@@ -259,6 +259,8 @@ public class Vizzini extends IterativeRobot {
         driveAuto.stop();
         //driveAuto.setPIDstate(true);
 
+        shooter.openGate();
+        
         autoSelected = (String) chooser.getSelected();
 		SmartDashboard.putString("Auto selected: ", autoSelected);
 		autoTurnDegrees = (int)SmartDashboard.getNumber("AUTO TURN DEGREES");
@@ -452,8 +454,8 @@ public class Vizzini extends IterativeRobot {
 			// do nothing - the timer will expire and move to the next stage
 			break;
 		case 2: 
-			autoTimer.setTimerAndAdvanceStage(2000);
-			driveAuto.driveInches(12, .3); // move away from the line
+			autoTimer.setTimerAndAdvanceStage(2500);
+			driveAuto.driveInches(12, .4); // move away from the line
 			break;
 		case 3:
 			if (driveAuto.hasArrived()) {
@@ -491,7 +493,7 @@ public class Vizzini extends IterativeRobot {
 			break;
 		case 10:
 			autoTimer.setTimerAndAdvanceStage(4000);
-			driveAuto.driveInches(110, .5); // drive through low bar
+			driveAuto.driveInches(105, .5); // drive through low bar
 			break;
 		case 11:
 			if (driveAuto.hasArrived()) {
@@ -499,9 +501,10 @@ public class Vizzini extends IterativeRobot {
 			} 
 			break;
 		case 12:
-			autoTimer.setTimerAndAdvanceStage(2000);
+			autoTimer.setTimerAndAdvanceStage(3000);
 			driveAuto.turnDegrees(28, .6); // turn to face the tower
 			arm.gotoShootPosition();
+			shooter.setSpeedLowBar();
 			shooter.spinUp();
 			break;
 		case 13:
@@ -512,14 +515,20 @@ public class Vizzini extends IterativeRobot {
 		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			driveAuto.stop();
-			arm.dropBallInShooter();//Drops the ball in the shooter
 			break;
 		case 15:
+			if (shooter.hasBeenSpunUp()) {
+				arm.dropBallInShooter();//Drops the ball in the shooter
+				autoTimer.stopTimerAndAdvanceStage();
+			}
+			
+			break;
+		case 16:
 			if (shooter.hasFired())
 				autoTimer.stopTimerAndAdvanceStage();
 			//wait for shooter to shoot
 			break;
-		case 16:
+		case 17:
 			autoTimer.setTimerAndAdvanceStage(2000);
 			shooter.stop();
 			arm.pickupAllStop();
@@ -545,7 +554,7 @@ public class Vizzini extends IterativeRobot {
 		case 2:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			arm.gotoChivalDeFrisePosition();
-			driveAuto.driveInches(-36, .4);
+			driveAuto.driveInches(-37, .35);
 			break;
 		case 3:
 			if (driveAuto.hasArrived()){
@@ -553,7 +562,7 @@ public class Vizzini extends IterativeRobot {
 			}
 			break;
 		case 4:
-			autoTimer.setTimerAndAdvanceStage(2500);
+			autoTimer.setTimerAndAdvanceStage(1000);
 			arm.gotoPickupPosition();
 			break;
 		case 5:
@@ -566,7 +575,9 @@ public class Vizzini extends IterativeRobot {
 		case 7:
 			if(driveAuto.hasArrived()){
 				autoTimer.stopTimerAndAdvanceStage();
-			}
+			} else
+				if (driveAuto.getDistanceTravelled() < -24) 
+					driveAuto.setMaxPowerOutput(.20);
 			break;
 			//STARTING SHOOTING CASES
 		case 8:
@@ -574,16 +585,16 @@ public class Vizzini extends IterativeRobot {
 			robotPosition = SmartDashboard.getNumber("Robot Position (From Lowbar)", 0);
 			switch((int)robotPosition){
 			case 1:
-				driveAuto.turnDegrees(40, .6);
+				driveAuto.turnDegrees(-140, .6);
 				break;
 			case 2:
-				driveAuto.turnDegrees(5, .6);
+				driveAuto.turnDegrees(-175, .6);
 				break;
 			case 3:
-				driveAuto.turnDegrees(-8, .6);
+				driveAuto.turnDegrees(170, .6);
 				break;
 			case 4:
-				driveAuto.turnDegrees(-30, .6);
+				driveAuto.turnDegrees(150, .6);
 				break;
 			}
 			break;
@@ -593,22 +604,31 @@ public class Vizzini extends IterativeRobot {
 			}
 			break;
 		case 10:
+			autoTimer.setTimerAndAdvanceStage(3000);
+			driveAuto.driveInches(12, .6);
+			break;
+		case 11:
+			if(driveAuto.hasArrived()){
+				autoTimer.stopTimerAndAdvanceStage();
+			}
+			break;
+		case 12:
 			autoTimer.setTimerAndAdvanceStage(2500);
 			shooter.spinUp();
 			arm.gotoShootPosition();
 			break;
-		case 11:
+		case 13:
 			break;
-		case 12:
+		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			arm.dropBallInShooter();
 			break;
-		case 13:
+		case 15:
 			if (shooter.hasFired())
 				//wait for shooter to shoot
 				autoTimer.stopTimerAndAdvanceStage();
 			break;
-		case 14:
+		case 16:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			shooter.stop();
 			arm.pickupAllStop();
