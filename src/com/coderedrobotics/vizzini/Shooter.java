@@ -59,10 +59,10 @@ public class Shooter {
     }
 
     public void openGate() {
-    	shooterGate.setPosition(0.8);
+    	shooterGate.setPosition(0.2);
     }
     public void closeGate() {
-    	shooterGate.setPosition(.2);
+    	shooterGate.setPosition(.8);
     }
     public boolean isSpunUp() {
         boolean spunUp = Math.abs(pid.getError()) < Calibration.SHOOTER_ERROR_TOLERANCE;
