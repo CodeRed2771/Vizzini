@@ -59,7 +59,7 @@ public class Shooter {
     }
 
     public void openGate() {
-    	shooterGate.setPosition(0.2);
+    	shooterGate.setPosition(0.6);
     }
     public void closeGate() {
     	shooterGate.setPosition(.8);
