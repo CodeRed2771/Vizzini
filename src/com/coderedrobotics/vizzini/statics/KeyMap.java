@@ -38,7 +38,7 @@ public class KeyMap {
     private final HID.Button overrideArmPIDButton = LogitechF310.DPAD_UP;
     private final HID.Button overrideDrivePIDButton = LogitechF310.DPAD_LEFT;
     private final HID.Button overrideShooterPIDButton = LogitechF310.DPAD_DOWN;
-    private final HID.Button shooterLightButton = LogitechF310.START;
+    private final HID.Button shooterLightButton = LogitechF310.STICK_RIGHT;
     private final HID.Axis armAxis = LogitechF310.STICK_LEFT_Y;
     private final HID.Button portcullisButton = LogitechF310.BACK;
     private final HID.Axis tapeMeasureAxis = LogitechF310.STICK_RIGHT_Y;
@@ -46,7 +46,8 @@ public class KeyMap {
     private final HID.Button liftOutButton = LogitechF310.BUMPER_LEFT;
     private final HID.Button shooterSpeedModifierStraightOuterWorks = LogitechF310.TRIGGER_RIGHT;
     private final HID.Button shooterSpeedModifierLowBar = LogitechF310.TRIGGER_LEFT;
-
+    private final HID.Button dropBallInShooterNoFire = LogitechF310.START;
+    
     // BUTTON STATES
     private final HID.ButtonState reverseDriveButtonState = HID.newButtonState();
     private final HID.ButtonState singleControllerModeState = HID.newButtonState();
@@ -193,5 +194,9 @@ public class KeyMap {
 
     public boolean getShooterSpeedModifierLowBar() {
         return getHID(gamepad2).button(shooterSpeedModifierLowBar);
+    }
+    
+    public boolean getDropBallInShooterNoFire() {
+        return getHID(gamepad2).button(dropBallInShooterNoFire);
     }
 }
