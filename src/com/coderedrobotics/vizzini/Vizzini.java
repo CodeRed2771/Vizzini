@@ -365,8 +365,8 @@ public class Vizzini extends IterativeRobot {
 			else {
 				if (driveAuto.getDistanceTravelled() > 50 && driveAuto.getDistanceTravelled() < 155)
 					driveAuto.setMaxPowerOutput(.45);
-				if (driveAuto.getDistanceTravelled() > 155) 
-					driveAuto.setMaxPowerOutput(.25);
+//				if (driveAuto.getDistanceTravelled() > 155) 
+//					driveAuto.setMaxPowerOutput(.25);
 			}
 			break;
 		case 2:
