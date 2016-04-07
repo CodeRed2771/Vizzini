@@ -11,6 +11,8 @@ public class Wiring {
     public static final int LEFT_DRIVE_MOTOR2 = 1;
     public static final int RIGHT_DRIVE_MOTOR1 = 2;
     public static final int RIGHT_DRIVE_MOTOR2 = 3;
+
+    public static final int SHOOTER_GATE_SERVO = 4;
     
     public static final int PICKUP_FRONT_MOTOR = 5;
     public static final int PICKUP_REAR_MOTOR = 6;

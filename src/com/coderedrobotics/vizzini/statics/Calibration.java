@@ -30,7 +30,7 @@ public class Calibration {
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
 
-//    public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
+   // public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
     public static final double ARM_MIN_SETPOINT = -1.868; // Vizzini
     
     public static final double ARM_MAX_SETPOINT = 0;
@@ -48,7 +48,6 @@ public class Calibration {
 //  public static final double AUTO_TURN_P = .013; // Lucky - was .007 3/24/16
     public static final double AUTO_DRIVE_P = .002; // Vizzini
     public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
-    
 
     public static final double AUTO_TURN_I = 0.001;
     public static final double AUTO_TURN_D = 0.01;

@@ -3,10 +3,14 @@ package com.coderedrobotics.vizzini;
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PWMController;
 import com.coderedrobotics.vizzini.statics.Calibration;
+import com.coderedrobotics.vizzini.statics.Wiring;
+
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter {
 
@@ -15,6 +19,7 @@ public class Shooter {
     private final PIDControllerAIAO pid;
     private final AutoStop autoStop;
     private final Relay light;
+    private final Servo shooterGate;
     private boolean stopping;
     private double smoothedOutput = 0;
     private long timeout;
@@ -24,6 +29,9 @@ public class Shooter {
     public Shooter(int talon, int victor, int light) {
         shooter1 = new CANTalon(talon);
         shooter2 = new PWMController(victor, false);
+        shooterGate = new Servo(Wiring.SHOOTER_GATE_SERVO);
+       
+        
         pid = new PIDControllerAIAO(Calibration.SHOOTER_P, Calibration.SHOOTER_I,
                 Calibration.SHOOTER_D, Calibration.SHOOTER_F, new PIDSource() {
             @Override
@@ -47,8 +55,15 @@ public class Shooter {
         pid.setOutputRange(0, 1);
         autoStop = new AutoStop();
         this.light = new Relay(light);
+        closeGate();
     }
 
+    public void openGate() {
+    	shooterGate.setPosition(0.8);
+    }
+    public void closeGate() {
+    	shooterGate.setPosition(.2);
+    }
     public boolean isSpunUp() {
         boolean spunUp = Math.abs(pid.getError()) < Calibration.SHOOTER_ERROR_TOLERANCE;
         hasBeenSpunUp = spunUp || hasBeenSpunUp;
@@ -88,6 +103,7 @@ public class Shooter {
             stop();
             stopping = false;
         }
+        SmartDashboard.putNumber("Servo", shooterGate.getAngle());
     }
 
     public void enableOverrideMode() {
@@ -128,12 +144,15 @@ public class Shooter {
                 hasFired = true;
                 time = System.currentTimeMillis();
             }
+            
+            if (hasFired) { closeGate(); }
 
             return hasFired && System.currentTimeMillis() > Calibration.SHOOTER_AUTOSTOP_DELAY + time;
         }
 
         void reset() {
             hasFired = false;
+            closeGate();
             time = -1;
         }
     }

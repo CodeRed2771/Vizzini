@@ -31,6 +31,7 @@ public class Vizzini extends IterativeRobot {
     SendableChooser chooser;
     AnalogGyro gyro;
     Timer autoTimer;
+
     //private MotionProfileTrapezoidal motionProfile;
     //private DriveAutoMP driveAutoMP;
     private double autoStartTime;
@@ -209,7 +210,9 @@ public class Vizzini extends IterativeRobot {
         if (firing && shooter.hasBeenSpunUp()) {
             arm.dropBallInShooter();
             arm.feedInNudge();
+            shooter.openGate();
             if (shooter.hasFired()) {
+            	shooter.closeGate();
                 shooter.stop();
                 shooter.lightOff();
                 arm.pickupAllStop();
@@ -422,7 +425,7 @@ public class Vizzini extends IterativeRobot {
 		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			arm.gotoPickupPosition();
-			driveAuto.driveInches(-55, .5); 
+			driveAuto.driveInches(-55, .4); 
 		case 15:
 			if (driveAuto.hasArrived()) {
 				autoTimer.stopTimerAndAdvanceStage();
@@ -467,8 +470,8 @@ public class Vizzini extends IterativeRobot {
 			}
 			break;
 		case 6:
-			autoTimer.setTimerAndAdvanceStage(2500);
-			driveAuto.turnDegreesFromZero(-90, .7); // turn towards wall
+			autoTimer.setTimerAndAdvanceStage(3000);
+			driveAuto.turnDegrees(-90, .6); // turn towards wall
 			break;
 		case 7:
 			if (driveAuto.turnCompleted()) {
@@ -476,7 +479,7 @@ public class Vizzini extends IterativeRobot {
 			} 
 			break;
 		case 8:
-			autoTimer.setTimerAndAdvanceStage(2500);
+			autoTimer.setTimerAndAdvanceStage(3000);
 			driveAuto.driveInches(49, .4); // drive towards wall by low bar
 			break;
 		case 9:
@@ -486,7 +489,7 @@ public class Vizzini extends IterativeRobot {
 			break;
 		case 10:
 			autoTimer.setTimerAndAdvanceStage(2000);
-			driveAuto.turnDegreesFromZero(0, .7); // turn to face the low bar
+			driveAuto.turnDegrees(90, .6); // turn to face the low bar
 
 			break;
 		case 11:
@@ -505,7 +508,7 @@ public class Vizzini extends IterativeRobot {
 			break;
 		case 14:
 			autoTimer.setTimerAndAdvanceStage(2000);
-			driveAuto.turnDegreesFromZero(35, .7); // turn to face the tower
+			driveAuto.turnDegrees(35, .6); // turn to face the tower
 			arm.gotoShootPosition();
 			shooter.spinUp();
 			break;
