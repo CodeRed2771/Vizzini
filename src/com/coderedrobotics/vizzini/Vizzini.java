@@ -446,7 +446,7 @@ public class Vizzini extends IterativeRobot {
     	
     	switch (autoTimer.getStage()) {
 		case 0:
-			autoTimer.setTimerAndAdvanceStage(2000); // wait three seconds before starting to give alliance time to get out of the way
+			autoTimer.setTimerAndAdvanceStage(1500); // wait a bit before starting to give alliance time to get out of the way
 			break;
 		case 1:
 			// do nothing - the timer will expire and move to the next stage
@@ -461,73 +461,65 @@ public class Vizzini extends IterativeRobot {
 			} 
 			break;
 		case 4:
-			autoTimer.setTimerAndAdvanceStage(1000);
-			arm.calibrate(true);
-			break;
-		case 5:
-			if (arm.isCalibrated()){
-				autoTimer.stopTimerAndAdvanceStage();
-			}
-			break;
-		case 6:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			driveAuto.turnDegrees(-90, .6); // turn towards wall
 			break;
-		case 7:
+		case 5:
 			if (driveAuto.turnCompleted()) {
+				autoTimer.stopTimerAndAdvanceStage();
+			} 
+			break;
+		case 6:
+			autoTimer.setTimerAndAdvanceStage(3000);
+			arm.calibrate(true);
+			driveAuto.driveInches(49, .4); // drive towards wall by low bar
+			break;
+		case 7:
+			if (driveAuto.hasArrived()) {
 				autoTimer.stopTimerAndAdvanceStage();
 			} 
 			break;
 		case 8:
-			autoTimer.setTimerAndAdvanceStage(3000);
-			driveAuto.driveInches(49, .4); // drive towards wall by low bar
-			break;
-		case 9:
-			if (driveAuto.hasArrived()) {
-				autoTimer.stopTimerAndAdvanceStage();
-			} 
-			break;
-		case 10:
 			autoTimer.setTimerAndAdvanceStage(2000);
 			driveAuto.turnDegrees(90, .6); // turn to face the low bar
 
 			break;
-		case 11:
+		case 9:
 			if (driveAuto.turnCompleted()) {
 				autoTimer.stopTimerAndAdvanceStage();
 			} 
 			break;
-		case 12:
+		case 10:
 			autoTimer.setTimerAndAdvanceStage(4000);
 			driveAuto.driveInches(110, .5); // drive through low bar
 			break;
-		case 13:
+		case 11:
 			if (driveAuto.hasArrived()) {
 				autoTimer.stopTimerAndAdvanceStage();
 			} 
 			break;
-		case 14:
+		case 12:
 			autoTimer.setTimerAndAdvanceStage(2000);
-			driveAuto.turnDegrees(35, .6); // turn to face the tower
+			driveAuto.turnDegrees(28, .6); // turn to face the tower
 			arm.gotoShootPosition();
 			shooter.spinUp();
 			break;
-		case 15:
+		case 13:
 			if (driveAuto.turnCompleted()) {
 				autoTimer.stopTimerAndAdvanceStage();
 			} 
 			break;
-		case 16:
+		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			driveAuto.stop();
 			arm.dropBallInShooter();//Drops the ball in the shooter
 			break;
-		case 17:
+		case 15:
 			if (shooter.hasFired())
 				autoTimer.stopTimerAndAdvanceStage();
 			//wait for shooter to shoot
 			break;
-		case 18:
+		case 16:
 			autoTimer.setTimerAndAdvanceStage(2000);
 			shooter.stop();
 			arm.pickupAllStop();
