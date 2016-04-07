@@ -376,7 +376,7 @@ public class Vizzini extends IterativeRobot {
 		case 4:
 			autoTimer.setTimerAndAdvanceStage(4000); // was 3 secs
 			arm.gotoShootPosition();
-			driveAuto.turnDegreesFromZero(autoTurnDegrees, .6);    // 3/19/16  was 62, then 52, now 54 (10am), now 56 (1:45 pm), now 57 (6pm), now 58 (10am) now 59 after two shots to left 430pm
+			driveAuto.turnDegreesFromZero(autoTurnDegrees, .6);    //   MAIN AUTO TURN FOR THE SHOT
 			shooter.spinUp();
 			break;
 		case 5:
@@ -581,8 +581,10 @@ public class Vizzini extends IterativeRobot {
 			break;
 			//STARTING SHOOTING CASES
 		case 8:
-			autoTimer.setTimerAndAdvanceStage(2000);
+			autoTimer.setTimerAndAdvanceStage(3500);
+			
 			robotPosition = SmartDashboard.getNumber("Robot Position (From Lowbar)", 0);
+			
 			switch((int)robotPosition){
 			case 1:
 				driveAuto.turnDegrees(-140, .6);
@@ -605,6 +607,8 @@ public class Vizzini extends IterativeRobot {
 			break;
 		case 10:
 			autoTimer.setTimerAndAdvanceStage(3000);
+			shooter.spinUp();
+			arm.gotoShootPosition();
 			driveAuto.driveInches(12, .6);
 			break;
 		case 11:
@@ -613,22 +617,15 @@ public class Vizzini extends IterativeRobot {
 			}
 			break;
 		case 12:
-			autoTimer.setTimerAndAdvanceStage(2500);
-			shooter.spinUp();
-			arm.gotoShootPosition();
-			break;
-		case 13:
-			break;
-		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			arm.dropBallInShooter();
 			break;
-		case 15:
+		case 13:
 			if (shooter.hasFired())
 				//wait for shooter to shoot
 				autoTimer.stopTimerAndAdvanceStage();
 			break;
-		case 16:
+		case 14:
 			autoTimer.setTimerAndAdvanceStage(3000);
 			shooter.stop();
 			arm.pickupAllStop();

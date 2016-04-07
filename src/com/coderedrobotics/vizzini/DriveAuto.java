@@ -92,8 +92,12 @@ public class DriveAuto {
        	// Turns using the Gyro, relative to the ZERO position
     	// Use "turnCompleted" method to determine when the turn is done
     	
+    	// NOTE - THIS WAS NOT WORKING AS EXPECTED WHEN TURNING MORE THAN ONCE
+    	
+    	SmartDashboard.putNumber("TURN FROM ZERO CALL", degrees);
+    	     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .1;
+    	curPowerSetting = .15;
     	
         leftDrivePID.disable();
         rightDrivePID.disable();
@@ -109,14 +113,15 @@ public class DriveAuto {
     public void turnDegrees(int degrees, double maxPower) {
     	// Turns using the Gyro, relative to the current position
     	// Use "turnCompleted" method to determine when the turn is done
+
+    	SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
     	
     	maxPowerAllowed = maxPower;
-       	curPowerSetting = .1;
+       	curPowerSetting = .15;
             	
         leftDrivePID.disable();
         rightDrivePID.disable();
         drivingStraight = false;
-        SmartDashboard.putNumber("TURN CALL", degrees);
         rotDrivePID.setSetpoint(gyro.getAngle() + degrees);
         rotDrivePID.enable();
         
@@ -126,14 +131,36 @@ public class DriveAuto {
 
     public void tick() {
     	// this is called roughly 50 times per second
+    	
+    	// check for ramping up
         if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
             curPowerSetting += .015; // was .007 evening of 4/5 // to figure out how fast this would be, multiply by 50 to see how much it would increase in 1 second.
-            SmartDashboard.putNumber("CurPower", curPowerSetting);
             if (curPowerSetting > maxPowerAllowed) {
-                curPowerSetting = maxPowerAllowed;
+            	curPowerSetting = maxPowerAllowed;
             }
-            setPowerOutput(curPowerSetting);
         }
+        // now check if we're ramping down
+        if (curPowerSetting > maxPowerAllowed) {
+        	curPowerSetting -= .03; 
+        	if (curPowerSetting < 0) {
+        		curPowerSetting = 0;
+        	}
+        }
+        setPowerOutput(curPowerSetting);
+        
+        SmartDashboard.putNumber("CurPower", curPowerSetting);
+        
+        // Code from Wednesday night - 4/6/16
+        
+//        if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
+//            curPowerSetting += .015; // was .007 evening of 4/5 // to figure out how fast this would be, multiply by 50 to see how much it would increase in 1 second.
+//            SmartDashboard.putNumber("CurPower", curPowerSetting);
+//            if (curPowerSetting > maxPowerAllowed) {
+//                curPowerSetting = maxPowerAllowed;
+//            }
+//            setPowerOutput(curPowerSetting);
+//        }
+        
     }
 
     private void setPowerOutput(double powerLevel) {
@@ -144,6 +171,7 @@ public class DriveAuto {
 
     public void setMaxPowerOutput(double maxPower) {
         maxPowerAllowed = maxPower;
+        // "tick" will take care of implementing this power level
     }
 
     public void addInches(int inches) {
