@@ -10,7 +10,7 @@ public class Calibration {
     public static final double PICKUP_OUTPUT_SPEED  = 1;
     public static final double PICKUP_NUDGE_SPEED = .7;
     public static final double PICKUP_FRONT_CURRENT_THRESHOLD = 20;
-    public static final double PICKUP_SHOOTER_DROP_SPEED = .85;
+    public static final double PICKUP_SHOOTER_DROP_SPEED = .9;
     public static final int PICKUP_FRONT_CURRENT_TIMEOUT = 0;
     public static final int PICKUP_FRONT_CURRENT_IGNORE_DURATION = 1200; // in ms
     public static final double PICKUP_REAR_CURRENT_THRESHOLD = 2;
@@ -70,7 +70,7 @@ public class Calibration {
     
     public static final double SHOOTER_ERROR_TOLERANCE = 1000; // is sped up
     public static final double SHOOTER_SPIN_SPEED = -32000; // default
-    public static final double SHOOTER_SPIN_SPEED_STRAIGHT = -33000; // straight outer works
+    public static final double SHOOTER_SPIN_SPEED_STRAIGHT = -32750; // straight outer works
     public static final double SHOOTER_SPIN_SPEED_LOW_BAR = -35000;
     public static final long SHOOTER_STOP_TIMEOUT = 1000;
     public static final double SHOOTER_CURRENT_THRESHOLD = 10;

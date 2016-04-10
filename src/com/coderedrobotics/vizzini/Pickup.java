@@ -45,6 +45,7 @@ public class Pickup {
     
     public void feedOut() {
         frontWheels.set(-Calibration.PICKUP_OUTPUT_SPEED);
+        rearWheels.set(-Calibration.PICKUP_OUTPUT_SPEED);
     }
     
     public void feedInNudge() {

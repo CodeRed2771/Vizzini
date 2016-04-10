@@ -88,7 +88,7 @@ public class DriveAuto {
     }
 
    
-    public void turnDegreesFromZero(int degrees, double maxPower) {
+    public void turnDegreesFromZero(double degrees, double maxPower) {
        	// Turns using the Gyro, relative to the ZERO position
     	// Use "turnCompleted" method to determine when the turn is done
     	
@@ -97,7 +97,7 @@ public class DriveAuto {
     	SmartDashboard.putNumber("TURN FROM ZERO CALL", degrees);
     	     	
     	maxPowerAllowed = maxPower;
-    	curPowerSetting = .15;
+    	curPowerSetting = .18;
     	
         leftDrivePID.disable();
         rightDrivePID.disable();
@@ -117,7 +117,7 @@ public class DriveAuto {
     	SmartDashboard.putNumber("TURN DEGREES CALL", degrees);
     	
     	maxPowerAllowed = maxPower;
-       	curPowerSetting = .15;
+       	curPowerSetting = .18;
             	
         leftDrivePID.disable();
         rightDrivePID.disable();
