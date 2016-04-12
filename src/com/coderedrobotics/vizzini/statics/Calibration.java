@@ -42,23 +42,23 @@ public class Calibration {
     public static final double DRIVE_D = 0.6;
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
-    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 16.276; // this is the one used for Auto
+    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 13.45; // this is the one used for Auto  was 16.276
 
-//    public static final double AUTO_DRIVE_P = .003; // Lucky
-//  public static final double AUTO_TURN_P = .013; // Lucky - was .007 3/24/16
-    public static final double AUTO_DRIVE_P = .002; // Vizzini
-    public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
+    public static final double AUTO_DRIVE_P = .003; // Lucky
+  //  public static final double AUTO_TURN_P = .013; // Lucky - was .007 3/24/16
+//    public static final double AUTO_DRIVE_P = .002; // Vizzini
+//    public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
 
     public static final double AUTO_TURN_I = 0.001;
     public static final double AUTO_TURN_D = 0.01;
     
-//    public static final double AUTO_GYRO_P = .045; // Lucky
-//    public static final double AUTO_GYRO_I = 0; // Lucky
-//    public static final double AUTO_GYRO_D = 0.12; // Lucky
+    public static final double AUTO_GYRO_P = .03; // Lucky
+    public static final double AUTO_GYRO_I = 0; // Lucky
+    public static final double AUTO_GYRO_D = 0.1; // Lucky
 
-    public static final double AUTO_GYRO_P = .05; // Vizzini
-    public static final double AUTO_GYRO_I = 0; // Vizzini
-    public static final double AUTO_GYRO_D = 0.10; // Vizzini
+//    public static final double AUTO_GYRO_P = .05; // Vizzini
+//    public static final double AUTO_GYRO_I = 0; // Vizzini
+//    public static final double AUTO_GYRO_D = 0.10; // Vizzini
 
     
     public static final double ROT_TOP_SPEED = 10;
