@@ -57,6 +57,7 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void robotInit() {
         autoTimer = new Timer();
+        
         testManager = new TestManager();
         testManager.addStage(() -> {
             drive.set(0.2, 0.2);
@@ -101,19 +102,17 @@ public class Vizzini extends IterativeRobot {
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR, leds);
         drive = new Drive();
         driveAuto = new DriveAuto(drive, gyro);
-        // driveAutoMP = new DriveAutoMP(drive, gyro);
         shooter = new Shooter(Wiring.SHOOTER_MOTOR_1, Wiring.SHOOTER_MOTOR_2, Wiring.SHOOTER_LIGHT);
         lift = new Lift(Wiring.TAPE_MEASURE_MOTOR, Wiring.LIFT_MOTOR);
 
         chooser = new SendableChooser();
-        chooser.addObject("Drive up to Defense", touchAuto);
-        chooser.addObject("Low Bar Follow Through", lowbarFollowThruAuto);
-        chooser.addDefault("Low Bar Straight Thru", lowbarStraightThru);
+        chooser.addDefault("Low Bar STRAIGHT Thru", lowbarStraightThru);
+        chooser.addObject("REACH the Defense", touchAuto);
+        chooser.addObject("Low Bar FOLLOW Through", lowbarFollowThruAuto);
+        chooser.addObject("CHIVAL De Frise Auto (REVERSE DIRECTION!)", chivalAuto);
         chooser.addObject("Test Auto Turn", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
-        chooser.addObject("Chival De Frise Auto (REVERSE DIRECTION!)", chivalAuto);
         chooser.addObject("Test Auto Defense Fire", testAutoDefenseFire);
-        chooser.addObject("Motion Test", motionAutoTest);
 
         SmartDashboard.putData("Auto choices", chooser);
         SmartDashboard.putNumber("Robot Position (From Lowbar)", robotPosition);
@@ -123,18 +122,12 @@ public class Vizzini extends IterativeRobot {
         SmartDashboard.putNumber("ROT I", Calibration.AUTO_GYRO_I);
         SmartDashboard.putNumber("ROT D", Calibration.AUTO_GYRO_D);
 
-        SmartDashboard.putNumber("AUTO DRIVE P", 0);
-        SmartDashboard.putNumber("AUTO DRIVE I", 0); 
-        SmartDashboard.putNumber("AUTO DRIVE D", 0);
+        SmartDashboard.putNumber("AUTO DRIVE P", Calibration.AUTO_DRIVE_P);
+        SmartDashboard.putNumber("AUTO DRIVE I", Calibration.AUTO_DRIVE_I); 
+        SmartDashboard.putNumber("AUTO DRIVE D", Calibration.AUTO_DRIVE_D);
         
-//		SmartDashboard.putNumber("MP Accel", .2);
-//		SmartDashboard.putNumber("MP Decel", .2);
-//		SmartDashboard.putNumber("MP MaxSpeed", 1);
         SmartDashboard.putString("LOG NOTE", "");
 
-//
-//        tape = new PWMController(8, false);
-//        lift = new PWMController(9, false);
     }
 
     @Override
@@ -310,7 +303,7 @@ public class Vizzini extends IterativeRobot {
                 break;
 
             case testIncDrive:
-                doIncrementDriveAuto();
+                doTestDriveAuto();
                 break;
 
             case testAutoTurn:
@@ -746,32 +739,33 @@ public class Vizzini extends IterativeRobot {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private void doIncrementDriveAuto() {
-
+    private void doTestDriveAuto() {
+    	
+    	int distance = 120;  // drive 10 feet
+    	
         switch (autoTimer.getStage()) {
 
             case 0:
                 autoTimer.setTimerAndAdvanceStage(8000);
-                driveAuto.driveInches(120, .5);
+                driveAuto.driveInches(distance, .5);
                 break;
 
             case 1:
-                if (driveAuto.getDistanceTravelled() > 20) {
-                    //driveAuto.addInches(30);
-                    driveAuto.setMaxPowerOutput(.5);
-                    autoTimer.nextStage();
-                }
-
                 if (driveAuto.hasArrived()) {
-                   //driveAuto.stop();
+                   autoTimer.stopTimerAndAdvanceStage();
                 }
                 break;
             case 2:
-
-                if (driveAuto.hasArrived()) {
-                  //  driveAuto.stop();
-                }
+            	autoTimer.setTimer(5000);
                 break;
+            case 3:
+            	autoTimer.setTimerAndAdvanceStage(8000);
+            	driveAuto.driveInches(-distance, .5);
+            	break;
+            case 4:
+            	if (driveAuto.hasArrived()) {
+                    autoTimer.stopTimerAndAdvanceStage();
+                 }
         }
     }
 

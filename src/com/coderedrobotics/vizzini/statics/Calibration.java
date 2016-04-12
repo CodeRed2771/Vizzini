@@ -8,7 +8,7 @@ public class Calibration {
     
     public static final double PICKUP_INTAKE_SPEED = .75;
     public static final double PICKUP_OUTPUT_SPEED  = 1;
-    public static final double PICKUP_NUDGE_SPEED = .7;
+    public static final double PICKUP_NUDGE_SPEED = .85;
     public static final double PICKUP_FRONT_CURRENT_THRESHOLD = 20;
     public static final double PICKUP_SHOOTER_DROP_SPEED = .9;
     public static final int PICKUP_FRONT_CURRENT_TIMEOUT = 0;
@@ -36,22 +36,21 @@ public class Calibration {
     public static final double ARM_MAX_SETPOINT = 0;
     public static final double ARM_PID_TEST_TOLERANCE = 0.1;
 
+    // TELEOP SETTINGS
     public static final double DRIVE_TOP_SPEED = 13;
     public static final double DRIVE_P = 1;
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0.6;
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
-    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 13.45; // this is the one used for Auto  was 16.276
-
-    public static final double AUTO_DRIVE_P = .003; // Lucky
-  //  public static final double AUTO_TURN_P = .013; // Lucky - was .007 3/24/16
-//    public static final double AUTO_DRIVE_P = .002; // Vizzini
-//    public static final double AUTO_TURN_P = .016; // Vizzini     was .01 3/20/16 (added .002 after missing in Match 51) added .002 more after quarterfinals and .002 more after 1st semi
-
-    public static final double AUTO_TURN_I = 0.001;
-    public static final double AUTO_TURN_D = 0.01;
     
+    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 13.45; // this is the one used for AUTO  was 16.276
+
+    public static final double AUTO_DRIVE_P = .006; // Lucky
+    public static final double AUTO_DRIVE_I = 0.0;
+    public static final double AUTO_DRIVE_D = .018;
+//    public static final double AUTO_DRIVE_P = .002; // Vizzini
+
     public static final double AUTO_GYRO_P = .03; // Lucky
     public static final double AUTO_GYRO_I = 0; // Lucky
     public static final double AUTO_GYRO_D = 0.1; // Lucky

@@ -1,12 +1,13 @@
 package com.coderedrobotics.vizzini;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.coderedrobotics.libs.PIDControllerAIAO;
 import com.coderedrobotics.libs.PIDSourceFilter;
 import com.coderedrobotics.vizzini.statics.Calibration;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveAuto {
@@ -18,7 +19,7 @@ public class DriveAuto {
 
     private double maxPowerAllowed = 1;
     private double curPowerSetting = 1;
-
+        
     public DriveAuto(Drive mainDrive, AnalogGyro gyro) {
         this.mainDrive = mainDrive;
         this.gyro = gyro;
@@ -27,11 +28,11 @@ public class DriveAuto {
         		0, 0, 0, new PIDSourceFilter((double value) -> -(mainDrive.getLeftEncoderObject().get() + mainDrive.getRightEncoderObject().get())/2), speed -> mainDrive.autoSetDrive(speed), false, "autodrive");
         rotDrivePID = new PIDControllerAIAO(Calibration.AUTO_GYRO_P, Calibration.AUTO_GYRO_I, Calibration.AUTO_GYRO_D, gyro, rot -> mainDrive.autoSetRot(rot), false, "autorot (gyro)");
 
-        drivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH / 2); // half inch
-        rotDrivePID.setAbsoluteTolerance(1.2);
+        drivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH);  // 1" tolerance
+        rotDrivePID.setAbsoluteTolerance(1.0);  // degrees off 
         
         rotDrivePID.setToleranceBuffer(1);        
-        drivePID.setToleranceBuffer(1); // ten readings
+        drivePID.setToleranceBuffer(1); 
         
         drivePID.setSetpoint(0);
         drivePID.reset();        
@@ -43,7 +44,6 @@ public class DriveAuto {
 
         setPowerOutput(curPowerSetting);
 
-        //drivePID.setPID(Calibration.AUTO_DRIVE_P, 0, 0);
         drivePID.setSetpoint(drivePID.getSetpoint() + convertToTicks(inches));
     }
 
@@ -91,18 +91,7 @@ public class DriveAuto {
         setPowerOutput(curPowerSetting);
         
         SmartDashboard.putNumber("CurPower", curPowerSetting);
-        
-        // Code from Wednesday night - 4/6/16
-        
-//        if (curPowerSetting < maxPowerAllowed) {  // then increase power a notch 
-//            curPowerSetting += .015; // was .007 evening of 4/5 // to figure out how fast this would be, multiply by 50 to see how much it would increase in 1 second.
-//            SmartDashboard.putNumber("CurPower", curPowerSetting);
-//            if (curPowerSetting > maxPowerAllowed) {
-//                curPowerSetting = maxPowerAllowed;
-//            }
-//            setPowerOutput(curPowerSetting);
-//        }
-        
+               
     }
 
     private void setPowerOutput(double powerLevel) {
@@ -146,14 +135,17 @@ public class DriveAuto {
     }
 
     public void showEncoderValues() {
-        SmartDashboard.putNumber("Left Drive PID Avg Error: ", drivePID.getAvgError());
-        SmartDashboard.putBoolean("Left On Target", drivePID.onTarget());
-        SmartDashboard.putNumber("Gyro", gyro.getAngle());
-        SmartDashboard.putNumber("Gyro PID error", rotDrivePID.getAvgError());
+        SmartDashboard.putNumber("Drive PID Setpoint: ", drivePID.getSetpoint());
+        SmartDashboard.putNumber("Drive PID Get: ", drivePID.get());
+        SmartDashboard.putNumber("Drive PID Error: ", drivePID.getError());
+        SmartDashboard.putBoolean("Drive On Target", drivePID.onTarget());
+        
+        SmartDashboard.putNumber("Gyro", round2(gyro.getAngle()));
+        SmartDashboard.putNumber("Gyro PID Setpoint", rotDrivePID.getSetpoint());
+        SmartDashboard.putNumber("Gyro PID error", round2(rotDrivePID.getError()));
 
-        SmartDashboard.putNumber("Left Drive Encoder Raw: ", mainDrive.getLeftEncoderObject().get());
-        SmartDashboard.putNumber("Right Drive Encoder Raw: ", mainDrive.getRightEncoderObject().get());
-        SmartDashboard.putNumber("Left Setpoint: ", drivePID.getSetpoint());
+        SmartDashboard.putNumber("Left Drive Encoder Raw: ", -mainDrive.getLeftEncoderObject().get());
+        SmartDashboard.putNumber("Right Drive Encoder Raw: ", -mainDrive.getRightEncoderObject().get());
        
         //		SmartDashboard.putNumber("Right PID error", rightDrivePID.getError());
         //   	SmartDashboard.putNumber("Left Drive Encoder Get: ", mainDrive.getLeftEncoderObject().get());
@@ -162,6 +154,10 @@ public class DriveAuto {
         //     	SmartDashboard.putNumber("Right Drive Distance: ", rightEncoder.getDistance());
          //		SmartDashboard.putNumber("Right Drive Encoder Raw: ", rightEncoder.getRaw());
         //		SmartDashboard.putNumber("Right Setpoint: ", rightDrivePID.getSetpoint());
-    }
 
+    }
+    
+    private Double round2(Double val) { 
+    	return new BigDecimal(val.toString()).setScale(2,RoundingMode.HALF_UP).doubleValue(); 
+    	}
 }
