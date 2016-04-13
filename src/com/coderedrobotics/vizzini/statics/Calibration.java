@@ -20,8 +20,8 @@ public class Calibration {
     public static final double ARM_SETPOINT_INCREMENT = .001;
     public static final double ARM_CALIBRATION_MOTOR_SPEED = .6; // was .3 3/10/16
     
-  //  public static final double ARM_SHOOT_POSITION = 1.455810546875; // Lucky
-    public static final double ARM_SHOOT_POSITION = 1.094; // Vizzini
+    public static final double ARM_SHOOT_POSITION = 1.455810546875; // Lucky
+  //  public static final double ARM_SHOOT_POSITION = 1.094; // Vizzini
     
     public static final double ARM_CHIVAL_POSITION = .4; //Lucky
     
@@ -30,8 +30,8 @@ public class Calibration {
     public static final double ARM_D = 10;
     public static final double ARM_F = 0;
 
-   // public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
-    public static final double ARM_MIN_SETPOINT = -1.868; // Vizzini
+    public static final double ARM_MIN_SETPOINT = -2.3; // Lucky
+   // public static final double ARM_MIN_SETPOINT = -1.868; // Vizzini
     
     public static final double ARM_MAX_SETPOINT = 0;
     public static final double ARM_PID_TEST_TOLERANCE = 0.1;
@@ -44,7 +44,7 @@ public class Calibration {
 
     public static final double DRIVE_DISTANCE_PER_PULSE = .073;
     
-    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 13.45; // this is the one used for AUTO  was 16.276
+    public static final double DRIVE_DISTANCE_TICKS_PER_INCH = 13.47; // this is the one used for AUTO  was 16.276
 
     public static final double AUTO_DRIVE_P = .006; // Lucky
     public static final double AUTO_DRIVE_I = 0.0;
