@@ -44,6 +44,8 @@ public class DriveAuto {
         maxPowerAllowed = maxPower;
         curPowerSetting = .1;  // the minimum power required to start moving.  (Untested)
 
+        SmartDashboard.putNumber("DRIVE INCHES", inches);
+        
         setPowerOutput(curPowerSetting);
 
         drivePID.setSetpoint(drivePID.getSetpoint() + convertToTicks(inches));
@@ -57,6 +59,8 @@ public class DriveAuto {
     	gyro.reset();
     	mainDrive.getLeftEncoderObject().reset();
     	mainDrive.getRightEncoderObject().reset();
+    	drivePID.enable();
+    	rotDrivePID.enable();
     }
     
     public void turnDegrees(double degrees, double maxPower) {
