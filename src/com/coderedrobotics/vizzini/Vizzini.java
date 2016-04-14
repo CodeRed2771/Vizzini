@@ -53,7 +53,7 @@ public class Vizzini extends IterativeRobot {
     private long testTimer = 0;
     private boolean hasError = false;
     private double robotPosition = 0;
-    private double autoTurnDegrees = 45;
+    private double autoTurnDegrees = 50;
 
     @Override
     public void robotInit() {
@@ -269,7 +269,6 @@ public class Vizzini extends IterativeRobot {
         autoTimer.setStage(0);
         autoTimer.resetTimer(100000); // make sure timer doesn't "hit" until we set it later
 
-        Logger.getInstance().log("start auto");
 
         driveAuto.rotDrivePID.setPID(SmartDashboard.getNumber("ROT P"), SmartDashboard.getNumber("ROT I"), SmartDashboard.getNumber("ROT D"));
         driveAuto.drivePID.setPID(SmartDashboard.getNumber("AUTO DRIVE P"), SmartDashboard.getNumber("AUTO DRIVE I"), SmartDashboard.getNumber("AUTO DRIVE D"));
@@ -506,8 +505,8 @@ public class Vizzini extends IterativeRobot {
             case 12:
                 autoTimer.setTimerAndAdvanceStage(3000);
                 driveAuto.turnDegrees(29, .7); // turn to face the tower
-                //arm.gotoRestingPosition();
-                arm.gotoShootPosition();
+                arm.gotoRestingPosition();
+                //arm.gotoShootPosition();
                 shooter.setSpeedLowBar();
                 shooter.spinUp();
                 break;
@@ -529,7 +528,7 @@ public class Vizzini extends IterativeRobot {
                 // no timer on this step cuz it will run out of auto time if it doesn't shoot
                 if (shooter.hasBeenSpunUp()) {
                     shooter.openGate();
-                    arm.dropBallInShooter();//Drops the ball in the shooter
+                  //  arm.dropBallInShooter();//Drops the ball in the shooter
                     autoTimer.stopTimerAndAdvanceStage();
                 }
 
@@ -574,7 +573,9 @@ public class Vizzini extends IterativeRobot {
                 }
                 break;
             case 4:
-                autoTimer.setTimerAndAdvanceStage(1000);
+            	driveAuto.reset(); // reset encoders before we back up a little
+            	driveAuto.driveInches(4, .4); // backup a little
+                autoTimer.setTimerAndAdvanceStage(2000);
                 arm.gotoPickupPosition();
                 break;
             case 5:
@@ -595,9 +596,9 @@ public class Vizzini extends IterativeRobot {
                 break;
             //STARTING SHOOTING CASES
             case 8:
-               // if (driveAuto.getDistanceTravelled() > -24) { // stuck on chival
-               //     autoTimer.setStage(15);
-               // }
+                if (driveAuto.getDistanceTravelled() < 24) { // stuck on chival
+                    autoTimer.setStage(15);
+                }
                 autoTimer.setTimerAndAdvanceStage(3500);
 
                 robotPosition = SmartDashboard.getNumber("Robot Position (From Lowbar)", 0);
@@ -657,7 +658,7 @@ public class Vizzini extends IterativeRobot {
         switch (autoTimer.getStage()) {
             case 0:
                 autoTimer.setTimerAndAdvanceStage(3000);
-                driveAuto.driveInches(36, .4);
+                driveAuto.driveInches(40, .4);
                 break;
             case 1:
                 if (driveAuto.hasArrived()) {
@@ -732,7 +733,7 @@ public class Vizzini extends IterativeRobot {
         switch (autoTimer.getStage()) {
 
             case 0:
-                autoTimer.setTimerAndAdvanceStage(6000);
+                autoTimer.setTimerAndAdvanceStage(4000);
                 driveAuto.turnDegrees(45, .7);
                 break;
 
@@ -741,7 +742,7 @@ public class Vizzini extends IterativeRobot {
                 break;
 
             case 2:
-                autoTimer.setTimerAndAdvanceStage(6000);
+                autoTimer.setTimerAndAdvanceStage(4000);
                 driveAuto.turnDegrees(45, .7);
                 break;
 
@@ -749,6 +750,22 @@ public class Vizzini extends IterativeRobot {
                 SmartDashboard.putBoolean("TURN COMPLETED", driveAuto.turnCompleted());
                 break;
 
+            case 4:
+                autoTimer.setTimerAndAdvanceStage(4000);
+                driveAuto.turnDegrees(45, .7);
+                break;
+
+            case 5:
+                SmartDashboard.putBoolean("TURN COMPLETED", driveAuto.turnCompleted());
+                break;
+            case 6:
+                autoTimer.setTimerAndAdvanceStage(4000);
+                driveAuto.turnDegrees(45, .7);
+                break;
+
+            case 7:
+                SmartDashboard.putBoolean("TURN COMPLETED", driveAuto.turnCompleted());
+                break;
         }
 
     }
