@@ -42,6 +42,7 @@ public class Vizzini extends IterativeRobot {
     final String testAutoTurn = "Test Auto Turn";
     final String testIncDrive = "Test Incremental Drive";
     final String chivalAuto = "ChivalDeFrise";
+    final String chivalNoShotAuto = "chivalNoShotAuto";
     final String testAutoDefenseFire = "Test AutoDefenseFire";
     final String motionAutoTest = "MotionAutoTest";
     final String testEncoderMeasure = "Test Encoder Measure";
@@ -110,7 +111,8 @@ public class Vizzini extends IterativeRobot {
         chooser.addDefault("Low Bar STRAIGHT Thru", lowbarStraightThru);
         chooser.addObject("REACH the Defense", touchAuto);
         chooser.addObject("Low Bar FOLLOW Through", lowbarFollowThruAuto);
-        chooser.addObject("CHIVAL De Frise Auto (REVERSE DIRECTION!)", chivalAuto);
+        chooser.addObject("CHIVAL De Frise Auto WITH Shot (REVERSE DIRECTION!)", chivalAuto);
+        chooser.addObject("CHIVAL De Frise Auto NO SHOT (REVERSE LINEUP)", chivalNoShotAuto);
         chooser.addObject("Test Auto Turn", testAutoTurn);
         chooser.addObject("Test Incremental Drive", testIncDrive);
         chooser.addObject("Test Auto Defense Fire", testAutoDefenseFire);
@@ -324,9 +326,13 @@ public class Vizzini extends IterativeRobot {
                 break;
 
             case chivalAuto:
-                doChivalAuto();
+                doChivalAuto(true);
                 break;
-
+                
+            case chivalNoShotAuto:
+            	doChivalAuto(false);
+            	break;
+            	
             case lowbarStraightThru:
                 doLowBarStraightThruAuto();  // main auto
                 break;
@@ -553,7 +559,7 @@ public class Vizzini extends IterativeRobot {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private void doChivalAuto() {
+    private void doChivalAuto(boolean takeShot) {
         //
         // CHIVAL DE FREESE
         //
@@ -632,7 +638,9 @@ public class Vizzini extends IterativeRobot {
                 break;
             case 10:
                 autoTimer.setTimerAndAdvanceStage(3000);
+                if (takeShot) {
                 shooter.spinUp();
+                }
                 arm.gotoShootPosition();
                 driveAuto.driveInches(12, .6);
                 break;
@@ -643,7 +651,9 @@ public class Vizzini extends IterativeRobot {
                 break;
             case 12:
                 autoTimer.setTimerAndAdvanceStage(3000);
-                arm.dropBallInShooter();
+                if (takeShot) { 
+                	arm.dropBallInShooter(); 
+                }
                 break;
             case 13:
                 if (shooter.hasFired()) { //wait for shooter to shoot
@@ -652,9 +662,12 @@ public class Vizzini extends IterativeRobot {
                 break;
             case 14:
                 autoTimer.setTimerAndAdvanceStage(3000);
-                shooter.stop();
-                arm.pickupAllStop();
-                arm.gotoPickupPosition();
+                if (takeShot) {
+	                shooter.stop();
+	                arm.pickupAllStop();
+	                arm.gotoPickupPosition();
+	            }
+                
                 break;
 
         }
