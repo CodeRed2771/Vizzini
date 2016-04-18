@@ -16,6 +16,7 @@ public class DriveAuto {
     public PIDControllerAIAO rotDrivePID;
     private Drive mainDrive;
     private AnalogGyro gyro;
+    private double minDriveStartPower = .1;
 
     private double maxPowerAllowed = 1;
     private double curPowerSetting = 1;
@@ -40,15 +41,19 @@ public class DriveAuto {
         drivePID.reset();        
     }
 
-    public void driveInches(int inches, double maxPower) {
+    public void driveInches(int inches, double maxPower, double startPowerLevel) {
         maxPowerAllowed = maxPower;
-        curPowerSetting = .1;  // the minimum power required to start moving.  (Untested)
+        curPowerSetting = startPowerLevel;  // the minimum power required to start moving.  (Untested)
 
         SmartDashboard.putNumber("DRIVE INCHES", inches);
         
         setPowerOutput(curPowerSetting);
 
         drivePID.setSetpoint(drivePID.getSetpoint() + convertToTicks(inches));
+    }
+    
+    public void driveInches(int inches, double maxPower) {
+    	driveInches(inches, maxPower, minDriveStartPower);
     }
 
     public void reset() {

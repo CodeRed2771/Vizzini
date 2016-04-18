@@ -46,6 +46,7 @@ public class Arm {
         pidController.setAbsoluteTolerance(Calibration.ARM_PID_TEST_TOLERANCE);
         arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);  // why Relative and not absolute? (Changed to Absolute to fix it - DVV 3/10/16)
         arm.configPeakOutputVoltage(12, -12);  
+        arm.enableBrakeMode(true);
         arm.setPosition(0);
     }
 

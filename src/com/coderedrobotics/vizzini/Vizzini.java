@@ -139,6 +139,7 @@ public class Vizzini extends IterativeRobot {
         leds.activateTeleop();
         arm.calibrate(true);
         shooter.stop();
+        shooter.lightOff();
         arm.pickupAllStop();
         driveAuto.setPIDstate(false);
         drive.setPIDstate(true);
@@ -515,6 +516,7 @@ public class Vizzini extends IterativeRobot {
             case 12:
                 autoTimer.setTimerAndAdvanceStage(3000);
                 driveAuto.turnDegrees(38, .7); // turn to face the tower  (added 9 from first miss on 4/14
+                shooter.lightOn();
                 arm.gotoRestingPosition();
                 //arm.gotoShootPosition();
                 shooter.setSpeedLowBar();
@@ -584,32 +586,32 @@ public class Vizzini extends IterativeRobot {
                 break;
             case 4:
             	driveAuto.reset(); // reset encoders before we back up a little
-            	driveAuto.driveInches(5, .7); // backup a little
-                autoTimer.setTimerAndAdvanceStage(3000);   // 9:30 increased by a second
+            	driveAuto.driveInches(6, .7, .3); // backup a little
+                autoTimer.setTimerAndAdvanceStage(1500);   
                 arm.gotoPickupPosition();
                 break;
             case 5:
                 //Waiting for timer to expire
                 break;
             case 6:
-                autoTimer.setTimerAndAdvanceStage(6000);
-                driveAuto.driveInches(-106, .8);
+                autoTimer.setTimerAndAdvanceStage(4000);
+                driveAuto.driveInches(-106, .72, .3);
                 break;
             case 7:
                 if (driveAuto.hasArrived()) {
                     autoTimer.stopTimerAndAdvanceStage();
                 } else {
-                    if (driveAuto.getDistanceTravelled() < 24) {
-                        driveAuto.setMaxPowerOutput(.35);
+                    if (driveAuto.getDistanceTravelled() > 25) {
+                        driveAuto.setMaxPowerOutput(.4);
                     }
                 }
                 break;
             //STARTING SHOOTING CASES
             case 8:
-                if (driveAuto.getDistanceTravelled() < 24) { // stuck on chival
+                if (driveAuto.getDistanceTravelled() < 50) { // stuck on chival
                     autoTimer.setStage(15);
                 }
-                autoTimer.setTimerAndAdvanceStage(3500);
+                autoTimer.setTimerAndAdvanceStage(3000);
 
                 robotPosition = SmartDashboard.getNumber("Robot Position (FIELD #)", 0);
 
@@ -618,16 +620,16 @@ public class Vizzini extends IterativeRobot {
                 		autoTimer.setStage(14); // abort auto
                 		break;
                     case 2:
-                        driveAuto.turnDegrees(-140, .6);
+                        driveAuto.turnDegrees(-140, .7);
                         break;
                     case 3:
-                        driveAuto.turnDegrees(-175, .6);
+                        driveAuto.turnDegrees(-175, .7);
                         break;
                     case 4:
-                        driveAuto.turnDegrees(170, .6);
+                        driveAuto.turnDegrees(170, .7);
                         break;
                     case 5:
-                        driveAuto.turnDegrees(150, .6);
+                        driveAuto.turnDegrees(150, .7);
                         break;
                 }
                 break;
@@ -638,6 +640,7 @@ public class Vizzini extends IterativeRobot {
                 break;
             case 10:
                 autoTimer.setTimerAndAdvanceStage(3000);
+                shooter.lightOn();
                 if (takeShot) {
                 shooter.spinUp();
                 }
