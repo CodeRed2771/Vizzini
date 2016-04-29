@@ -253,9 +253,9 @@ public class Vizzini extends IterativeRobot {
         }
         lift.tapeMeasure(keyMap.getTapeMeasureAxis());
 
-        if (keyMap.getSingleControllerToggleButton()) {
-            keyMap.toggleSingleControllerMode();
-        }
+//        if (keyMap.getSingleControllerToggleButton()) { // NOT DURING A LIVE MATCH YOU DINGuS
+//            keyMap.toggleSingleControllerMode();
+//        }
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,7 @@ public class Vizzini extends IterativeRobot {
                 }
                 break;
             case 4:
-                autoTimer.setTimerAndAdvanceStage(4000); // was 3 secs
+                autoTimer.setTimerAndAdvanceStage(2000); // was 4 secs
                 arm.gotoShootPosition();
                 driveAuto.turnDegrees(autoTurnDegrees, .6);    //   MAIN AUTO TURN FOR THE SHOT
                 shooter.spinUp();
@@ -429,7 +429,7 @@ public class Vizzini extends IterativeRobot {
                 }
                 break;
             case 12:
-                autoTimer.setTimerAndAdvanceStage(3000);
+                autoTimer.setTimerAndAdvanceStage(2000);
                 driveAuto.turnDegrees(-autoTurnDegrees, .7);
                 break;
             case 13:
@@ -514,7 +514,11 @@ public class Vizzini extends IterativeRobot {
                 }
                 break;
             case 12:
-                autoTimer.setTimerAndAdvanceStage(3000);
+                if (driveAuto.getDistanceTravelled() < 90) { // stuck on lowbar
+                	driveAuto.setMaxPowerOutput(.1); // cut the power down cuz we're stalled anyway
+                    autoTimer.setStage(99); // jump out of auto
+                }
+                autoTimer.setTimerAndAdvanceStage(2000);
                 driveAuto.turnDegrees(38, .7); // turn to face the tower  (added 9 from first miss on 4/14
                 shooter.lightOn();
                 arm.gotoRestingPosition();
@@ -528,7 +532,7 @@ public class Vizzini extends IterativeRobot {
                 }
                 break;
             case 14:
-                autoTimer.setTimerAndAdvanceStage(3000);
+                autoTimer.setTimerAndAdvanceStage(2000);
                 driveAuto.driveInches(20, .7); 
                 break;
             case 15:

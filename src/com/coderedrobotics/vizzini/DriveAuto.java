@@ -32,7 +32,7 @@ public class DriveAuto {
         rotDrivePID = new PIDControllerAIAO(Calibration.AUTO_GYRO_P, Calibration.AUTO_GYRO_I, Calibration.AUTO_GYRO_D, gyro, rot -> mainDrive.autoSetRot(rot), false, "autorot (gyro)");
 
         drivePID.setAbsoluteTolerance(Calibration.DRIVE_DISTANCE_TICKS_PER_INCH);  // 1" tolerance
-        rotDrivePID.setAbsoluteTolerance(1.0);  // degrees off 
+        rotDrivePID.setAbsoluteTolerance(1.5);  // degrees off 
         
         rotDrivePID.setToleranceBuffer(3);        
         drivePID.setToleranceBuffer(3); 
