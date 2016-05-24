@@ -111,6 +111,16 @@ public class Drive {
         rotPid.setSetpoint(Math.abs(Math.pow(Math.abs(rot), (1 - Math.abs((left + right) / 2)) * 0.9)) * rot);
 //        rotPid.setSetpoint(rot);
     }
+    
+    public void autoSetDrive(double speed) {
+    	drivePid.setPID(0, 0, 0, 1);
+        drivePid.setSetpoint(speed);
+    }
+    
+    public void autoSetRot(double rot) {
+        rotPid.setPID(0, 0, 0, 1);
+        rotPid.setSetpoint(rot);
+    }
 
     public void disablePID() {
         disablePID = true;

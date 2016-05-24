@@ -104,6 +104,8 @@ public class Shooter {
             stopping = false;
         }
         SmartDashboard.putNumber("Servo", shooterGate.getAngle());
+        SmartDashboard.putNumber("Shooter Speed", pid.get());
+        SmartDashboard.putNumber("Shooter Error", pid.getError());
     }
 
     public void enableOverrideMode() {
