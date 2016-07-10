@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.IterativeRobot;
 
 import com.coderedrobotics.vizzini.statics.Calibration;
 import com.coderedrobotics.vizzini.statics.KeyMap;
+import com.coderedrobotics.vizzini.statics.SummerKeyMap;
 import com.coderedrobotics.vizzini.statics.Wiring;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -20,7 +21,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Vizzini extends IterativeRobot {
 
     TestManager testManager;
-    KeyMap keyMap;
+    KeyMap currentKeyMap;
+    KeyMap normalKeyMap;
+    SummerKeyMap summerKeyMap;
     Arm arm;
     Shooter shooter;
     Drive drive;
@@ -99,7 +102,9 @@ public class Vizzini extends IterativeRobot {
         gyro = new AnalogGyro(Wiring.GYRO);
         gyro.initGyro();
         gyro.calibrate();
-        keyMap = new KeyMap();
+        summerKeyMap = new SummerKeyMap();
+        normalKeyMap = new KeyMap();
+        currentKeyMap = summerKeyMap;
         leds = new RobotLEDs(Wiring.RED_AND_GREEN_LEDS, Wiring.BLUE_LEDS);
         arm = new Arm(Wiring.ARM_MOTOR, Wiring.PICKUP_FRONT_MOTOR, Wiring.PICKUP_REAR_MOTOR, leds);
         drive = new Drive();
@@ -148,66 +153,73 @@ public class Vizzini extends IterativeRobot {
     @Override
     public void teleopPeriodic() {
 
-        drive.set(keyMap.getLeftAxis(), keyMap.getRightAxis());
+        drive.set(currentKeyMap.getLeftAxis(), currentKeyMap.getRightAxis());
 
-        SmartDashboard.putNumber("Left Axis", keyMap.getLeftAxis());
-        SmartDashboard.putNumber("Right Axis", keyMap.getRightAxis());
+        SmartDashboard.putNumber("Left Axis", currentKeyMap.getLeftAxis());
+        SmartDashboard.putNumber("Right Axis", currentKeyMap.getRightAxis());
 
-        if (keyMap.getReverseDriveButton()) {
-            keyMap.toggleReverseDrive();
+        if (currentKeyMap.getReverseDriveButton()) {
+            currentKeyMap.toggleReverseDrive();
         }
-        if (keyMap.getReduceSpeedButton()) {
-            keyMap.toggleReduceSpeed();
+        if (currentKeyMap.getReduceSpeedButton()) {
+            currentKeyMap.toggleReduceSpeed();
         }
-        if (keyMap.getOverrideDrivePIDButton()) {
+        if (currentKeyMap.getOverrideDrivePIDButton()) {
             drive.disablePID();
         }
-
-        if (keyMap.getFeedInButton()) {
+        if (currentKeyMap.getSingleControllerToggleButton()) {
+            if (currentKeyMap instanceof SummerKeyMap) {
+                currentKeyMap = normalKeyMap;
+            } else if (currentKeyMap instanceof KeyMap) {
+                currentKeyMap = summerKeyMap;
+            } 
+        }
+        
+        if (currentKeyMap.getFeedInButton()) {
             arm.gotoPickupPosition();
             arm.feedIn();
             arm.gotoPickupPosition();
         }
-        if (keyMap.getFeedOutButton()) {
+        if (currentKeyMap.getFeedOutButton()) {
             arm.feedOut();
         }
-        if (keyMap.getFeedStopButton() || keyMap.getDriverCancelFireButton()) {
+        if (currentKeyMap.getFeedStopButton() || currentKeyMap.getDriverCancelFireButton()) {
             shooter.stop();
             firing = false;
             arm.pickupAllStop();
             shooter.closeGate();
         }
 
-        arm.move(keyMap.getArmAxis());
+        arm.move(currentKeyMap.getArmAxis());
         arm.tick();
 
-        if (keyMap.getGotoShootPositionButton()) {
+        if (currentKeyMap.getGotoShootPositionButton()) {
             arm.gotoShootPosition();
             shooter.spinUp();
             shooter.lightOn();
         }
 
-        if (keyMap.getDropBallInShooterNoFire()) {
+        if (currentKeyMap.getDropBallInShooterNoFire()) {
             arm.dropBallInShooter();
             arm.feedInNudge();
         }
 
-        if (keyMap.getOverrideArmPIDButton()) {
+        if (currentKeyMap.getOverrideArmPIDButton()) {
             arm.disablePIDController();
         }
 
-        if (keyMap.getPortcullisButton()) {
+        if (currentKeyMap.getPortcullisButton()) {
             arm.feedOut();
             arm.gotoPortcullisPosition();
         }
 
         shooter.tick();
 
-        if (keyMap.getFireButton()) {
+        if (currentKeyMap.getFireButton()) {
             shooter.spinUp();
             shooter.lightOn();
             firing = true;
-            if (keyMap.getFireOverrideButton()) {
+            if (currentKeyMap.getFireOverrideButton()) {
                 arm.dropBallInShooter();
                 shooter.openGate();
                 shooter.stopWithDelay();
@@ -230,28 +242,28 @@ public class Vizzini extends IterativeRobot {
                 firing = false;
             }
         }
-        if (keyMap.getShooterSpeedModifierStraightOuterWorks()) {
+        if (currentKeyMap.getShooterSpeedModifierStraightOuterWorks()) {
             shooter.setSpeedStraightOuterWorks();
-        } else if (keyMap.getShooterSpeedModifierLowBar()) {
+        } else if (currentKeyMap.getShooterSpeedModifierLowBar()) {
             shooter.setSpeedLowBar();
         } else {
             shooter.setDefaultSpeed();
         }
-        if (keyMap.getShooterLightToggleButton()) {
+        if (currentKeyMap.getShooterLightToggleButton()) {
             shooter.toggleLight();
         }
-        if (keyMap.getOverrideShooterPIDButton()) {
+        if (currentKeyMap.getOverrideShooterPIDButton()) {
             shooter.enableOverrideMode();
         }
 
-        if (keyMap.getLiftInButton()) {
+        if (currentKeyMap.getLiftInButton()) {
             lift.liftIn();
-        } else if (keyMap.getLiftOutButton()) {
+        } else if (currentKeyMap.getLiftOutButton()) {
             lift.liftOut();
         } else {
             lift.stop();
         }
-        lift.tapeMeasure(keyMap.getTapeMeasureAxis());
+        lift.tapeMeasure(currentKeyMap.getTapeMeasureAxis());
 
 //        if (keyMap.getSingleControllerToggleButton()) { // NOT DURING A LIVE MATCH YOU DINGuS
 //            keyMap.toggleSingleControllerMode();
